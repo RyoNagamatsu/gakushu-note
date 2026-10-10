@@ -496,7 +496,7 @@ function go(screen,task,pv){if(S.running)stopClock();S.screen=screen;S.task=task
 function render(){inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();status()}
 
 function renderHome(){
-  const groups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(t=>t.group))],today=ymd(Date.now());
+  const groups=[...new Set(TASKS.slice(BASE).map(t=>t.group))],today=ymd(Date.now());
   const all=WEEKS.reduce((n,w)=>n+weekPts(w).sum,0);
   app.innerHTML=`<div class="wrap">
    <div class="hero"><img src="icon-180.png" alt=""><div><h1>学習ノート</h1><p class="sub">やるものをえらんで、タップしましょう。</p></div></div>
