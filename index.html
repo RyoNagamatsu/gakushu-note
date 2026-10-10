@@ -226,6 +226,11 @@ canvas.ink{border-width:2.5px;border-radius:16px}
 @media (prefers-reduced-motion:reduce){.cf{display:none}}
 .cabinet{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0;font-weight:900}
 .cabinet img{width:34px;height:34px;border-radius:9px}
+.tips{display:flex;flex-direction:column;gap:10px}
+.tip{border-radius:16px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;border:2.5px solid var(--ok);background:var(--ok-bg);font-family:var(--f-q);font-size:1.05rem;line-height:1.7;text-align:left}
+.tip b{font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--ok)}
+.tip.tv{border-color:var(--d5);background:var(--sun-bg)}
+.tip.tv b{color:var(--warn)}
 @media print{.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
 @media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
 @media (prefers-reduced-motion:no-preference){ .opt,.btn,.tab{transition:background .12s,border-color .12s} }
@@ -463,6 +468,8 @@ function weekPts(w){let hw=0,full=0;const rows=[];w._d.forEach((id,i)=>{const v=
   const bonus=full===w._d.length&&full>0?10:0;let test=0,neat=0,prov=false;
   if(w._t){const v=S.vals[w._t]||{};if(v.done){const T=total(w._t);if(T.pend||!T.max){test=10;prov=T.pend>0}else{const r=T.got/T.max;test=r>=0.8?30:r>=0.6?20:10}if((S.grades[w._t]||{}).neat===true)neat=10}}
   return {rows,hw,bonus,test,neat,prov,sum:hw+bonus+test+neat}}
+const TIPS={s:["ボールをけるときは、立ち足をボールの横にふみこもう。つま先は、けりたい方向にむける。", "インサイドキックは、足の内がわの広いところでける。パスがまっすぐ行きやすい。", "トラップは、ボールが当たるしゅんかんに足を少し引く。ボールが足もとに止まる。", "ドリブルは、ボールを足から遠くにはなさない。小さく、たくさんさわろう。", "ボールをもらう前に、首をふってまわりを見よう。次にすることを先に決められる。", "パスを出したら、止まらずに次の場所へ走ろう。「パス・アンド・ゴー」という。", "シュートは、強さよりコース。ゴールのすみをねらおう。", "きき足でないほうの足でも、毎日10回けってみよう。両足が使えると強い。", "守るときは、ボールとゴールの間に立とう。", "守りでは、すぐに足を出さない。あいてがボールを大きく出すまで、ついていこう。", "リフティングは、足のこうの真ん中で、ひざの高さまで上げる。まず3回をめざそう。", "声を出そう。「フリー！」「うしろ！」のひとことで、なかまがらくになる。", "あいてから遠いほうの足でボールをもつと、とられにくい。", "あいている場所に走ると、パスをもらいやすい。", "ボールは体の正面でうけよう。足だけをのばすと、ミスがふえる。", "けったあとは、足をけりたい方向へ大きくふりぬこう。", "1対1は、スピードのへんかでぬく。ゆっくりから、きゅうに速く。", "フェイントは、体を大きく動かすと、あいてがつられやすい。", "れんしゅうや試合の前は、水をのんで、じゅんび運動をしよう。", "ミスをしたら、すぐに切りかえて、ボールをとりかえしに行こう。", "ゴールキーパーは、まず足を動かしてボールの正面に入ってからとる。", "スローインは、両足を地面につけたまま、頭の後ろから両手でなげる。", "シュートは、まずゴールのわくの中に。わくに行けば、何かがおこる。", "パスは、なかまの足もとか、走っていく先に出そう。", "止める・ける・運ぶ。この3つがサッカーのきほん。", "せまい場所では、ワンタッチでパスすると、とられにくい。", "せめるときは広がり、守るときはちぢまろう。", "つかれたときこそ、顔を上げよう。まわりが見えると、いいプレーができる。", "うまい選手は、ボールを止める場所がいい。次にけりやすいところに止めよう。", "じょうずな選手の試合を見て、ボールを持っていないときの動きをまねしよう。"],v:["アンダーハンドパスは、うでをのばして、手首の少し上の平らなところに当てよう。", "アンダーは、うでをふらない。ひざののびで、ボールをはこぼう。", "オーバーハンドパスは、おでこの前で、両手で三角をつくる。", "オーバーは、10本の指のはらでやわらかく。手のひらはボールにつけない。", "パスの前に、足を動かしてボールの下にすばやく入ろう。", "かまえは、ひざをまげてこしを落とす。かかとを少しうかせると、すぐ動ける。", "サーブのトスは、まっすぐ、いつも同じ高さに上げよう。", "アンダーサーブは、ボールを持った手の高さから、こぶしの平らなところで打つ。", "「はい！」「まかせて！」と声を出すと、おみあいがなくなる。", "レシーブは、体の正面でうけよう。", "パスは、高くてやわらかいボールを。次の人がとりやすくなる。", "スパイクは、高いところで、手のひら全体でボールをたたく。", "スパイクの助走は3歩。右ききなら、左・右・左のじゅん。", "ジャンプは、両うでを後ろから前へ大きくふり上げると、高くとべる。", "ブロックは、指を広げて、手をネットの上にまっすぐ出す。", "ネットにさわると反則。ジャンプはまっすぐ上にとぼう。", "ボールは3回までで、あいてのコートに返す。", "同じ人が2回つづけてボールにさわることはできない。", "サーブのときは、打つまで線をふまない。", "ボールから目をはなさない。打つ人の手を見ると、コースがわかる。", "かべにむかって、オーバーパスを毎日20回。形がきれいになる。", "つき指をふせぐために、れんしゅうの前に指もよくほぐそう。", "ミスした人には「ドンマイ！」。チームのふんいきがよくなる。", "レシーブのあとは、すぐに立って次のじゅんびをしよう。", "サーブをする番がまわってきたら、チーム全員が時計回りに1つ動く。", "トスは、ネットから少しはなれた高いボールが打ちやすい。", "強く打つより、まずあいてのコートの中に入れよう。", "あいてのいないところをねらって返そう。", "ボールは、うでの面をむけた方向にとぶ。面をねらう方向にむけよう。", "じょうずな選手の、ボールが来る前の動きを見てみよう。"]};
+const tipsHTML=n=>`<div class="tips"><div class="tip ts"><b>サッカーのコツ</b><span>${esc(TIPS.s[n%TIPS.s.length])}</span></div><div class="tip tv"><b>バレーボールのコツ</b><span>${esc(TIPS.v[n%TIPS.v.length])}</span></div></div>`;
 const STAGES=['リーグ突破','ベスト16','ベスト8','ベスト4','決勝へ'];
 function cup(w){const n=w._d.length,done=w._d.filter(id=>(S.vals[id]||{}).done).length;let res=null;
   if(w._t&&(S.vals[w._t]||{}).done){const T=total(w._t);if(T.pend||!T.max)res='wt';else{const r=T.got/T.max;res=(r>=0.8&&done===n)?'win':r>=0.6?'s2':'s3'}}
@@ -601,6 +608,7 @@ function renderTask(){
   const t=TASK[S.task],v=V(t.id),pv=S.preview,ro=v.done||pv;
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
   <div class="wrap${t.en?' en':''}">
+   ${ro&&!pv&&t.hw&&typeof v.tip==='number'?tipsHTML(v.tip):''}
    ${pv?'<p class="banner">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?'きょうの分はおわりです。おつかれさまでした。赤い字のこたえとくらべてみましょう。':'このテストは出しました。おつかれさまでした。'}</p>`:''}
    <p class="banner red" id="timeup" hidden>時間です。ここまでにして、下の「おわる」をおしましょう。</p>
    ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${esc(s.h)}</h3>${s.note?`<p class="note">${esc(s.note)}</p>`:''}
@@ -616,8 +624,8 @@ function renderTask(){
   mountModels();app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const m=b.closest('.kjh').querySelector('.kjm');play(m)});
   app.querySelector('#back').onclick=()=>go(pv?'parent':'home');
   const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
-    if(await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}出したあとは、なおせません。</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();
-      const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>決勝、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で決勝です。':'5日そろいました。土曜テストが決勝です！'}</p>`,'やった！')}
+    if(await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}出したあとは、なおせません。</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();
+      const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>決勝、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で決勝です。':'5日そろいました。土曜テストが決勝です！'}</p><p class="sub" style="margin:0">きょうのコツ</p>${tipsHTML(v.tip||0)}`,'やった！')}
       go('home')}};
   paintClock();if(!ro)gate()}
 function wc(ta){const el=app.querySelector(`[data-wcfor="${ta.dataset.k}"]`);if(el)el.textContent=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' words'}
