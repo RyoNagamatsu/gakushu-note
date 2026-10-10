@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="学習ノート">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#eef1f0">
+<meta name="theme-color" content="#dff3ff">
 <meta name="robots" content="noindex,nofollow">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-180.png">
@@ -16,22 +16,25 @@
 </head>
 <body>
 <title>学習ノート</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@500;700;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
 /* Layout: one answer sheet per screen, a single wide column sized for an iPad held upright; a slim sticky bar carries time and save state. */
 :root{
-  --paper:#eef1f0; --sheet:#ffffff; --ink:#1b2742; --soft:#5a6480; --line:#cdd4df;
-  --ai:#2b4c9b; --ai-bg:#e6ecfa; --shu:#cf3f28; --ok:#2a7a53; --warn:#a86a10; --hl:#fff0a6;
+  --paper:#dff3ff; --paper2:#f3fbff; --sheet:#ffffff; --ink:#1d3557; --soft:#5b7a99; --line:#b9e2f8;
+  --ai:#0a84c9; --ai-d:#066aa3; --ai-bg:#dcf2ff; --shu:#e8453c; --ok:#12996a; --ok-bg:#d6f7e9; --warn:#c77700; --sun:#ffd43b; --sun-bg:#fff4c2; --hl:#fff27a;
+  --d1:#ffb703; --d2:#ff6b6b; --d3:#1ea7e8; --d4:#2ec4a0; --d5:#ff922b; --d6:#9775fa;
   --f-q:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
   --f-ui:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
   --f-en:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --paper:#10141d; --sheet:#1a2131; --ink:#e7eaf3; --soft:#9aa4bb; --line:#353f57;
-  --ai:#93adf5; --ai-bg:#232e4a; --shu:#ff8a70; --ok:#6fd0a0; --warn:#e8b65e; --hl:#514a1c; color-scheme:dark } }
+  --paper:#0d2233; --paper2:#102a40; --sheet:#15344d; --ink:#eaf6ff; --soft:#9cc3df; --line:#2b5676;
+  --ai:#5cc8ff; --ai-d:#2a9bd6; --ai-bg:#1c4868; --shu:#ff8f85; --ok:#6fe0b0; --ok-bg:#174a3a; --warn:#ffc35c; --sun:#ffd43b; --sun-bg:#4d4317; --hl:#5a5216;
+  --d1:#ffb703; --d2:#ff6b6b; --d3:#1ea7e8; --d4:#2ec4a0; --d5:#ff922b; --d6:#9775fa; color-scheme:dark } }
 :root[data-theme="dark"]{
-  --paper:#10141d; --sheet:#1a2131; --ink:#e7eaf3; --soft:#9aa4bb; --line:#353f57;
-  --ai:#93adf5; --ai-bg:#232e4a; --shu:#ff8a70; --ok:#6fd0a0; --warn:#e8b65e; --hl:#514a1c; color-scheme:dark }
+  --paper:#0d2233; --paper2:#102a40; --sheet:#15344d; --ink:#eaf6ff; --soft:#9cc3df; --line:#2b5676;
+  --ai:#5cc8ff; --ai-d:#2a9bd6; --ai-bg:#1c4868; --shu:#ff8f85; --ok:#6fe0b0; --ok-bg:#174a3a; --warn:#ffc35c; --sun:#ffd43b; --sun-bg:#4d4317; --hl:#5a5216;
+  --d1:#ffb703; --d2:#ff6b6b; --d3:#1ea7e8; --d4:#2ec4a0; --d5:#ff922b; --d6:#9775fa; color-scheme:dark }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%}
 button,input,textarea{font:inherit;color:inherit}
@@ -154,6 +157,50 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .g .inkbox.s{width:220px}
 .chk{display:inline-flex;gap:6px;align-items:center;font-size:.9rem;color:var(--soft)}
 .chk input{width:22px;height:22px}
+
+/* ---- pop theme ---- */
+body{background:linear-gradient(180deg,var(--paper),var(--paper2) 60%);background-attachment:fixed;min-height:100vh}
+h1{font-weight:900;font-size:2rem;letter-spacing:.02em}
+.hero{display:flex;align-items:center;gap:14px}
+.hero img{width:64px;height:64px;border-radius:18px;box-shadow:0 5px 0 var(--line);flex:none}
+.bar{border-bottom:3px solid var(--line)}
+.bar-t{font-weight:900}
+.clock{border:3px solid var(--ai);color:var(--ai-d);background:var(--sheet)}
+.btn{border-radius:999px;border-width:0;background:var(--ai);box-shadow:0 4px 0 var(--ai-d);font-weight:900;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ai-d)}
+.btn.ghost{background:var(--sheet);color:var(--ai-d);border:2.5px solid var(--ai);box-shadow:0 3px 0 var(--line)}
+.btn.red{background:var(--sheet);border:2.5px solid var(--shu);box-shadow:none}
+.btn.sm{border-radius:999px}
+.ib .btn,.inkbox.sq>.btn{box-shadow:none;border:2px solid var(--line);color:var(--soft)}
+.grp h2{font-size:1.15rem;font-weight:900;color:var(--ink);background:var(--sun-bg);align-self:flex-start;padding:2px 16px;border-radius:999px;border:2.5px solid var(--sun)}
+.card{border:3px solid var(--line);border-radius:22px;box-shadow:0 6px 0 var(--line);flex-direction:row;align-items:center;gap:14px;min-height:96px;transition:transform .08s,box-shadow .08s}
+button.card:active{transform:translateY(4px);box-shadow:0 2px 0 var(--line)}
+.card .cb{display:flex;flex-direction:column;gap:4px;min-width:0;align-items:flex-start}
+.card b{font-weight:900}
+.dot{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:1.5rem;color:#fff;background:var(--d3)}
+.dot.d1{background:var(--d1)}.dot.d2{background:var(--d2)}.dot.d3{background:var(--d3)}.dot.d4{background:var(--d4)}.dot.d5{background:var(--d5)}.dot.d6{background:var(--d6)}
+.card.today{border-color:var(--ai);box-shadow:0 6px 0 var(--ai)}
+.card.lock{box-shadow:none;border-style:dashed}
+.st{margin-top:0;border-width:2px}
+.st.go{background:var(--sun-bg);border-color:var(--sun);color:var(--ink)}
+.st.done{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.sec{border:3px solid var(--line);border-radius:24px;box-shadow:0 6px 0 var(--line)}
+.sec>h3{border-bottom:0;background:var(--ai-bg);border-radius:14px;padding:8px 14px;font-weight:900}
+.banner{border-radius:18px;border:2.5px solid var(--line);background:var(--sheet)}
+.banner.red{border-color:var(--shu)}
+.tg{border-bottom:0;border-radius:6px;padding:0 .2em;background:var(--hl)}
+.blank,.ib canvas.ink{border-bottom:3px solid var(--ai)}
+.opt{border-width:2.5px;border-radius:16px}
+.opt.on{border-color:var(--ai);box-shadow:0 3px 0 var(--ai)}
+.kjm{border:3px solid var(--ai);border-radius:18px}
+.sqw{border-width:2.5px;border-radius:16px}
+canvas.ink{border-width:2.5px;border-radius:16px}
+.ptline{background:var(--sheet);border:3px solid var(--sun);border-radius:18px;padding:8px 16px;box-shadow:0 5px 0 var(--sun);align-self:flex-start}
+.ptline b{color:var(--warn);font-weight:900}
+.tab{border-width:2.5px;font-weight:900}
+.tab.on{background:var(--ai);border-color:var(--ai);color:#fff}
+.dlg{border:3px solid var(--line);border-radius:26px;box-shadow:0 8px 0 var(--line)}
+.mk{border-width:2.5px}
 @media print{.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
 @media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
 @media (prefers-reduced-motion:no-preference){ .opt,.btn,.tab{transition:background .12s,border-color .12s} }
@@ -452,15 +499,16 @@ function renderHome(){
   const groups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(t=>t.group))],today=ymd(Date.now());
   const all=WEEKS.reduce((n,w)=>n+weekPts(w).sum,0);
   app.innerHTML=`<div class="wrap">
-   <div><h1>学習ノート</h1><p class="sub">やるものをえらんで、タップしましょう。</p></div>
+   <div class="hero"><img src="icon-180.png" alt=""><div><h1>学習ノート</h1><p class="sub">やるものをえらんで、タップしましょう。</p></div></div>
    ${WEEKS.length?`<p class="ptline"><span>これまでのポイント</span><b>${all}</b></p>`:''}
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
      ${P?`<p class="ptline"><span>この週</span><b>${P.sum}</b><span class="sub">/ 100ポイント（宿題 ${P.hw}・5日そろい ${P.bonus}・テスト ${P.test}${P.prov?'（採点まち）':''}・ていねい ${P.neat}）</span></p>`:''}
      ${TASKS.some(t=>t.group===g&&t.date&&t.date>today)?'<p class="sub">1日に1つずつひらきます。保護者の方は、下の「保護者用」から1週間分の問題用紙を見られます。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
-     if(t.date&&t.date>today)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.date)} にひらきます</span></div>`;
+     const dn=t.hw?('月火水木金'.indexOf(t.title[0])+1):t.test?6:(TASKS.indexOf(t)%6+1),dot=`<span class="dot d${dn}">${esc(t.test?'土':t.title[0])}</span>`;
+     if(t.date&&t.date>today)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.date)} にひらきます</span></div></div>`;
      const st=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
-     return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></button>`}).join('')}</div></div>`}).join('')}
+     return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}">${dot}<span class="cb"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></span></button>`}).join('')}</div></div>`}).join('')}
    ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
    <div class="row"><button class="btn ghost sm" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
