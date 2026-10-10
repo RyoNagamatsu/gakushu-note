@@ -371,10 +371,11 @@ const TASKS=[
  ]}
 ];
 const TASK={},WEEKS=[],BASE=TASKS.length;
+function satBefore(mon){const d=new Date(mon+'T12:00:00');d.setDate(d.getDate()-2);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function setWeeks(list){TASKS.length=BASE;WEEKS.length=0;
   (list||[]).filter(w=>w&&w.id&&Array.isArray(w.days)).sort((a,b)=>a.id<b.id?1:-1).forEach(w=>{w=JSON.parse(JSON.stringify(w));WEEKS.push(w);w._d=[];
-    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:d.wd+'曜日',date:d.d,min:d.min||30,pts:0,hw:true,sections:d.sections||[]})});
-    if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,group:w.label,title:'土曜テスト',date:w.test.d,min:w.test.min||30,pts:0,test:true,sections:w.test.sections||[]})}});
+    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:d.wd+'曜日',date:d.d,open:satBefore(w.id),min:d.min||30,pts:0,hw:true,sections:d.sections||[]})});
+    if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,group:w.label,title:'土曜テスト',date:w.test.d,open:w.test.d,min:w.test.min||30,pts:0,test:true,sections:w.test.sections||[]})}});
   for(const k in TASK)delete TASK[k];TASKS.forEach(t=>TASK[t.id]=t);
   TASKS.slice(BASE).forEach(t=>{if(t.test)t.pts=items(t).reduce((n,it)=>n+(it.k==='fill'?(it.each?it.pts*it.b.length:it.pts)+(it.work?it.work.pts:0):(it.pts||0)),0)})}
 const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
@@ -541,10 +542,10 @@ function renderHome(){
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
      ${w?cupHTML(w):''}
      ${P?`<p class="ptline"><span>この週</span><b>${P.sum}</b><span class="sub">/ 100ポイント（宿題 ${P.hw}・5日そろい ${P.bonus}・テスト ${P.test}${P.prov?'（採点まち）':''}・ていねい ${P.neat}）</span></p>`:''}
-     ${TASKS.some(t=>t.group===g&&t.date&&t.date>today)?'<p class="sub">1日に1つずつひらきます。保護者の方は、下の「保護者用」から1週間分の問題用紙を見られます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&t.open&&t.open>today)?'<p class="sub">宿題は前の週の土曜日に1週間分がひらきます。土曜テストは、その土曜日にひらきます。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
      const dn=t.hw?('月火水木金'.indexOf(t.title[0])+1):t.test?6:(TASKS.indexOf(t)%6+1),dot=`<span class="dot d${dn}">${esc(t.test?'土':t.title[0])}</span>`;
-     if(t.date&&t.date>today)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.date)} にひらきます</span></div></div>`;
+     if(t.open&&t.open>today)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.open)} にひらきます</span></div></div>`;
      const st=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
      return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}">${dot}<span class="cb"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></span></button>`}).join('')}</div></div>`}).join('')}
    ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
