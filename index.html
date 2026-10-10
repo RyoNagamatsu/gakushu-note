@@ -20,7 +20,7 @@
 <style>
 /* Layout: one answer sheet per screen, a single wide column sized for an iPad held upright; a slim sticky bar carries time and save state. */
 :root{
-  --paper:#c9edc4; --paper2:#d9f4d3; --tint:#f1fbee; --sheet:#ffffff; --ink:#1d3557; --soft:#5b7a99; --line:#b9e2f8;
+  --paper:#c9edc4; --paper2:#d9f4d3; --tint:#f1fbee; --onbg:#3d5a4a; --sheet:#ffffff; --ink:#1d3557; --soft:#5b7a99; --line:#b9e2f8;
   --ai:#0a84c9; --ai-d:#066aa3; --ai-bg:#dcf2ff; --shu:#e8453c; --ok:#12996a; --ok-bg:#d6f7e9; --warn:#c77700; --sun:#ffd43b; --sun-bg:#fff4c2; --hl:#fff27a;
   --d1:#ffb703; --d2:#ff6b6b; --d3:#1ea7e8; --d4:#2ec4a0; --d5:#ff922b; --d6:#9775fa;
   --f-q:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
@@ -35,7 +35,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .wrap{max-width:860px;margin:0 auto;padding-inline:20px;padding-block:20px 80px;display:flex;flex-direction:column;gap:22px}
 h1,h2,h3{margin:0;text-wrap:balance;line-height:1.35}
 h1{font-size:1.7rem}
-.wrap>.sub,.wrap>div>.sub,.grp>.sub,.hero .sub{color:#3d5a4a}
+.wrap>.sub,.wrap>div>.sub,.grp>.sub,.hero .sub{color:var(--onbg)}
 .sub{color:var(--soft);font-size:.95rem;margin:0}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:1px solid var(--line)}
 .bar-in{max-width:860px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -232,7 +232,11 @@ rt{font-size:.5em;font-family:var(--f-ui);font-weight:500;color:var(--soft);lett
 .whyline{margin:0;font-family:var(--f-q);background:var(--sun-bg);border-radius:12px;padding:6px 12px;line-height:2.2}
 .whyline::before{content:"ポイント：";font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--warn)}
 .sec>h3{line-height:2}
-@media print{.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
+body.bg-s{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round' opacity='.55'%3E%3Cg transform='translate%2880 90%29'%3E%3Ccircle r='34'/%3E%3Cpath d='M0-14 13-4 8 11H-8L-13-4Z' fill='white' fill-opacity='.55'/%3E%3Cpath d='M0-14V-34M13-4 32-10M8 11 20 27M-8 11-20 27M-13-4-32-10'/%3E%3C/g%3E%3Cg transform='translate%28270 250%29 rotate%2825%29'%3E%3Ccircle r='24'/%3E%3Cpath d='M0-10 9-3 6 8H-6L-9-3Z' fill='white' fill-opacity='.55'/%3E%3Cpath d='M0-10V-24M9-3 23-7M6 8 14 19M-6 8-14 19M-9-3-23-7'/%3E%3C/g%3E%3Ccircle cx='250' cy='70' r='46' stroke-dasharray='2 10' stroke-linecap='round'/%3E%3Cpath d='M20 300h90M65 255v90' stroke-width='2' opacity='.6'/%3E%3C/svg%3E"),repeating-linear-gradient(180deg,var(--paper) 0 90px,var(--paper2) 90px 180px);background-attachment:fixed}
+body.bg-v{--paper:#ffdcae;--paper2:#ffe8c8;--tint:#fff6e9;--onbg:#6a4a22;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' opacity='.7'%3E%3Cg transform='translate%2885 95%29'%3E%3Ccircle r='34'/%3E%3Cpath d='M0-34C-8-12 2 6 26 22M-29 17C-10 10 6 16 16 30M29-17C12-22-6-18-20-2M-33-6C-20-16-8-18 4-14M-6 33C-8 20-2 10 8 4M32 10C22 2 14-8 12-22'/%3E%3C/g%3E%3Cg transform='translate%28265 255%29 rotate%2840%29'%3E%3Ccircle r='24'/%3E%3Cpath d='M0-24C-6-8 1 4 18 16M-20 12C-7 7 4 11 11 21M20-12C8-16-4-13-14-1'/%3E%3C/g%3E%3Cpath d='M200 40h130M200 62h130M200 84h130M200 106h130M222 40v66M244 40v66M266 40v66M288 40v66M310 40v66' stroke-width='1.6' opacity='.7'/%3E%3Cpath d='M30 290q30-26 60 0t60 0' stroke-width='2' opacity='.6'/%3E%3C/svg%3E"),repeating-linear-gradient(90deg,var(--paper) 0 90px,var(--paper2) 90px 180px);background-attachment:fixed}
+.daychip{display:inline-block;font-weight:900;font-size:.85rem;border-radius:999px;padding:1px 12px;background:var(--sheet);border:2.5px solid var(--ok);color:var(--ok);margin-top:4px}
+body.bg-v .daychip{border-color:var(--d5);color:var(--warn)}
+@media print{body{background:#fff!important}.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
 @media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
 @media (prefers-reduced-motion:no-preference){ .opt,.btn,.tab{transition:background .12s,border-color .12s} }
 </style>
@@ -567,13 +571,15 @@ function furi(root){if(!root)return;const w=document.createTreeWalker(root,NodeF
 /* ---------- screens ---------- */
 function go(screen,task,pv){if(S.running)stopClock();S.screen=screen;S.task=task||null;S.preview=!!pv;LS.set('gk1.route',{task:screen==='task'&&!pv?task:null});render();window.scrollTo(0,0);
   if(screen!=='task')pull().then(ch=>{if(ch&&S.screen===screen)render()})}
-function render(){inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();if(S.screen!=='parent')furi(app);status()}
+function dayTheme(){const v=[2,4,0].includes(new Date(Date.now()).getDay());document.body.classList.toggle('bg-v',v);document.body.classList.toggle('bg-s',!v);
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=v?'#ffdcae':'#c9edc4';return v}
+function render(){dayTheme();inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();if(S.screen!=='parent')furi(app);status()}
 
 function renderHome(){
   const groups=[...new Set(TASKS.slice(BASE).map(t=>t.group))],today=ymd(Date.now());
   const all=WEEKS.reduce((n,w)=>n+weekPts(w).sum,0),wins=WEEKS.filter(w=>cup(w).res==='win').length;
   app.innerHTML=`<div class="wrap">
-   <div class="hero"><img src="icon-180.png" alt=""><div><h1>学習ノート</h1><p class="sub">やるものをえらんで、タップしましょう。</p></div></div>
+   <div class="hero"><img src="icon-180.png" alt=""><div><h1>学習ノート</h1><p class="sub">やるものをえらんで、タップしましょう。</p><span class="daychip">${dayTheme()?'きょうは バレーボールの日':'きょうは サッカーの日'}</span></div></div>
    ${wins?`<p class="cabinet"><span>優勝 ${wins}回</span>${Array.from({length:Math.min(wins,12)},()=>'<img src="icon-180.png" alt="">').join('')}</p>`:''}
    ${WEEKS.length?`<p class="ptline"><span>これまでのポイント</span><b>${all}</b></p>`:''}
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
@@ -758,7 +764,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010130827';
+const BUILD='20261010131044';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
