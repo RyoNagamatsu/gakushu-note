@@ -377,7 +377,10 @@ const TASKS=[
 const TASK={},WEEKS=[],BASE=TASKS.length;
 function satBefore(mon){const d=new Date(mon+'T12:00:00');d.setDate(d.getDate()-2);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 // Homework opens once the previous week's Saturday test has been handed in (or when its own Monday arrives, so a missed test never blocks a week).
+function addDays(d,n){const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return ymd(x.getTime())}
 function lockInfo(t,today){if(!t.open)return null;
+  // On test day (and the Sunday after), homework stays closed until the test is handed in, so answers cannot be looked up.
+  if(t.hw&&WEEKS.some(w=>w._t&&w.test&&w.id>=t.week&&w.test.d<=today&&today<addDays(w.id,7)&&!(S.vals[w._t]||{}).done))return 'テストを出すまで見られません';
   if(t.hw){const d=new Date(t.week+'T12:00:00');d.setDate(d.getDate()-7);const pid=ymd(d.getTime()),pw=WEEKS.find(w=>w.id===pid);
     if(pw&&pw._t&&today<t.week){if((S.vals[pw._t]||{}).done)return null;return today<t.open?md(t.open)+' の土曜テストのあとにひらきます':'土曜テストを出すとひらきます'}}
   return t.open>today?md(t.open)+' にひらきます':null}
@@ -453,7 +456,7 @@ async function pull(){let ch=await loadWeeks();if(!token)return ch;
         if(mergeRemote(path,x))ch=true}}
     LS.set('gk1.shas',shas);if(ch)saveLocal()}catch(e){}
   return ch}
-function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.find(x=>x.date===today&&!(S.vals[x.id]||{}).done);if(t){hashDone=true;go('task',t.id)}}
+function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.find(x=>x.date===today&&!(S.vals[x.id]||{}).done&&!lockInfo(x,today));if(t){hashDone=true;go('task',t.id)}}
 (async function connect(){const ch=await pull();if(ch&&!S.running)render();status();openToday();sync()})();
 async function setToken(v){token=v;LS.set('gk1.token',v);if(!v)return '未設定';
   try{const r=await fetch(REPO,{headers:hdr(),cache:'no-store'});if(!r.ok){saveErr=true;return 'つながりません。鍵を確認してください（'+r.status+'）'}}catch(e){saveErr=true;return 'つながりません。通信を確認してください'}
@@ -630,6 +633,7 @@ function paintClock(){const el=document.getElementById('clock');if(!el)return;co
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.running){stopClock();flushAll();if(S.screen==='task')gate()}else if(document.hidden)flushAll()});
 
 function renderTask(){
+  if(!S.preview&&TASK[S.task]&&lockInfo(TASK[S.task],ymd(Date.now()))){S.screen='home';S.task=null;LS.set('gk1.route',{task:null});return renderHome()}
   const t=TASK[S.task],v=V(t.id),pv=S.preview,ro=v.done||pv;
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
   <div class="wrap${t.en?' en':''}">
@@ -752,7 +756,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010095819';
+const BUILD='20261010125553';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
