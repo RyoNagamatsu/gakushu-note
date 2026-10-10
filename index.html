@@ -376,9 +376,14 @@ const TASKS=[
 ];
 const TASK={},WEEKS=[],BASE=TASKS.length;
 function satBefore(mon){const d=new Date(mon+'T12:00:00');d.setDate(d.getDate()-2);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+// Homework opens once the previous week's Saturday test has been handed in (or when its own Monday arrives, so a missed test never blocks a week).
+function lockInfo(t,today){if(!t.open)return null;
+  if(t.hw){const d=new Date(t.week+'T12:00:00');d.setDate(d.getDate()-7);const pid=ymd(d.getTime()),pw=WEEKS.find(w=>w.id===pid);
+    if(pw&&pw._t&&today<t.week){if((S.vals[pw._t]||{}).done)return null;return today<t.open?md(t.open)+' の土曜テストのあとにひらきます':'土曜テストを出すとひらきます'}}
+  return t.open>today?md(t.open)+' にひらきます':null}
 function setWeeks(list){TASKS.length=BASE;WEEKS.length=0;
   (list||[]).filter(w=>w&&w.id&&Array.isArray(w.days)).sort((a,b)=>a.id<b.id?1:-1).forEach(w=>{w=JSON.parse(JSON.stringify(w));WEEKS.push(w);w._d=[];
-    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:d.wd+'曜日',date:d.d,open:satBefore(w.id),min:d.min||30,pts:0,hw:true,sections:d.sections||[]})});
+    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:d.wd+'曜日',date:d.d,open:satBefore(w.id),week:w.id,min:d.min||30,pts:0,hw:true,sections:d.sections||[]})});
     if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,group:w.label,title:'土曜テスト',date:w.test.d,open:w.test.d,min:w.test.min||30,pts:0,test:true,sections:w.test.sections||[]})}});
   for(const k in TASK)delete TASK[k];TASKS.forEach(t=>TASK[t.id]=t);
   TASKS.slice(BASE).forEach(t=>{if(t.test)t.pts=items(t).reduce((n,it)=>n+(it.k==='fill'?(it.each?it.pts*it.b.length:it.pts)+(it.work?it.work.pts:0):(it.pts||0)),0)})}
@@ -569,10 +574,10 @@ function renderHome(){
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
      ${w?cupHTML(w):''}
      ${P?`<p class="ptline"><span>この週</span><b>${P.sum}</b><span class="sub">/ 50ポイント（宿題 ${P.hw}・5日そろい ${P.bonus}・テスト ${P.test}${P.prov?'（採点まち）':''}・ていねい ${P.neat}）</span></p>`:''}
-     ${TASKS.some(t=>t.group===g&&t.open&&t.open>today)?'<p class="sub noruby">宿題は前の週の土曜日に1週間分がひらきます。土曜テストは、その土曜日にひらきます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub noruby">次の週の宿題は、土曜テストを出すと1週間分がひらきます。土曜テストは、その土曜日にひらきます。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
      const dn=t.hw?('月火水木金'.indexOf(t.title[0])+1):t.test?6:(TASKS.indexOf(t)%6+1),dot=`<span class="dot d${dn}">${esc(t.test?'土':t.title[0])}</span>`;
-     if(t.open&&t.open>today)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.open)} にひらきます</span></div></div>`;
+     const lk=lockInfo(t,today);if(lk)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${esc(lk)}</span></div></div>`;
      const st=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
      return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}">${dot}<span class="cb"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></span></button>`}).join('')}</div></div>`}).join('')}
    ${token?'':'<p class="banner noruby">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
@@ -747,7 +752,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010095620';
+const BUILD='20261010095819';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
