@@ -461,6 +461,7 @@ function renderHome(){
      if(t.date&&t.date>today)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.date)} にひらきます</span></div>`;
      const st=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
      return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></button>`}).join('')}</div></div>`}).join('')}
+   ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
    <div class="row"><button class="btn ghost sm" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
   </div>`;
@@ -571,6 +572,8 @@ function renderParent(){
   const pgroups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(x=>x.group))],PW=WEEKS.find(w=>w.label===t.group),PP=PW?weekPts(PW):null;
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">保護者用　採点・結果</span><span class="save" id="save"></span></div></div>
   <div class="wrap">
+   <section class="sec"><h3>答えの送り先</h3><p class="sub">GitHubで作った鍵（トークン）を入れると、答えと手書きが非公開の保存場所に送られ、Claudeが採点できます。入れない場合は、このiPadの中だけに保存されます。</p>
+    <div class="row"><input class="blank" id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" style="width:min(100%,20em);text-align:left"><button class="btn" id="tokSave">保存してテスト</button><span class="sub" id="tokMsg">${token?'設定ずみ':'未設定'}</span></div></section>
    <div class="tabs">${pgroups.map(x=>`<button class="tab${x===t.group?' on':''}" data-grp="${esc(x)}">${esc(x)}</button>`).join('')}</div>
    <div class="tabs">${TASKS.filter(x=>x.group===t.group).map(x=>`<button class="tab${x.id===t.id?' on':''}" data-tab="${x.id}">${esc(x.title)}</button>`).join('')}</div>
    <div class="row"><button class="btn ghost sm" id="pview">「${esc(t.title)}」の問題用紙を見る</button></div>
@@ -588,8 +591,6 @@ function renderParent(){
     <p class="sub">書きこみ欄は○か×をタップして採点します。式・記述は右の点数ボタンで採点します。選択問題は自動で採点されます。</p>
    </section>
    <section class="sec">${rows.join('')}</section>
-   <section class="sec"><h3>答えの送り先</h3><p class="sub">GitHubで作った鍵（トークン）を入れると、答えと手書きが非公開の保存場所に送られ、Claudeが採点できます。入れない場合は、このiPadの中だけに保存されます。</p>
-    <div class="row"><input class="blank" id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" style="width:min(100%,20em);text-align:left"><button class="btn" id="tokSave">保存してテスト</button><span class="sub" id="tokMsg">${token?'設定ずみ':'未設定'}</span></div></section>
    <section class="sec"><h3>結果をClaudeに送る</h3><p class="sub">採点の結果をまとめた文です。コピーしてClaudeのチャットに貼りつけてください。手書きの内容は文に入らないので、見てほしい答案は画面の写真をいっしょに送ってください。</p>
     <textarea class="long" id="report" rows="6" readonly style="font-size:.8rem;line-height:1.4;font-family:var(--f-en)"></textarea><div class="row"><button class="btn" id="copy">結果をコピー</button><span class="sub" id="copied"></span></div></section>
    <section class="sec"><h3>やり直し</h3><div class="row"><button class="btn ghost" id="unlock" ${v.done?'':'disabled'}>もう一度書けるようにする</button><button class="btn red" id="wipe">この科目の答えをすべて消す</button></div></section>
