@@ -236,6 +236,12 @@ body.bg-s{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/200
 body.bg-v{--paper:#ffdcae;--paper2:#ffe8c8;--tint:#fff6e9;--onbg:#6a4a22;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' opacity='.7'%3E%3Cg transform='translate%2885 95%29'%3E%3Ccircle r='34'/%3E%3Cpath d='M0-34C-8-12 2 6 26 22M-29 17C-10 10 6 16 16 30M29-17C12-22-6-18-20-2M-33-6C-20-16-8-18 4-14M-6 33C-8 20-2 10 8 4M32 10C22 2 14-8 12-22'/%3E%3C/g%3E%3Cg transform='translate%28265 255%29 rotate%2840%29'%3E%3Ccircle r='24'/%3E%3Cpath d='M0-24C-6-8 1 4 18 16M-20 12C-7 7 4 11 11 21M20-12C8-16-4-13-14-1'/%3E%3C/g%3E%3Cpath d='M200 40h130M200 62h130M200 84h130M200 106h130M222 40v66M244 40v66M266 40v66M288 40v66M310 40v66' stroke-width='1.6' opacity='.7'/%3E%3Cpath d='M30 290q30-26 60 0t60 0' stroke-width='2' opacity='.6'/%3E%3C/svg%3E"),repeating-linear-gradient(90deg,var(--paper) 0 90px,var(--paper2) 90px 180px);background-attachment:fixed}
 .daychip{display:inline-block;font-weight:900;font-size:.85rem;border-radius:999px;padding:1px 12px;background:var(--sheet);border:2.5px solid var(--ok);color:var(--ok);margin-top:4px}
 body.bg-v .daychip{border-color:var(--d5);color:var(--warn)}
+.ansline{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap}
+.sm{display:inline-flex;gap:8px}
+.sm .mk{width:48px;height:48px;font-size:1.4rem;background:var(--sheet)}
+.auto{font-weight:900;font-size:1.4rem;width:44px;height:44px;border-radius:50%;display:inline-grid;place-items:center;border:2.5px solid var(--line);font-family:var(--f-ui)}
+.auto.o{color:var(--shu);border-color:var(--shu)}.auto.x{color:var(--soft)}
+.rvline{margin:0;font-size:1.2rem;font-weight:700}.rvline b{font-size:1.6rem;font-weight:900;color:var(--ai-d)}
 @media print{body{background:#fff!important}.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
 @media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
 @media (prefers-reduced-motion:no-preference){ .opt,.btn,.tab{transition:background .12s,border-color .12s} }
@@ -589,7 +595,7 @@ function renderHome(){
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
      const dn=t.hw?('月火水木金'.indexOf(t.title[0])+1):t.test?6:(TASKS.indexOf(t)%6+1),dot=`<span class="dot d${dn}">${esc(t.test?'土':t.title[0])}</span>`;
      const lk=lockInfo(t,today);if(lk)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${esc(lk)}</span></div></div>`;
-     const st=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
+     const st=v.done?((t.hw&&!v.rev)?['go','こたえあわせ']:['done','おわり']):v.started?['go','とちゅう']:['','まだ'];
      return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}">${dot}<span class="cb"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></span></button>`}).join('')}</div></div>`}).join('')}
    ${token?'':'<p class="banner noruby">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
    <div class="row"><button class="btn ghost sm noruby" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
@@ -609,25 +615,27 @@ function itemHTML(t,it,n,ro){
   const tid=t.id,v=V(tid).v,dis=ro?'disabled':'';
   if(it.sub)return `<p class="q" style="font-weight:600">${rich(it.sub)}</p>`;
   const num=n?`<span class="n">${n}</span>`:'';
-  const A=(ro&&t.hw)?x=>(x?`<p class="ansline">こたえ：${esc(x)}</p>`:'')+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):()=>'';
+  const sf=V(tid).self||{},canMark=ro&&t.hw&&!S.preview;
+  const SM=key=>canMark&&key?`<span class="sm"><button class="mk o${sf[key]===1?' sel':''}" data-sm="${key}" data-val="1" aria-label="あっていた">○</button><button class="mk x${sf[key]===0?' sel':''}" data-sm="${key}" data-val="0" aria-label="ちがっていた">×</button></span>`:'';
+  const A=(ro&&t.hw)?(x,key)=>(x?`<p class="ansline"><span>こたえ：${esc(x)}</span>${SM(key)}</p>`:'')+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):()=>'';
   if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
     return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
       <div class="kji"><div><b>音</b>${esc(it.on||'－')}　<b>訓</b>${esc(it.kun||'－')}　<b>かくすう</b>${esc(it.st||'')}かく</div><div><b>ことば</b>${(it.ex||[]).map(e=>esc(e[0])+'（'+esc(e[1])+'）').join('　')}</div>
       ${it.tip?`<div class="ansline" style="font-size:.95rem">${rich(it.tip)}</div>`:''}<button class="btn ghost sm" data-play="1">かきじゅんを 見る</button></div></div>
       <div class="kjb">${sq('t','なぞる',1)}${sq('a','見てかく')}${sq('b','もういちど')}</div>
-      ${it.rq?`<p class="q">よみを ひらがなで かく：<span class="tg">${esc(it.rq[0])}</span><span class="ib" data-ink="${it.id}.y" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.rq[1])}`:''}
-      ${it.wq?`<p class="q">かんじで かく：<span class="tg">${esc(it.wq[0])}</span><span class="ib" data-ink="${it.id}.w" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.wq[1])}`:''}</div>`}
+      ${it.rq?`<p class="q">よみを ひらがなで かく：<span class="tg">${esc(it.rq[0])}</span><span class="ib" data-ink="${it.id}.y" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.rq[1],it.id+'.y')}`:''}
+      ${it.wq?`<p class="q">かんじで かく：<span class="tg">${esc(it.wq[0])}</span><span class="ib" data-ink="${it.id}.w" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.wq[1],it.id+'.w')}`:''}</div>`}
   if(it.k==='fill'){let i=0;
     const body=rich(it.tpl).split('{}').map((seg,j,arr)=>{if(j===arr.length-1)return seg;const b=it.b[i],k=it.id+'.'+i;i++;
       return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
     return `<div class="item">${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
       ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${esc(it.work.label)}</span></div>`:''}
-      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}</div>`}
+      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''),it.id)}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
-      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${A(it.a)}</div>`}
-  if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model)}</div>`;
-  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model)}</div>`;
+      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${(ro&&t.hw)?`<p class="ansline"><span>こたえ：${esc(it.a)}</span><span class="auto ${v[it.id]===it.a?'o':'x'}">${v[it.id]===it.a?'○':'×'}</span></p>`+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):''}</div>`}
+  if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model,it.scratch?null:it.id)}</div>`;
+  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model,it.id)}</div>`;
   return ''}
 
 let clockTm=null,lastLocal=0;
@@ -646,11 +654,17 @@ function renderTask(){
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
   <div class="wrap${t.en?' en':''}">
    ${ro&&!pv&&t.hw&&typeof v.tip==='number'?`<div class="tips">${tipsHTML(v.tip)}</div>`:''}
-   ${pv?'<p class="banner noruby">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?'きょうの分はおわりです。おつかれさまでした。赤い字のこたえとくらべてみましょう。':'このテストは出しました。おつかれさまでした。'}</p>`:''}
+   ${pv?'<p class="banner noruby">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?(v.rev?'こたえあわせも おわりました。おつかれさまでした。':'こたえあわせをしよう。赤い字のこたえとくらべて、あっていたら ○、ちがっていたら × をおしましょう。'):'このテストは出しました。おつかれさまでした。'}</p>`:''}
    <p class="banner red" id="timeup" hidden>時間です。ここまでにして、下の「おわる」をおしましょう。</p>
    ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${rich(s.h)}</h3>${s.note?`<p class="note">${rich(s.note)}</p>`:''}
      ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${rich(p)}</p>`).join('')}</div>`:''}
      <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro)).join('')}</div></section>`}).join('')}
+   ${ro&&!pv&&t.hw?`<section class="sec" id="review"><h3>ふりかえり</h3>
+     <p class="rvline">○ <b id="rvO"></b> こ　　× <b id="rvX"></b> こ　　まだ <b id="rvN"></b> こ</p>
+     <p class="q">きょうの しゅくだいは、どうだった？</p>
+     <div class="opts">${[['1','かんたん'],['2','ちょうどいい'],['3','むずかしい']].map(f=>`<button class="opt${v.feel===f[0]?' on':''}" data-feel="${f[0]}"><span>${f[1]}</span></button>`).join('')}</div>
+     <p class="note">× だった もんだいは、赤い字のこたえと「ポイント」を もういちど 読んでおこう。</p>
+     <div class="row end"><button class="btn" id="rvDone">${v.rev?'ホームに もどる':'ふりかえりを おわる'}</button></div></section>`:''}
    ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
   </div>`;
   app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink);const api=mkInk(sqHost(box),key,+box.dataset.h,ro,!!box.dataset.ruled);
@@ -663,9 +677,14 @@ function renderTask(){
   const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
     if(await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}出したあとは、なおせません。</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();
       const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>決勝、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で決勝です。':'5日そろいました。土曜テストが決勝です！'}</p><div class="tips">${tipsHTML(v.tip||0)}</div>`,'やった！')}
-      go('home')}};
+      if(t.hw){go('task',t.id)}else go('home')}};
+  paintReview();const rd=app.querySelector('#rvDone');if(rd)rd.onclick=()=>{if(!v.rev){v.rev=true;touchVals(t.id);flushAll()}go('home')};
   paintClock();if(!ro)gate()}
 function wc(ta){const el=app.querySelector(`[data-wcfor="${ta.dataset.k}"]`);if(el)el.textContent=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' words'}
+function markKeys(t){const k=[];items(t).forEach(it=>{if(it.scratch)return;if(it.k==='kanji'){if(it.rq)k.push(it.id+'.y');if(it.wq)k.push(it.id+'.w')}else if(it.k==='fill')k.push(it.id);else if((it.k==='ink'||it.k==='long')&&it.model)k.push(it.id)});return k}
+function reviewCount(t){const v=V(t.id),sf=v.self||{},ks=markKeys(t);let o=0,x=0;ks.forEach(k=>{if(sf[k]===1)o++;else if(sf[k]===0)x++});
+  items(t).forEach(it=>{if(it.k==='choice'){if(v.v[it.id]===it.a)o++;else x++}});return {o,x,n:ks.length-ks.filter(k=>sf[k]===1||sf[k]===0).length}}
+function paintReview(){const t=TASK[S.task];if(!t)return;const c=reviewCount(t),g=id=>document.getElementById(id);if(g('rvO')){g('rvO').textContent=c.o;g('rvX').textContent=c.x;g('rvN').textContent=c.n}}
 function countBlank(t){const v=V(t.id).v;let n=0;items(t).forEach(it=>{if(it.scratch)return;
   if(it.k==='fill')it.b.forEach((_,i)=>{if(!hasInk(t.id,it.id+'.'+i))n++});
   else if(it.k==='choice'){if(!v[it.id])n++}else if(it.k==='kanji'){if(!hasInk(t.id,it.id+'.a'))n++}else{if(!hasInk(t.id,it.id))n++}});return n}
@@ -676,6 +695,10 @@ async function gate(){const t=TASK[S.task],v=V(t.id);if(v.done||S.running)return
   if(S.screen!=='task'||S.task!==t.id)return;if(ok)startClock();else go('home')}
 
 app.addEventListener('input',e=>{const el=e.target;if(S.screen!=='task'||!el.dataset||!el.dataset.k)return;V(S.task).v[el.dataset.k]=el.value;if(el.dataset.wc)wc(el);touchVals(S.task)});
+app.addEventListener('click',e=>{if(S.screen!=='task'||S.preview)return;const m=e.target.closest&&e.target.closest('[data-sm]'),f=e.target.closest&&e.target.closest('[data-feel]');
+  if(m){const v=V(S.task);v.self=v.self||{};const k=m.dataset.sm,val=+m.dataset.val;if(v.self[k]===val)delete v.self[k];else v.self[k]=val;
+    m.parentNode.querySelectorAll('.mk').forEach(x=>x.classList.toggle('sel',v.self[k]===+x.dataset.val));touchVals(S.task);paintReview()}
+  if(f){const v=V(S.task);v.feel=f.dataset.feel;f.parentNode.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x===f));touchVals(S.task)}});
 app.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-c]');if(!b||S.screen!=='task'||b.disabled)return;const v=V(S.task).v,k=b.dataset.c;
   v[k]=v[k]===b.dataset.v?'':b.dataset.v;b.parentNode.querySelectorAll('.opt').forEach(o=>{const on=v[k]===o.dataset.v;o.classList.toggle('on',on);o.setAttribute('aria-checked',on)});touchVals(S.task)});
 
@@ -719,7 +742,7 @@ function renderParent(){
      ${t.test?`<label class="chk"><input type="checkbox" id="neat" ${g.neat===true?'checked':''}>ていねいボーナスをつける（空らんがなく、字が読みやすい）</label>`:''}</section>`:''}
    <section class="sec">
     <div class="row"><div>${t.pts?`<div class="big">${T.got}<span style="font-size:1rem"> / ${T.max}点</span></div>`:'<b>点数はつけません</b>'}
-     <p class="sub">${v.done?'提出ずみ':v.started?'とちゅう':'まだ始めていません'}・使った時間 ${mmss(v.el||0)}（${t.hw?'めやす':'制限'} ${t.min}分）${T.pend?`・<span style="color:var(--shu)">未採点 ${T.pend}問</span>`:''}</p></div></div>
+     <p class="sub">${v.done?'提出ずみ':v.started?'とちゅう':'まだ始めていません'}・使った時間 ${mmss(v.el||0)}（${t.hw?'めやす':'制限'} ${t.min}分）${t.hw&&v.done?(()=>{const c=reviewCount(t);return '・本人の答え合わせ ○'+c.o+' ×'+c.x+(c.n?' 未'+c.n:'')+(v.feel?'・感想：'+({1:'かんたん',2:'ちょうどいい',3:'むずかしい'})[v.feel]:'')})():''}${T.pend?`・<span style="color:var(--shu)">未採点 ${T.pend}問</span>`:''}</p></div></div>
     ${t.levels?`<div class="tblw"><table><thead><tr><th>レベル</th><th class="num">得点</th><th class="num">満点</th><th>判定</th></tr></thead><tbody>${t.levels.map(([k,name])=>{const L=T.lv[k]||{got:0,max:0},vd=verdict(L.got,L.max);
        return `<tr><td>${esc(name)}</td><td class="num">${L.got}</td><td class="num">${L.max}</td><td>${!v.started?'－':T.pend?'採点がすむと出ます':`<span class="v ${vd[0]}">${vd[1]}</span>`}</td></tr>`}).join('')}</tbody></table></div>
      <p class="sub">満点の8割以上で定着、5〜8割で復習が必要、5割未満はその学年の内容から学び直しです。${T.pend?'未採点の問題を採点すると判定が確定します。':''}</p>`:''}
@@ -764,7 +787,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010131044';
+const BUILD='20261010132711';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
