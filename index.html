@@ -204,6 +204,8 @@ canvas.ink{border-width:2.5px;border-radius:16px}
 .stp{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;font-size:.8rem;font-weight:700;color:var(--soft);text-align:center;line-height:1.3}
 .stp span{width:44px;height:44px;border-radius:50%;border:4px solid var(--line);background:var(--sheet);display:grid;place-items:center;font-weight:900;font-size:1.1rem;color:var(--soft)}
 .stp.on{color:var(--ink)}
+.stp{white-space:nowrap}
+@media (max-width:520px){.stp{font-size:.62rem}.stp span{width:36px;height:36px}.stp img{width:40px;height:40px}}
 .stp.on span{background:var(--ok);border-color:var(--ok);color:#fff}
 .stp.now span{background:var(--sun);border-color:var(--d5);color:var(--ink);box-shadow:0 0 0 5px var(--sun-bg)}
 .stp img{width:52px;height:52px;border-radius:14px;margin-top:-4px;filter:grayscale(1);opacity:.5}
@@ -223,6 +225,11 @@ canvas.ink{border-width:2.5px;border-radius:16px}
 .tip b{font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--ok)}
 .tip.tv{border-color:var(--d5);background:var(--sun-bg)}
 .tip.tv b{color:var(--warn)}
+rt{font-size:.5em;font-family:var(--f-ui);font-weight:500;color:var(--soft);letter-spacing:0}
+.q{line-height:2.3}.note{font-size:1.05rem;line-height:2.3;color:var(--ink);background:var(--paper2);border-radius:14px;padding:10px 14px}
+.whyline{margin:0;font-family:var(--f-q);background:var(--sun-bg);border-radius:12px;padding:6px 12px;line-height:2.2}
+.whyline::before{content:"ポイント：";font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--warn)}
+.sec>h3{line-height:2}
 @media print{.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
 @media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
 @media (prefers-reduced-motion:no-preference){ .opt,.btn,.tab{transition:background .12s,border-color .12s} }
@@ -238,7 +245,7 @@ const yomi=(n,t,a,lv)=>({k:'fill',id:'y'+n,tpl:t+'　{}',b:[{a:[a],w:8}],pts:1,l
 const kaki=(n,t,m,lv)=>({k:'ink',id:'w'+n,q:t,h:460,cls:'s',model:m,pts:1,lv});
 const calc=(n,t,a,lv)=>({k:'fill',id:'c'+n,tpl:t+' {}',b:[{a:[a],t:'num',w:6}],pts:1,lv});
 const mc=(id,q,opts,a,pts,lv)=>({k:'choice',id,q,opts,a,pts,lv});
-const SCR=(id)=>({k:'ink',id,q:'計算スペース（とちゅうの式や筆算を書いてよい）',h:480,pts:0,scratch:true});
+const SCR=(id)=>({k:'ink',id,q:'けいさんスペース（とちゅうの しきや ひっさんを かいてよい）',h:480,pts:0,scratch:true});
 
 const TASKS=[
 {id:'t1k',group:'実力テスト',title:'国語',min:30,pts:50,
@@ -460,9 +467,9 @@ function weekPts(w){let hw=0,full=0;const rows=[];w._d.forEach((id,i)=>{const v=
   const bonus=full===w._d.length&&full>0?5:0;let test=0,neat=0,prov=false;
   if(w._t){const v=S.vals[w._t]||{};if(v.done){const T=total(w._t);if(T.pend||!T.max){test=5;prov=T.pend>0}else{const r=T.got/T.max;test=r>=0.8?15:r>=0.6?10:5}if((S.grades[w._t]||{}).neat===true)neat=5}}
   return {rows,hw,bonus,test,neat,prov,sum:hw+bonus+test+neat}}
-const TIPS={s:[["a", "ボールをけるときは、立ち足をボールの横にふみこもう。つま先は、けりたい方向にむける。"], ["w", "第1回のワールドカップは1930年、南アメリカのウルグアイで開かれた。優勝したのもウルグアイ。"], ["a", "インサイドキックは、足の内がわの広いところでける。パスがまっすぐ行きやすい。"], ["o", "よくねると、体も記おくも強くなる。小学生は9時間から10時間ねるのがよい。"], ["a", "トラップは、ボールが当たるしゅんかんに足を少し引く。ボールが足もとに止まる。"], ["w", "ワールドカップは4年に1回。だから、出られるチャンスは一生に数回しかない。"], ["a", "ドリブルは、ボールを足から遠くにはなさない。小さく、たくさんさわろう。"], ["w", "いちばん多く優勝している国はブラジルで、5回。"], ["a", "ボールをもらう前に、首をふってまわりを見よう。次にすることを先に決められる。"], ["o", "れんしゅうのあとは、早めにおにぎりや牛にゅうをとると、体が回ふくしやすい。"], ["a", "パスを出したら、止まらずに次の場所へ走ろう。「パス・アンド・ゴー」という。"], ["w", "2022年カタール大会の優勝はアルゼンチン。決勝はフランスと3対3になり、PK戦で決まった。"], ["a", "シュートは、強さよりコース。ゴールのすみをねらおう。"], ["o", "水は、のどがかわく前に少しずつのもう。"], ["a", "きき足でないほうの足でも、毎日10回けってみよう。両足が使えると強い。"], ["w", "日本がはじめてワールドカップに出たのは、1998年のフランス大会。"], ["a", "守るときは、ボールとゴールの間に立とう。"], ["w", "2002年のワールドカップは、日本と韓国で開かれた。アジアではじめての大会だった。"], ["a", "守りでは、すぐに足を出さない。あいてがボールを大きく出すまで、ついていこう。"], ["o", "「ハットトリック」は、1人の選手が1試合に3点とること。"], ["a", "リフティングは、足のこうの真ん中で、ひざの高さまで上げる。まず3回をめざそう。"], ["w", "日本は2002年、2010年、2018年、2022年にベスト16まで進んだ。"], ["a", "声を出そう。「フリー！」「うしろ！」のひとことで、なかまがらくになる。"], ["o", "イエローカードを2まいもらうと、レッドカードと同じで、たいじょうになる。"], ["a", "あいてから遠いほうの足でボールをもつと、とられにくい。"], ["w", "2022年大会で、日本は優勝したことのあるドイツとスペインに勝って、グループ1位になった。"], ["a", "あいている場所に走ると、パスをもらいやすい。"], ["w", "ワールドカップでいちばん多く点をとった選手は、ドイツのクローゼ。合わせて16点。"], ["a", "ボールは体の正面でうけよう。足だけをのばすと、ミスがふえる。"], ["o", "PKは、ゴールから11mのところからける。"], ["a", "けったあとは、足をけりたい方向へ大きくふりぬこう。"], ["w", "1つの大会でいちばん多く点をとったのは、フランスのフォンテーヌ。1958年に13点。"], ["a", "1対1は、スピードのへんかでぬく。ゆっくりから、きゅうに速く。"], ["o", "大人用のゴールは、はば7.32m、高さ2.44m。"], ["a", "フェイントは、体を大きく動かすと、あいてがつられやすい。"], ["w", "ブラジルのペレは、選手として3回優勝した。3回優勝した選手は、ペレただ一人。"], ["a", "れんしゅうや試合の前は、水をのんで、じゅんび運動をしよう。"], ["w", "ペレがはじめてワールドカップで点をとったのは17歳のとき。"], ["a", "ミスをしたら、すぐに切りかえて、ボールをとりかえしに行こう。"], ["o", "小学生の試合では、大人より少し小さい4号のボールを使う。"], ["a", "ゴールキーパーは、まず足を動かしてボールの正面に入ってからとる。"], ["w", "2026年大会は、アメリカ・カナダ・メキシコの3つの国で開かれた。出場国は32から48にふえた。"], ["a", "スローインは、両足を地面につけたまま、頭の後ろから両手でなげる。"], ["o", "サッカーは、世界でいちばん多くの人がやっているスポーツといわれている。"], ["a", "シュートは、まずゴールのわくの中に。わくに行けば、何かがおこる。"], ["w", "今の優勝トロフィーは1974年から使われている。金でできていて、高さは約37cm、重さは約6kg。"], ["a", "パスは、なかまの足もとか、走っていく先に出そう。"], ["w", "さいしょのトロフィーは「ジュール・リメ杯」。3回優勝したブラジルが1970年に自分のものにした。"], ["a", "止める・ける・運ぶ。この3つがサッカーのきほん。"], ["o", "勉強もスポーツも同じ。毎日少しずつが、いちばん強くなる。"], ["a", "せまい場所では、ワンタッチでパスすると、とられにくい。"], ["w", "優勝した国は、ユニフォームのむねに星をつける。星の数が優勝の回数。"], ["a", "せめるときは広がり、守るときはちぢまろう。"], ["o", "目ひょうは紙に書いて、見えるところにはろう。毎日思い出せる。"], ["a", "つかれたときこそ、顔を上げよう。まわりが見えると、いいプレーができる。"], ["w", "決勝でハットトリックをした選手は2人だけ。1966年のハーストと、2022年のエムバペ。"], ["a", "うまい選手は、ボールを止める場所がいい。次にけりやすいところに止めよう。"], ["w", "女子のワールドカップは1991年に始まった。日本の「なでしこジャパン」は2011年に優勝した。"], ["a", "じょうずな選手の試合を見て、ボールを持っていないときの動きをまねしよう。"], ["o", "くつのひもをしっかりむすぶと、けがをしにくい。"]],v:[["a", "アンダーハンドパスは、うでをのばして、手首の少し上の平らなところに当てよう。"], ["a", "アンダーは、うでをふらない。ひざののびで、ボールをはこぼう。"], ["w", "バレーボールは1895年、アメリカのウィリアム・モーガンが考えたスポーツ。"], ["a", "オーバーハンドパスは、おでこの前で、両手で三角をつくる。"], ["o", "ストレッチは、おふろ上がりにやると体がのびやすい。"], ["w", "バレーボールは、はじめ「ミントネット」という名前だった。"], ["a", "オーバーは、10本の指のはらでやわらかく。手のひらはボールにつけない。"], ["a", "パスの前に、足を動かしてボールの下にすばやく入ろう。"], ["w", "バレーボールがオリンピックの種目になったのは、1964年の東京大会から。"], ["o", "なわとびは、ジャンプ力をつけるのにぴったりのれんしゅう。"], ["a", "かまえは、ひざをまげてこしを落とす。かかとを少しうかせると、すぐ動ける。"], ["a", "サーブのトスは、まっすぐ、いつも同じ高さに上げよう。"], ["w", "1964年の東京オリンピックで、日本の女子は金メダルをとった。「東洋の魔女」とよばれた。"], ["a", "アンダーサーブは、ボールを持った手の高さから、こぶしの平らなところで打つ。"], ["o", "朝ごはんを食べると、頭も体もよく動く。"], ["w", "日本の男子は、1972年のミュンヘンオリンピックで金メダルをとった。"], ["a", "「はい！」「まかせて！」と声を出すと、おみあいがなくなる。"], ["a", "レシーブは、体の正面でうけよう。"], ["w", "日本の女子は、1976年のモントリオールオリンピックでも金メダルをとった。"], ["o", "「サービスエース」は、サーブだけで点が入ること。"], ["a", "パスは、高くてやわらかいボールを。次の人がとりやすくなる。"], ["a", "スパイクは、高いところで、手のひら全体でボールをたたく。"], ["w", "バレーボールのワールドカップは、男子が1965年、女子が1973年に始まった。"], ["a", "スパイクの助走は3歩。右ききなら、左・右・左のじゅん。"], ["o", "セッターは、だれに打たせるかを決める、チームの司令とう。"], ["w", "バレーボールのワールドカップは、1977年から長いあいだ日本で開かれてきた。"], ["a", "ジャンプは、両うでを後ろから前へ大きくふり上げると、高くとべる。"], ["a", "ブロックは、指を広げて、手をネットの上にまっすぐ出す。"], ["w", "バレーボールの世界選手権は、男子が1949年、女子が1952年に始まった。"], ["o", "試合は、先に3セットとったチームの勝ち。"], ["a", "ネットにさわると反則。ジャンプはまっすぐ上にとぼう。"], ["a", "ボールは3回までで、あいてのコートに返す。"], ["w", "守り専門の「リベロ」は、1998年にルールに入った。1人だけユニフォームの色がちがう。"], ["a", "同じ人が2回つづけてボールにさわることはできない。"], ["o", "背をのばすには、すいみん・食事・運動の3つがそろうことが大事。"], ["w", "1999年から、サーブをしていないチームにも点が入る「ラリーポイント制」になった。"], ["a", "サーブのときは、打つまで線をふまない。"], ["a", "ボールから目をはなさない。打つ人の手を見ると、コースがわかる。"], ["w", "1セットは25点。さいごの第5セットだけは15点で決まる。"], ["o", "よいしせいで字を書くと、字がきれいになる。体のじくも強くなる。"], ["a", "かべにむかって、オーバーパスを毎日20回。形がきれいになる。"], ["a", "つき指をふせぐために、れんしゅうの前に指もよくほぐそう。"], ["w", "ネットの高さは、大人の男子が2m43cm、女子が2m24cm。"], ["a", "ミスした人には「ドンマイ！」。チームのふんいきがよくなる。"], ["o", "きんちょうしたら、ゆっくり長く息をはこう。体の力がぬける。"], ["w", "コートの大きさは、たて18m、よこ9m。ネットで半分に分かれる。"], ["a", "レシーブのあとは、すぐに立って次のじゅんびをしよう。"], ["a", "サーブをする番がまわってきたら、チーム全員が時計回りに1つ動く。"], ["w", "すなの上で2人でやるビーチバレーは、1996年からオリンピックの種目になった。"], ["o", "その日にできたことを1つ日記に書くと、うまくなっているのが見える。"], ["a", "トスは、ネットから少しはなれた高いボールが打ちやすい。"], ["a", "強く打つより、まずあいてのコートの中に入れよう。"], ["w", "日本の女子は、2012年のロンドンオリンピックで銅メダルをとった。28年ぶりのメダルだった。"], ["a", "あいてのいないところをねらって返そう。"], ["o", "なかまのよいプレーをほめるチームは強い。"], ["w", "試合で使うボールの重さは260〜280g。りんご1こぐらいの重さ。"], ["a", "ボールは、うでの面をむけた方向にとぶ。面をねらう方向にむけよう。"], ["a", "じょうずな選手の、ボールが来る前の動きを見てみよう。"], ["w", "日本で広まった9人でやるバレーボールもある。6人制とはルールが少しちがう。"], ["o", "れんしゅうの前に手首と足首を回すと、けがをふせげる。"]]};
+const TIPS={s:[["a", "ボールをけるときは、｜立《た》ち｜足《あし》をボールの｜横《よこ》にふみこもう。つま｜先《さき》は、けりたい｜方向《ほうこう》にむける。"], ["w", "｜第《だい》1｜回《かい》のワールドカップは1930｜年《ねん》、｜南《みなみ》アメリカのウルグアイで｜開《ひら》かれた。｜優勝《ゆうしょう》したのもウルグアイ。"], ["a", "インサイドキックは、｜足《あし》の｜内《うち》がわの｜広《ひろ》いところでける。パスがまっすぐ｜行《い》きやすい。"], ["o", "よくねると、｜体《からだ》も｜記《き》おくも｜強《つよ》くなる。｜小学生《しょうがくせい》は9｜時間《じかん》から10｜時間《じかん》ねるのがよい。"], ["a", "トラップは、ボールが｜当《あ》たるしゅんかんに｜足《あし》を｜少《すこ》し｜引《ひ》く。ボールが｜足《あし》もとに｜止《と》まる。"], ["w", "ワールドカップは4｜年《ねん》に1｜回《かい》。だから、｜出《で》られるチャンスは｜一生《いっしょう》に｜数回《すうかい》しかない。"], ["a", "ドリブルは、ボールを｜足《あし》から｜遠《とお》くにはなさない。｜小《ちい》さく、たくさんさわろう。"], ["w", "いちばん｜多《おお》く｜優勝《ゆうしょう》している｜国《くに》はブラジルで、5｜回《かい》。"], ["a", "ボールをもらう｜前《まえ》に、｜首《くび》をふってまわりを｜見《み》よう。｜次《つぎ》にすることを｜先《さき》に｜決《き》められる。"], ["o", "れんしゅうのあとは、｜早《はや》めにおにぎりや｜牛《ぎゅう》にゅうをとると、｜体《からだ》が｜回《かい》ふくしやすい。"], ["a", "パスを｜出《だ》したら、｜止《と》まらずに｜次《つぎ》の｜場所《ばしょ》へ｜走《はし》ろう。「パス・アンド・ゴー」という。"], ["w", "2022｜年《ねん》カタール｜大会《たいかい》の｜優勝《ゆうしょう》はアルゼンチン。｜決勝《けっしょう》はフランスと3｜対《たい》3になり、PK｜戦《せん》で｜決《き》まった。"], ["a", "シュートは、｜強《つよ》さよりコース。ゴールのすみをねらおう。"], ["o", "｜水《みず》は、のどがかわく｜前《まえ》に｜少《すこ》しずつのもう。"], ["a", "きき｜足《あし》でないほうの｜足《あし》でも、｜毎日《まいにち》10｜回《かい》けってみよう。｜両足《りょうあし》が｜使《つか》えると｜強《つよ》い。"], ["w", "｜日本《にほん》がはじめてワールドカップに｜出《で》たのは、1998｜年《ねん》のフランス｜大会《たいかい》。"], ["a", "｜守《まも》るときは、ボールとゴールの｜間《あいだ》に｜立《た》とう。"], ["w", "2002｜年《ねん》のワールドカップは、｜日本《にほん》と｜韓国《かんこく》で｜開《ひら》かれた。アジアではじめての｜大会《たいかい》だった。"], ["a", "｜守《まも》りでは、すぐに｜足《あし》を｜出《だ》さない。あいてがボールを｜大《おお》きく｜出《だ》すまで、ついていこう。"], ["o", "「ハットトリック」は、｜1人《ひとり》の｜選手《せんしゅ》が1｜試合《しあい》に3｜点《てん》とること。"], ["a", "リフティングは、｜足《あし》のこうの｜真《ま》ん｜中《なか》で、ひざの｜高《たか》さまで｜上《あ》げる。まず3｜回《かい》をめざそう。"], ["w", "｜日本《にほん》は2002｜年《ねん》、2010｜年《ねん》、2018｜年《ねん》、2022｜年《ねん》にベスト16まで｜進《すす》んだ。"], ["a", "｜声《こえ》を｜出《だ》そう。「フリー！」「うしろ！」のひとことで、なかまがらくになる。"], ["o", "イエローカードを2まいもらうと、レッドカードと｜同《おな》じで、たいじょうになる。"], ["a", "あいてから｜遠《とお》いほうの｜足《あし》でボールをもつと、とられにくい。"], ["w", "2022｜年《ねん》｜大会《たいかい》で、｜日本《にほん》は｜優勝《ゆうしょう》したことのあるドイツとスペインに｜勝《か》って、グループ1｜位《い》になった。"], ["a", "あいている｜場所《ばしょ》に｜走《はし》ると、パスをもらいやすい。"], ["w", "ワールドカップでいちばん｜多《おお》く｜点《てん》をとった｜選手《せんしゅ》は、ドイツのクローゼ。｜合《あ》わせて16｜点《てん》。"], ["a", "ボールは｜体《からだ》の｜正面《しょうめん》でうけよう。｜足《あし》だけをのばすと、ミスがふえる。"], ["o", "PKは、ゴールから11mのところからける。"], ["a", "けったあとは、｜足《あし》をけりたい｜方向《ほうこう》へ｜大《おお》きくふりぬこう。"], ["w", "1つの｜大会《たいかい》でいちばん｜多《おお》く｜点《てん》をとったのは、フランスのフォンテーヌ。1958｜年《ねん》に13｜点《てん》。"], ["a", "1｜対《たい》1は、スピードのへんかでぬく。ゆっくりから、きゅうに｜速《はや》く。"], ["o", "｜大人用《おとなよう》のゴールは、はば7.32m、｜高《たか》さ2.44m。"], ["a", "フェイントは、｜体《からだ》を｜大《おお》きく｜動《うご》かすと、あいてがつられやすい。"], ["w", "ブラジルのペレは、｜選手《せんしゅ》として3｜回《かい》｜優勝《ゆうしょう》した。3｜回《かい》｜優勝《ゆうしょう》した｜選手《せんしゅ》は、ペレただ｜一人《ひとり》。"], ["a", "れんしゅうや｜試合《しあい》の｜前《まえ》は、｜水《みず》をのんで、じゅんび｜運動《うんどう》をしよう。"], ["w", "ペレがはじめてワールドカップで｜点《てん》をとったのは17｜歳《さい》のとき。"], ["a", "ミスをしたら、すぐに｜切《き》りかえて、ボールをとりかえしに｜行《い》こう。"], ["o", "｜小学生《しょうがくせい》の｜試合《しあい》では、｜大人《おとな》より｜少《すこ》し｜小《ちい》さい4｜号《ごう》のボールを｜使《つか》う。"], ["a", "ゴールキーパーは、まず｜足《あし》を｜動《うご》かしてボールの｜正面《しょうめん》に｜入《はい》ってからとる。"], ["w", "2026｜年《ねん》｜大会《たいかい》は、アメリカ・カナダ・メキシコの3つの｜国《くに》で｜開《ひら》かれた。｜出場《しゅつじょう》｜国《くに》は32から48にふえた。"], ["a", "スローインは、｜両足《りょうあし》を｜地面《じめん》につけたまま、｜頭《あたま》の｜後《うし》ろから｜両手《りょうて》でなげる。"], ["o", "サッカーは、｜世界《せかい》でいちばん｜多《おお》くの｜人《ひと》がやっているスポーツといわれている。"], ["a", "シュートは、まずゴールのわくの｜中《なか》に。わくに｜行《い》けば、｜何《なに》かがおこる。"], ["w", "｜今《いま》の｜優勝《ゆうしょう》トロフィーは1974｜年《ねん》から｜使《つか》われている。｜金《きん》でできていて、｜高《たか》さは｜約《やく》37cm、｜重《おも》さは｜約《やく》6kg。"], ["a", "パスは、なかまの｜足《あし》もとか、｜走《はし》っていく｜先《さき》に｜出《だ》そう。"], ["w", "さいしょのトロフィーは「ジュール・リメ｜杯《はい》」。3｜回《かい》｜優勝《ゆうしょう》したブラジルが1970｜年《ねん》に｜自分《じぶん》のものにした。"], ["a", "｜止《と》める・ける・｜運《はこ》ぶ。この3つがサッカーのきほん。"], ["o", "｜勉強《べんきょう》もスポーツも｜同《おな》じ。｜毎日《まいにち》｜少《すこ》しずつが、いちばん｜強《つよ》くなる。"], ["a", "せまい｜場所《ばしょ》では、ワンタッチでパスすると、とられにくい。"], ["w", "｜優勝《ゆうしょう》した｜国《くに》は、ユニフォームのむねに｜星《ほし》をつける。｜星《ほし》の｜数《かず》が｜優勝《ゆうしょう》の｜回数《かいすう》。"], ["a", "せめるときは｜広《ひろ》がり、｜守《まも》るときはちぢまろう。"], ["o", "｜目《もく》ひょうは｜紙《かみ》に｜書《か》いて、｜見《み》えるところにはろう。｜毎日《まいにち》｜思《おも》い｜出《だ》せる。"], ["a", "つかれたときこそ、｜顔《かお》を｜上《あ》げよう。まわりが｜見《み》えると、いいプレーができる。"], ["w", "｜決勝《けっしょう》でハットトリックをした｜選手《せんしゅ》は｜2人《ふたり》だけ。1966｜年《ねん》のハーストと、2022｜年《ねん》のエムバペ。"], ["a", "うまい｜選手《せんしゅ》は、ボールを｜止《と》める｜場所《ばしょ》がいい。｜次《つぎ》にけりやすいところに｜止《と》めよう。"], ["w", "｜女子《じょし》のワールドカップは1991｜年《ねん》に｜始《はじ》まった。｜日本《にほん》の「なでしこジャパン」は2011｜年《ねん》に｜優勝《ゆうしょう》した。"], ["a", "じょうずな｜選手《せんしゅ》の｜試合《しあい》を｜見《み》て、ボールを｜持《も》っていないときの｜動《うご》きをまねしよう。"], ["o", "くつのひもをしっかりむすぶと、けがをしにくい。"]],v:[["a", "アンダーハンドパスは、うでをのばして、｜手首《てくび》の｜少《すこ》し｜上《うえ》の｜平《たい》らなところに｜当《あ》てよう。"], ["a", "アンダーは、うでをふらない。ひざののびで、ボールをはこぼう。"], ["w", "バレーボールは1895｜年《ねん》、アメリカのウィリアム・モーガンが｜考《かんが》えたスポーツ。"], ["a", "オーバーハンドパスは、おでこの｜前《まえ》で、｜両手《りょうて》で｜三角《さんかく》をつくる。"], ["o", "ストレッチは、おふろ｜上《あ》がりにやると｜体《からだ》がのびやすい。"], ["w", "バレーボールは、はじめ「ミントネット」という｜名前《なまえ》だった。"], ["a", "オーバーは、｜10本《じっぽん》の｜指《ゆび》のはらでやわらかく。｜手《て》のひらはボールにつけない。"], ["a", "パスの｜前《まえ》に、｜足《あし》を｜動《うご》かしてボールの｜下《した》にすばやく｜入《はい》ろう。"], ["w", "バレーボールがオリンピックの｜種目《しゅもく》になったのは、1964｜年《ねん》の｜東京大会《とうきょうたいかい》から。"], ["o", "なわとびは、ジャンプ｜力《ちから》をつけるのにぴったりのれんしゅう。"], ["a", "かまえは、ひざをまげてこしを｜落《お》とす。かかとを｜少《すこ》しうかせると、すぐ｜動《うご》ける。"], ["a", "サーブのトスは、まっすぐ、いつも｜同《おな》じ｜高《たか》さに｜上《あ》げよう。"], ["w", "1964｜年《ねん》の｜東京《とうきょう》オリンピックで、｜日本《にほん》の｜女子《じょし》は｜金《きん》メダルをとった。「｜東洋《とうよう》の｜魔女《まじょ》」とよばれた。"], ["a", "アンダーサーブは、ボールを｜持《も》った｜手《て》の｜高《たか》さから、こぶしの｜平《たい》らなところで｜打《う》つ。"], ["o", "｜朝《あさ》ごはんを｜食《た》べると、｜頭《あたま》も｜体《からだ》もよく｜動《うご》く。"], ["w", "｜日本《にほん》の｜男子《だんし》は、1972｜年《ねん》のミュンヘンオリンピックで｜金《きん》メダルをとった。"], ["a", "「はい！」「まかせて！」と｜声《こえ》を｜出《だ》すと、おみあいがなくなる。"], ["a", "レシーブは、｜体《からだ》の｜正面《しょうめん》でうけよう。"], ["w", "｜日本《にほん》の｜女子《じょし》は、1976｜年《ねん》のモントリオールオリンピックでも｜金《きん》メダルをとった。"], ["o", "「サービスエース」は、サーブだけで｜点《てん》が｜入《はい》ること。"], ["a", "パスは、｜高《たか》くてやわらかいボールを。｜次《つぎ》の｜人《ひと》がとりやすくなる。"], ["a", "スパイクは、｜高《たか》いところで、｜手《て》のひら｜全体《ぜんたい》でボールをたたく。"], ["w", "バレーボールのワールドカップは、｜男子《だんし》が1965｜年《ねん》、｜女子《じょし》が1973｜年《ねん》に｜始《はじ》まった。"], ["a", "スパイクの｜助走《じょそう》は3｜歩《ほ》。｜右《みぎ》ききなら、｜左《ひだり》・｜右《みぎ》・｜左《ひだり》のじゅん。"], ["o", "セッターは、だれに｜打《う》たせるかを｜決《き》める、チームの｜司令《しれい》とう。"], ["w", "バレーボールのワールドカップは、1977｜年《ねん》から｜長《なが》いあいだ｜日本《にほん》で｜開《ひら》かれてきた。"], ["a", "ジャンプは、｜両《りょう》うでを｜後《うし》ろから｜前《まえ》へ｜大《おお》きくふり｜上《あ》げると、｜高《たか》くとべる。"], ["a", "ブロックは、｜指《ゆび》を｜広《ひろ》げて、｜手《て》をネットの｜上《うえ》にまっすぐ｜出《だ》す。"], ["w", "バレーボールの｜世界選手権《せかいせんしゅけん》は、｜男子《だんし》が1949｜年《ねん》、｜女子《じょし》が1952｜年《ねん》に｜始《はじ》まった。"], ["o", "｜試合《しあい》は、｜先《さき》に3セットとったチームの｜勝《か》ち。"], ["a", "ネットにさわると｜反則《はんそく》。ジャンプはまっすぐ｜上《うえ》にとぼう。"], ["a", "ボールは3｜回《かい》までで、あいてのコートに｜返《かえ》す。"], ["w", "｜守《まも》り｜専門《せんもん》の「リベロ」は、1998｜年《ねん》にルールに｜入《はい》った。｜1人《ひとり》だけユニフォームの｜色《いろ》がちがう。"], ["a", "｜同《おな》じ｜人《ひと》が2｜回《かい》つづけてボールにさわることはできない。"], ["o", "｜背《せ》をのばすには、すいみん・｜食事《しょくじ》・｜運動《うんどう》の3つがそろうことが｜大事《だいじ》。"], ["w", "1999｜年《ねん》から、サーブをしていないチームにも｜点《てん》が｜入《はい》る「ラリーポイント｜制《せい》」になった。"], ["a", "サーブのときは、｜打《う》つまで｜線《せん》をふまない。"], ["a", "ボールから｜目《め》をはなさない。｜打《う》つ｜人《ひと》の｜手《て》を｜見《み》ると、コースがわかる。"], ["w", "1セットは25｜点《てん》。さいごの｜第《だい》5セットだけは15｜点《てん》で｜決《き》まる。"], ["o", "よいしせいで｜字《じ》を｜書《か》くと、｜字《じ》がきれいになる。｜体《からだ》のじくも｜強《つよ》くなる。"], ["a", "かべにむかって、オーバーパスを｜毎日《まいにち》20｜回《かい》。｜形《かたち》がきれいになる。"], ["a", "つき｜指《ゆび》をふせぐために、れんしゅうの｜前《まえ》に｜指《ゆび》もよくほぐそう。"], ["w", "ネットの｜高《たか》さは、｜大人《おとな》の｜男子《だんし》が2m43cm、｜女子《じょし》が2m24cm。"], ["a", "ミスした｜人《ひと》には「ドンマイ！」。チームのふんいきがよくなる。"], ["o", "きんちょうしたら、ゆっくり｜長《なが》く｜息《いき》をはこう。｜体《からだ》の｜力《ちから》がぬける。"], ["w", "コートの｜大《おお》きさは、たて18m、よこ9m。ネットで｜半分《はんぶん》に｜分《わ》かれる。"], ["a", "レシーブのあとは、すぐに｜立《た》って｜次《つぎ》のじゅんびをしよう。"], ["a", "サーブをする｜番《ばん》がまわってきたら、チーム｜全員《ぜんいん》が｜時計《とけい》｜回《まわ》りに1つ｜動《うご》く。"], ["w", "すなの｜上《うえ》で｜2人《ふたり》でやるビーチバレーは、1996｜年《ねん》からオリンピックの｜種目《しゅもく》になった。"], ["o", "その｜日《ひ》にできたことを1つ｜日記《にっき》に｜書《か》くと、うまくなっているのが｜見《み》える。"], ["a", "トスは、ネットから｜少《すこ》しはなれた｜高《たか》いボールが｜打《う》ちやすい。"], ["a", "｜強《つよ》く｜打《う》つより、まずあいてのコートの｜中《なか》に｜入《い》れよう。"], ["w", "｜日本《にほん》の｜女子《じょし》は、2012｜年《ねん》のロンドンオリンピックで｜銅《どう》メダルをとった。28｜年《ねん》ぶりのメダルだった。"], ["a", "あいてのいないところをねらって｜返《かえ》そう。"], ["o", "なかまのよいプレーをほめるチームは｜強《つよ》い。"], ["w", "｜試合《しあい》で｜使《つか》うボールの｜重《おも》さは260〜280g。りんご1こぐらいの｜重《おも》さ。"], ["a", "ボールは、うでの｜面《めん》をむけた｜方向《ほうこう》にとぶ。｜面《めん》をねらう｜方向《ほうこう》にむけよう。"], ["a", "じょうずな｜選手《せんしゅ》の、ボールが｜来《く》る｜前《まえ》の｜動《うご》きを｜見《み》てみよう。"], ["w", "｜日本《にほん》で｜広《ひろ》まった9｜人《にん》でやるバレーボールもある。6｜人《にん》｜制《せい》とはルールが｜少《すこ》しちがう。"], ["o", "れんしゅうの｜前《まえ》に｜手首《てくび》と｜足首《あしくび》を｜回《まわ》すと、けがをふせげる。"]]};
 const TIPLAB={s:{a:'サッカーのコツ',w:'ワールドカップの豆知識',o:'スポーツの話'},v:{a:'バレーボールのコツ',w:'バレーボール世界大会の豆知識',o:'体と心の話'}};
-const tipsHTML=n=>['s','v'].map(k=>{const x=TIPS[k][n%TIPS[k].length];return `<div class="tip t${k}"><b>${TIPLAB[k][x[0]]}</b><span>${esc(x[1])}</span></div>`}).join('');
+const tipsHTML=n=>['s','v'].map(k=>{const x=TIPS[k][n%TIPS[k].length];return `<div class="tip t${k}"><b>${TIPLAB[k][x[0]]}</b><span>${rich(x[1])}</span></div>`}).join('');
 const STAGES=['リーグ突破','ベスト16','ベスト8','ベスト4','決勝へ'];
 function cup(w){const n=w._d.length,done=w._d.filter(id=>(S.vals[id]||{}).done).length;let res=null;
   if(w._t&&(S.vals[w._t]||{}).done){const T=total(w._t);if(T.pend||!T.max)res='wt';else{const r=T.got/T.max;res=(r>=0.8&&done===n)?'win':r>=0.6?'s2':'s3'}}
@@ -479,11 +486,12 @@ function total(t){const r={got:0,max:0,pend:0,lv:{}};items(TASK[t]).forEach(it=>
 
 /* ---------- helpers ---------- */
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const rich=s=>esc(s).replace(/【(.+?)】/g,'<span class="tg">$1</span>').replace(/\n/g,'<br>');
+const rich=s=>esc(s).replace(/｜([^《｜]+)《([^》]+)》/g,'<ruby>$1<rt>$2</rt></ruby>').replace(/【(.+?)】/g,'<span class="tg">$1</span>').replace(/\n/g,'<br>');
 const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 const app=document.getElementById('app'),modal=document.getElementById('modal');
 function ask(html,yes,no){return new Promise(res=>{
   modal.innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true">${html}<div class="row end">${no?`<button class="btn ghost" id="mno">${esc(no)}</button>`:''}<button class="btn" id="myes">${esc(yes)}</button></div></div></div>`;
+  if(S.screen!=='parent')furi(modal);
   const done=v=>{modal.innerHTML='';res(v)};
   modal.querySelector('#myes').onclick=()=>done(true);const n=modal.querySelector('#mno');if(n)n.onclick=()=>done(false)})}
 
@@ -527,10 +535,19 @@ function play(box){const ps=[...box.querySelectorAll('path')];if(!ps.length)retu
   ps.forEach(p=>{const L=p.getTotalLength();p.style.transition='none';p.style.strokeDasharray=L;p.style.strokeDashoffset=L});let i=0;
   (function next(){if(box._tk!==tk||i>=ps.length)return;const p=ps[i++],ms=Math.max(350,p.getTotalLength()*9);p.getBoundingClientRect();p.style.transition='stroke-dashoffset '+ms+'ms linear';p.style.strokeDashoffset=0;setTimeout(next,ms+250)})()}
 
+/* ---------- furigana for interface words ---------- */
+const FURI={'学習':'がくしゅう','宿題':'しゅくだい','準優勝':'じゅんゆうしょう','優勝':'ゆうしょう','決勝':'けっしょう','突破':'とっぱ','月曜日':'げつようび','火曜日':'かようび','水曜日':'すいようび','木曜日':'もくようび','金曜日':'きんようび','土曜':'どよう','週':'しゅう','第':'だい','漢字':'かんじ','国語':'こくご','算数':'さんすう','保存':'ほぞん','採点':'さいてん','道':'みち','回':'かい','点':'てん','時間':'じかん','問題':'もんだい','毎日':'まいにち','前':'まえ','土曜日':'どようび'};
+const FRE=new RegExp(Object.keys(FURI).sort((a,b)=>b.length-a.length).join('|'),'g');
+function furi(root){if(!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentElement;return(!p||p.closest('ruby,.tg,.kjm,.kji,.sec,.noruby,.en,.ansline,.whyline,.tips,textarea,script,style'))?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}}),ns=[];
+  while(w.nextNode())ns.push(w.currentNode);
+  ns.forEach(n=>{const t=n.nodeValue;FRE.lastIndex=0;if(!FRE.test(t))return;const f=document.createDocumentFragment();let last=0;
+    t.replace(FRE,(m,i)=>{if(i>last)f.append(t.slice(last,i));const r=document.createElement('ruby');r.append(m);const rt=document.createElement('rt');rt.textContent=FURI[m];r.append(rt);f.append(r);last=i+m.length;return m});
+    if(last<t.length)f.append(t.slice(last));n.replaceWith(f)})}
+
 /* ---------- screens ---------- */
 function go(screen,task,pv){if(S.running)stopClock();S.screen=screen;S.task=task||null;S.preview=!!pv;LS.set('gk1.route',{task:screen==='task'&&!pv?task:null});render();window.scrollTo(0,0);
   if(screen!=='task')pull().then(ch=>{if(ch&&S.screen===screen)render()})}
-function render(){inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();status()}
+function render(){inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();if(S.screen!=='parent')furi(app);status()}
 
 function renderHome(){
   const groups=[...new Set(TASKS.slice(BASE).map(t=>t.group))],today=ymd(Date.now());
@@ -542,14 +559,14 @@ function renderHome(){
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
      ${w?cupHTML(w):''}
      ${P?`<p class="ptline"><span>この週</span><b>${P.sum}</b><span class="sub">/ 50ポイント（宿題 ${P.hw}・5日そろい ${P.bonus}・テスト ${P.test}${P.prov?'（採点まち）':''}・ていねい ${P.neat}）</span></p>`:''}
-     ${TASKS.some(t=>t.group===g&&t.open&&t.open>today)?'<p class="sub">宿題は前の週の土曜日に1週間分がひらきます。土曜テストは、その土曜日にひらきます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&t.open&&t.open>today)?'<p class="sub noruby">宿題は前の週の土曜日に1週間分がひらきます。土曜テストは、その土曜日にひらきます。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
      const dn=t.hw?('月火水木金'.indexOf(t.title[0])+1):t.test?6:(TASKS.indexOf(t)%6+1),dot=`<span class="dot d${dn}">${esc(t.test?'土':t.title[0])}</span>`;
      if(t.open&&t.open>today)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.open)} にひらきます</span></div></div>`;
      const st=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
      return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}">${dot}<span class="cb"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></span></button>`}).join('')}</div></div>`}).join('')}
-   ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
-   <div class="row"><button class="btn ghost sm" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
+   ${token?'':'<p class="banner noruby">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
+   <div class="row"><button class="btn ghost sm noruby" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
   </div>`;
   app.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>go('task',b.dataset.open));
@@ -566,14 +583,14 @@ function itemHTML(t,it,n,ro){
   const tid=t.id,v=V(tid).v,dis=ro?'disabled':'';
   if(it.sub)return `<p class="q" style="font-weight:600">${rich(it.sub)}</p>`;
   const num=n?`<span class="n">${n}</span>`:'';
-  const A=(ro&&t.hw)?x=>x?`<p class="ansline">こたえ：${esc(x)}</p>`:'':()=>'';
+  const A=(ro&&t.hw)?x=>(x?`<p class="ansline">こたえ：${esc(x)}</p>`:'')+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):()=>'';
   if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
     return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
-      <div class="kji"><div><b>音</b>${esc(it.on||'－')}　<b>訓</b>${esc(it.kun||'－')}　<b>画数</b>${esc(it.st||'')}画</div><div><b>ことば</b>${(it.ex||[]).map(e=>esc(e[0])+'（'+esc(e[1])+'）').join('　')}</div>
-      ${it.tip?`<div class="ansline" style="font-size:.95rem">${esc(it.tip)}</div>`:''}<button class="btn ghost sm" data-play="1">書き順を見る</button></div></div>
-      <div class="kjb">${sq('t','なぞる',1)}${sq('a','見て書く')}${sq('b','もう一度')}</div>
-      ${it.rq?`<p class="q">読みをひらがなで書く：<span class="tg">${esc(it.rq[0])}</span><span class="ib" data-ink="${it.id}.y" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.rq[1])}`:''}
-      ${it.wq?`<p class="q">漢字で書く：<span class="tg">${esc(it.wq[0])}</span><span class="ib" data-ink="${it.id}.w" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.wq[1])}`:''}</div>`}
+      <div class="kji"><div><b>音</b>${esc(it.on||'－')}　<b>訓</b>${esc(it.kun||'－')}　<b>かくすう</b>${esc(it.st||'')}かく</div><div><b>ことば</b>${(it.ex||[]).map(e=>esc(e[0])+'（'+esc(e[1])+'）').join('　')}</div>
+      ${it.tip?`<div class="ansline" style="font-size:.95rem">${rich(it.tip)}</div>`:''}<button class="btn ghost sm" data-play="1">かきじゅんを 見る</button></div></div>
+      <div class="kjb">${sq('t','なぞる',1)}${sq('a','見てかく')}${sq('b','もういちど')}</div>
+      ${it.rq?`<p class="q">よみを ひらがなで かく：<span class="tg">${esc(it.rq[0])}</span><span class="ib" data-ink="${it.id}.y" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.rq[1])}`:''}
+      ${it.wq?`<p class="q">かんじで かく：<span class="tg">${esc(it.wq[0])}</span><span class="ib" data-ink="${it.id}.w" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.wq[1])}`:''}</div>`}
   if(it.k==='fill'){let i=0;
     const body=rich(it.tpl).split('{}').map((seg,j,arr)=>{if(j===arr.length-1)return seg;const b=it.b[i],k=it.id+'.'+i;i++;
       return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
@@ -602,10 +619,10 @@ function renderTask(){
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
   <div class="wrap${t.en?' en':''}">
    ${ro&&!pv&&t.hw&&typeof v.tip==='number'?`<div class="tips">${tipsHTML(v.tip)}</div>`:''}
-   ${pv?'<p class="banner">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?'きょうの分はおわりです。おつかれさまでした。赤い字のこたえとくらべてみましょう。':'このテストは出しました。おつかれさまでした。'}</p>`:''}
+   ${pv?'<p class="banner noruby">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?'きょうの分はおわりです。おつかれさまでした。赤い字のこたえとくらべてみましょう。':'このテストは出しました。おつかれさまでした。'}</p>`:''}
    <p class="banner red" id="timeup" hidden>時間です。ここまでにして、下の「おわる」をおしましょう。</p>
-   ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${esc(s.h)}</h3>${s.note?`<p class="note">${esc(s.note)}</p>`:''}
-     ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`:''}
+   ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${rich(s.h)}</h3>${s.note?`<p class="note">${rich(s.note)}</p>`:''}
+     ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${rich(p)}</p>`).join('')}</div>`:''}
      <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro)).join('')}</div></section>`}).join('')}
    ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
   </div>`;
@@ -640,7 +657,7 @@ function verdict(got,max){const r=max?got/max:0;return r>=0.8?['a','定着']:r>=
 function renderParent(){
   const t=TASK[S.ptab]||TASKS[TASKS.length>BASE?BASE:0],v=V(t.id),g=G(t.id),T=total(t.id);S.ptab=t.id;
   const rows=[];
-  t.sections.forEach(s=>{let n=0;const sh=s.h.split('　')[0];rows.push(`<h3 style="margin-top:14px">${esc(s.h)}</h3>`);
+  t.sections.forEach(s=>{let n=0;const sh=s.h.split('　')[0];rows.push(`<h3 style="margin-top:14px">${rich(s.h)}</h3>`);
    s.items.forEach(it=>{if(!it.k)return;const lab=it.scratch?'':(/^問/.test(it.q||'')?'':(++n)+'. ');
     if(it.k==='fill'){const qt=(it.q?it.q+' ／ ':'')+it.tpl.replace(/\{\}/g,'□');
       rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(qt)}</div><div class="ga">
@@ -720,7 +737,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010094015';
+const BUILD='20261010094904';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
