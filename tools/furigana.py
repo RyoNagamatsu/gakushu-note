@@ -17,6 +17,9 @@ FIX = {
  '2｜回《まわ》つ': '2｜回《かい》つ', 'その｜日《にち》': 'その｜日《ひ》', '10｜本《ほん》の｜指': '｜10本《じっぽん》の｜指',
  '｜目《め》ひょう': '｜目《もく》ひょう',
 }
+# Kanji taught in grade 1: words written only with these get no furigana.
+G1 = set('一右雨円王音下火花貝学気九休玉金空月犬見五口校左三山子四糸字耳七車手十出女小上森人水正生青夕石赤千川先早草足村大男竹中虫町天田土二日入年白八百文木本名目立力林六')
+KNOWN = set(G1)   # add more characters here as the child learns to read them
 def _tok(o, h):
     segs = re.findall(KJ + r'+|[^一-龥々]+', o)
     kana = lambda sg: ''.join(chr(ord(c) - 0x60) if 'ァ' <= c <= 'ヶ' else c for c in sg)
@@ -30,6 +33,13 @@ def _tok(o, h):
     return ''.join(out)
 def ann(text):
     if not text or not re.search(KJ, text): return text
+    keep = []                                   # furigana written by hand stays as written
+    def _hold(m): keep.append(m.group(0)); return '\x00%d\x00' % (len(keep) - 1)
+    text = re.sub(r'｜[^《｜]*《[^》]*》', _hold, text)
+    s = _ann(text)
+    s = re.sub(r'｜([^《｜]+)《[^》]+》', lambda m: m.group(1) if all(c in KNOWN or not re.match(KJ, c) for c in m.group(1)) else m.group(0), s)
+    return re.sub(r'\x00(\d+)\x00', lambda m: keep[int(m.group(1))], s)
+def _ann(text):
     out = []
     for p in re.split(r'(【[^】]*】|\{\}|｜[^《]*《[^》]*》|\n)', text):
         if not p: continue
