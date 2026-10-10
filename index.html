@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="学習ノート">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#dff3ff">
+<meta name="theme-color" content="#c9edc4">
 <meta name="robots" content="noindex,nofollow">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-180.png">
@@ -20,7 +20,7 @@
 <style>
 /* Layout: one answer sheet per screen, a single wide column sized for an iPad held upright; a slim sticky bar carries time and save state. */
 :root{
-  --paper:#dff3ff; --paper2:#f3fbff; --sheet:#ffffff; --ink:#1d3557; --soft:#5b7a99; --line:#b9e2f8;
+  --paper:#c9edc4; --paper2:#d9f4d3; --tint:#f1fbee; --sheet:#ffffff; --ink:#1d3557; --soft:#5b7a99; --line:#b9e2f8;
   --ai:#0a84c9; --ai-d:#066aa3; --ai-bg:#dcf2ff; --shu:#e8453c; --ok:#12996a; --ok-bg:#d6f7e9; --warn:#c77700; --sun:#ffd43b; --sun-bg:#fff4c2; --hl:#fff27a;
   --d1:#ffb703; --d2:#ff6b6b; --d3:#1ea7e8; --d4:#2ec4a0; --d5:#ff922b; --d6:#9775fa;
   --f-q:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
@@ -35,6 +35,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .wrap{max-width:860px;margin:0 auto;padding-inline:20px;padding-block:20px 80px;display:flex;flex-direction:column;gap:22px}
 h1,h2,h3{margin:0;text-wrap:balance;line-height:1.35}
 h1{font-size:1.7rem}
+.wrap>.sub,.wrap>div>.sub,.grp>.sub,.hero .sub{color:#3d5a4a}
 .sub{color:var(--soft);font-size:.95rem;margin:0}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:1px solid var(--line)}
 .bar-in{max-width:860px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -151,7 +152,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .chk input{width:22px;height:22px}
 
 /* ---- pop theme ---- */
-body{background:linear-gradient(180deg,var(--paper),var(--paper2) 60%);background-attachment:fixed;min-height:100vh}
+body{background:repeating-linear-gradient(180deg,var(--paper) 0 90px,var(--paper2) 90px 180px);background-attachment:fixed;min-height:100vh}
 h1{font-weight:900;font-size:2rem;letter-spacing:.02em}
 .hero{display:flex;align-items:center;gap:14px}
 .hero img{width:64px;height:64px;border-radius:18px;box-shadow:0 5px 0 var(--line);flex:none}
@@ -205,6 +206,7 @@ canvas.ink{border-width:2.5px;border-radius:16px}
 .stp span{width:44px;height:44px;border-radius:50%;border:4px solid var(--line);background:var(--sheet);display:grid;place-items:center;font-weight:900;font-size:1.1rem;color:var(--soft)}
 .stp.on{color:var(--ink)}
 .stp{white-space:nowrap}
+.stp em{font-style:normal;display:block}
 @media (max-width:520px){.stp{font-size:.62rem}.stp span{width:36px;height:36px}.stp img{width:40px;height:40px}}
 .stp.on span{background:var(--ok);border-color:var(--ok);color:#fff}
 .stp.now span{background:var(--sun);border-color:var(--d5);color:var(--ink);box-shadow:0 0 0 5px var(--sun-bg)}
@@ -226,7 +228,7 @@ canvas.ink{border-width:2.5px;border-radius:16px}
 .tip.tv{border-color:var(--d5);background:var(--sun-bg)}
 .tip.tv b{color:var(--warn)}
 rt{font-size:.5em;font-family:var(--f-ui);font-weight:500;color:var(--soft);letter-spacing:0}
-.q{line-height:2.3}.note{font-size:1.05rem;line-height:2.3;color:var(--ink);background:var(--paper2);border-radius:14px;padding:10px 14px}
+.q{line-height:2.3}.note{font-size:1.05rem;line-height:2.3;color:var(--ink);background:var(--tint);border-radius:14px;padding:10px 14px}
 .whyline{margin:0;font-family:var(--f-q);background:var(--sun-bg);border-radius:12px;padding:6px 12px;line-height:2.2}
 .whyline::before{content:"ポイント：";font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--warn)}
 .sec>h3{line-height:2}
@@ -497,8 +499,8 @@ function cupHTML(w){const c=cup(w),left=c.n-c.done;
   const R={win:['','優勝！','ワールドカップをかちとった！毎日の宿題もテストも、さいごまでやりきりました。'],s2:[' s2','準優勝！',c.done<c.n?'テストはよくできました。宿題を5日そろえると、優勝にとどきます。':'あと少しで優勝。来週こそカップをとろう。'],s3:[' s3','ベスト4','今週はここまで。まちがえたところを直して、来週またちょうせんしよう。'],wt:[' wt','決勝が終わりました','けっかは、採点のあとに出ます。']}[c.res];
   return `<div class="cup"><p class="cup-h"><span>ワールドカップへの道</span><b>${c.res?esc(R[1]):'いま：'+esc(c.stage)}</b>${c.res?'':`<span class="sub">${left>0?'あと'+left+'日で決勝！':'土曜テストが決勝です！'}</span>`}</p>
     ${c.res?`<div class="champ${R[0]}">${conf}<img src="icon-512.png" alt=""><div><b>${esc(R[1])}</b><span>${esc(R[2])}</span></div></div>`:''}
-    <div class="road"><i style="width:${Math.min(c.done+(c.res?1:0),5)/5*83.34}%"></i>${STAGES.map((nm,i)=>`<div class="stp${i<c.done?' on':''}${i===c.done&&!c.res?' now':''}"><span>${i<c.done?'✓':i+1}</span>${esc(nm)}</div>`).join('')}
-      <div class="stp${c.res==='win'?' on':''}"><img src="icon-180.png" alt="">優勝</div></div></div>`}
+    <div class="road"><i style="width:${Math.min(c.done+(c.res?1:0),5)/5*83.34}%"></i>${STAGES.map((nm,i)=>`<div class="stp${i<c.done?' on':''}${i===c.done&&!c.res?' now':''}"><span>${i<c.done?'✓':i+1}</span><em>${esc(nm)}</em></div>`).join('')}
+      <div class="stp${c.res==='win'?' on':''}"><img src="icon-180.png" alt=""><em>優勝</em></div></div></div>`}
 function total(t){const r={got:0,max:0,pend:0,lv:{}};items(TASK[t]).forEach(it=>{const s=score(t,it);r.got+=s.got;r.max+=s.max;r.pend+=s.pend;
   if(it.lv){const L=r.lv[it.lv]||(r.lv[it.lv]={got:0,max:0});L.got+=s.got;L.max+=s.max}});return r}
 
@@ -756,7 +758,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010125553';
+const BUILD='20261010130827';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
