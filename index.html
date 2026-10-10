@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="学習ノート">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#eef1f0">
+<meta name="robots" content="noindex,nofollow">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>学習ノート</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one answer sheet per screen, a single wide column sized for an iPad held upright; a slim sticky bar carries time and save state. */
+:root{
+  --paper:#eef1f0; --sheet:#ffffff; --ink:#1b2742; --soft:#5a6480; --line:#cdd4df;
+  --ai:#2b4c9b; --ai-bg:#e6ecfa; --shu:#cf3f28; --ok:#2a7a53; --warn:#a86a10; --hl:#fff0a6;
+  --f-q:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-ui:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-en:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#10141d; --sheet:#1a2131; --ink:#e7eaf3; --soft:#9aa4bb; --line:#353f57;
+  --ai:#93adf5; --ai-bg:#232e4a; --shu:#ff8a70; --ok:#6fd0a0; --warn:#e8b65e; --hl:#514a1c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --paper:#10141d; --sheet:#1a2131; --ink:#e7eaf3; --soft:#9aa4bb; --line:#353f57;
+  --ai:#93adf5; --ai-bg:#232e4a; --shu:#ff8a70; --ok:#6fd0a0; --warn:#e8b65e; --hl:#514a1c; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--ai);outline-offset:2px}
+.wrap{max-width:860px;margin:0 auto;padding-inline:20px;padding-block:20px 80px;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.35}
+h1{font-size:1.7rem}
+.sub{color:var(--soft);font-size:.95rem;margin:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:1px solid var(--line)}
+.bar-in{max-width:860px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.bar-t{font-weight:700;flex:1;min-width:0}
+.clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:1.25rem;padding:2px 12px;border:2px solid var(--ink);border-radius:999px}
+.clock.over{color:var(--shu);border-color:var(--shu)}
+.save{font-size:.8rem;color:var(--soft)}
+.save.bad{color:var(--warn)}
+.btn{border:2px solid var(--ai);background:var(--ai);color:var(--sheet);border-radius:12px;padding:10px 20px;font-weight:700;min-height:48px}
+.btn.ghost{background:transparent;color:var(--ai)}
+.btn.sm{padding:4px 12px;min-height:38px;font-size:.9rem;border-radius:10px}
+.btn.red{border-color:var(--shu);background:transparent;color:var(--shu)}
+.grp{display:flex;flex-direction:column;gap:12px}
+.grp h2{font-size:1.1rem;color:var(--soft)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:120px}
+.card b{font-size:1.35rem}
+.card small{color:var(--soft)}
+.st{align-self:flex-start;margin-top:auto;font-size:.85rem;font-weight:700;border-radius:999px;padding:1px 12px;border:1.5px solid var(--line);color:var(--soft)}
+.st.go{border-color:var(--ai);color:var(--ai)}
+.st.done{border-color:var(--ok);color:var(--ok)}
+.sec{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.sec>h3{font-size:1.15rem;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.note{margin:0;color:var(--soft);font-size:.95rem}
+.passage{font-family:var(--f-q);font-size:1.15rem;line-height:2;border-left:4px solid var(--line);padding-left:14px;display:flex;flex-direction:column;gap:.6em}
+.passage p{margin:0}
+.en .passage,.en .q,.en .opt{font-family:var(--f-en)}
+.en .passage{line-height:1.75;font-size:1.1rem}
+.item{display:flex;flex-direction:column;gap:8px}
+.item+.item{border-top:1px dashed var(--line);padding-top:16px}
+.q{font-family:var(--f-q);font-size:1.25rem;line-height:2;margin:0}
+.q .n{font-family:var(--f-ui);font-weight:700;color:var(--ai);margin-right:.5em;font-size:1rem}
+.tg{background:var(--hl);padding:0 .15em;border-bottom:2px solid var(--ink);font-weight:600}
+.blank{font-family:var(--f-q);font-size:1.2rem;border:0;border-bottom:2px solid var(--ink);background:var(--ai-bg);border-radius:6px 6px 0 0;padding:2px 8px;margin:0 4px;min-height:44px;text-align:center;max-width:100%}
+.blank:disabled,.long:disabled{opacity:1;background:transparent;-webkit-text-fill-color:var(--ink)}
+.long{font-family:var(--f-q);font-size:1.15rem;line-height:1.9;width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--sheet);padding:10px 12px;resize:vertical}
+.en .long{font-family:var(--f-en)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.opts.wide{grid-template-columns:1fr}
+.opt{font-family:var(--f-q);text-align:left;border:1.5px solid var(--line);background:var(--sheet);border-radius:10px;padding:8px 12px;min-height:48px;display:flex;gap:10px;align-items:baseline}
+.opt i{font-style:normal;font-family:var(--f-ui);font-weight:700;color:var(--soft)}
+.opt.on{border-color:var(--ai);background:var(--ai-bg);box-shadow:inset 0 0 0 1px var(--ai)}
+.opt.on i{color:var(--ai)}
+.opt:disabled{cursor:default}
+.inkbox{display:flex;flex-direction:column;gap:4px;max-width:100%}
+.inkbox.s{width:300px}
+.item>.inkbox:not(.s){margin-right:48px}
+canvas.ink.ro{touch-action:auto}
+canvas.ink{display:block;width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--sheet);touch-action:none;user-select:none;-webkit-user-select:none}
+canvas.ink.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0 63px,var(--line) 63px 64px)}
+.inktools{display:flex;gap:8px;justify-content:flex-end}
+.ib{display:inline-flex;flex-direction:column;gap:2px;vertical-align:middle;margin:4px 6px;max-width:100%}
+.ib canvas.ink{border-color:var(--ink);border-width:0 0 2px;border-radius:6px 6px 0 0;background:var(--ai-bg)}
+.ib .btn{align-self:flex-end;min-height:32px;padding:0 10px;font-size:.8rem;border-width:1.5px}
+.mk.o.sel{background:var(--shu);color:var(--sheet)}
+.mk.x.sel{background:var(--soft);border-color:var(--soft);color:var(--sheet)}
+.kj{gap:12px}
+.kjh{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.kjm{width:140px;height:140px;border:2px solid var(--ink);border-radius:10px;position:relative;display:grid;place-items:center;flex:none;background:var(--sheet)}
+.kjf{font-family:var(--f-q);font-size:96px;line-height:1}
+.kji{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 220px;font-family:var(--f-q);font-size:1.1rem}
+.kji b{font-family:var(--f-ui);font-size:.8rem;color:var(--sheet);background:var(--soft);border-radius:4px;padding:0 6px;margin-right:4px}
+.kji .btn{align-self:flex-start}
+.kjb{display:flex;gap:14px;flex-wrap:wrap}
+.inkbox.sq{width:150px}
+.g .inkbox.sq{width:96px}
+.inkbox.sq>.btn{align-self:flex-end;min-height:32px;padding:0 10px;font-size:.8rem;border-width:1.5px}
+.sqw{position:relative;width:100%;aspect-ratio:1;border:1.5px solid var(--line);border-radius:10px;background:var(--sheet);overflow:hidden}
+.sqw canvas.ink{position:relative;border:0;background:transparent;height:100%}
+.kv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.kv path{fill:none;stroke:var(--ink);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.kv.bg path{stroke:var(--line);stroke-width:5.5}
+.kv line{stroke:var(--line);stroke-width:.6;stroke-dasharray:2 2}
+.kv text{font-size:7.5px;fill:var(--shu);font-family:var(--f-ui);font-weight:700}
+.ansline{color:var(--shu);font-family:var(--f-q);margin:0}
+.ptline{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;margin:0}
+.ptline b{font-size:1.5rem;font-variant-numeric:tabular-nums}
+.card.lock{opacity:.55;border-style:dashed}
+.card.today{border-color:var(--ai);box-shadow:inset 0 0 0 1.5px var(--ai)}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.kgrid .item+.item{border-top:0;padding-top:0}
+.wc{font-size:.85rem;color:var(--soft);text-align:right}
+.banner{background:var(--ai-bg);border-radius:12px;padding:12px 16px;margin:0}
+.banner.red{background:transparent;border:2px solid var(--shu);color:var(--shu);font-weight:700}
+.ov{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);display:flex;align-items:center;justify-content:center;padding:20px}
+.dlg{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:480px;width:100%;display:flex;flex-direction:column;gap:14px}
+.dlg ul{margin:0;padding-left:1.2em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.end{justify-content:flex-end}
+/* parent */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:1.5px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 18px;font-weight:700;min-height:44px}
+.tab.on{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.tblw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.big{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.v{font-weight:700}.v.a{color:var(--ok)}.v.b{color:var(--warn)}.v.c{color:var(--shu)}
+.g{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;padding:12px 0;border-top:1px solid var(--line)}
+.g .gq{font-family:var(--f-q);grid-column:1/-1;color:var(--soft);font-size:.95rem}
+.g .ga{min-width:0;display:flex;flex-direction:column;gap:4px}
+.g .ans{font-family:var(--f-q);font-size:1.1rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.g .model{color:var(--shu);font-family:var(--f-q);font-size:.95rem}
+.g .gm{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+.mk{font-weight:700;font-size:1.3rem;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:transparent;line-height:1}
+.mk.o{color:var(--shu);border-color:var(--shu)}
+.mk.x{color:var(--soft)}
+.pt{min-width:44px;height:44px;border-radius:10px;border:1.5px solid var(--line);background:transparent;font-weight:700}
+.pt.on{background:var(--shu);border-color:var(--shu);color:var(--sheet)}
+.g .inkbox{width:min(100%,420px)}
+.g .inkbox.s{width:220px}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:.9rem;color:var(--soft)}
+.chk input{width:22px;height:22px}
+@media print{.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
+@media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
+@media (prefers-reduced-motion:no-preference){ .opt,.btn,.tab{transition:background .12s,border-color .12s} }
+</style>
+
+<div id="app"></div>
+<div id="modal"></div>
+
+<script>
+"use strict";
+/* ---------- content ---------- */
+const yomi=(n,t,a,lv)=>({k:'fill',id:'y'+n,tpl:t+'　{}',b:[{a:[a],w:8}],pts:1,lv});
+const kaki=(n,t,m,lv)=>({k:'ink',id:'w'+n,q:t,h:460,cls:'s',model:m,pts:1,lv});
+const calc=(n,t,a,lv)=>({k:'fill',id:'c'+n,tpl:t+' {}',b:[{a:[a],t:'num',w:6}],pts:1,lv});
+const mc=(id,q,opts,a,pts,lv)=>({k:'choice',id,q,opts,a,pts,lv});
+const SCR=(id)=>({k:'ink',id,q:'計算スペース（とちゅうの式や筆算を書いてよい）',h:480,pts:0,scratch:true});
+
+const TASKS=[
+{id:'t1k',group:'実力テスト',title:'国語',min:30,pts:50,
+ levels:[['L1','小1〜2'],['L3','小3'],['L4','小4']],
+ sections:[
+ {h:'一　色のついた漢字の読みを、ひらがなで書きなさい。（各1点）',items:[
+  yomi(1,'【森】の中を歩く。','もり','L1'),yomi(2,'朝【早】く起きる。','はや','L1'),yomi(3,'【親友】と公園で遊ぶ。','しんゆう','L1'),
+  yomi(4,'【晴】れた日に外へ出る。','は','L1'),yomi(5,'【算数】の時間が始まる。','さんすう','L1'),yomi(6,'【病院】へ行く。','びょういん','L3'),
+  yomi(7,'荷物を【運】ぶ。','はこ','L3'),yomi(8,'【世界】の国々を調べる。','せかい','L3'),yomi(9,'【必】ず手をあらう。','かなら','L4'),yomi(10,'【機械】を動かす。','きかい','L4')]},
+ {h:'二　色のついたひらがなを、漢字で書きなさい。（各1点）',note:'わくの中に、ペンか指で書きます。',grid:true,items:[
+  kaki(1,'【みぎ】手をあげる。','右','L1'),kaki(2,'【がっこう】へ行く。','学校','L1'),kaki(3,'【あたら】しいくつをはく。','新','L1'),
+  kaki(4,'【ちか】くの店で買う。','近','L1'),kaki(5,'【ひる】ごはんを食べる。','昼','L1'),kaki(6,'海で【およ】ぐ。','泳','L3'),
+  kaki(7,'【かぞく】で出かける。','家族','L3'),kaki(8,'毎日【べんきょう】する。','勉強','L3'),kaki(9,'【やさい】を食べる。','野菜','L4'),kaki(10,'【きせつ】がかわる。','季節','L4')]},
+ {h:'三　ことばの問題（各1点）',items:[
+  {sub:'問1　□に合うひらがなを1字ずつ書きなさい。'},
+  {k:'fill',id:'p1a',tpl:'わたし{}毎朝、学校{}行きます。',b:[{a:['は'],w:2},{a:['へ','に'],w:2}],pts:1,each:true,lv:'L1'},
+  {k:'fill',id:'p1b',tpl:'きのう、公園{}友だち{}サッカー{}しました。',b:[{a:['で'],w:2},{a:['と'],w:2},{a:['を'],w:2}],pts:1,each:true,lv:'L1'},
+  {sub:'問2　反対の意味のことばを書きなさい。'},
+  {k:'fill',id:'p2a',tpl:'高い　⇔　{}',b:[{a:['低い','ひくい','安い','やすい'],w:8}],pts:1,lv:'L3'},
+  {k:'fill',id:'p2b',tpl:'始まる　⇔　{}',b:[{a:['終わる','おわる','終る'],w:8}],pts:1,lv:'L3'},
+  {sub:'問3　カタカナに直して、わくの中に書きなさい。'},
+  {k:'ink',id:'p3a',q:'てれび',h:330,cls:'s',model:'テレビ',pts:1,lv:'L1'},
+  {k:'ink',id:'p3b',q:'ちょこれーと',h:330,cls:'s',model:'チョコレート',pts:1,lv:'L1'},
+  {sub:'問4　（　）に合うことばをえらびなさい。'},
+  {k:'choice',id:'p4a',q:'雨がふってきた。（　　）、かさをさした。',opts:['だから','しかし','または'],lab:'アイウ',a:'ア',pts:1,lv:'L4'},
+  {k:'choice',id:'p4b',q:'一生けんめい練習した。（　　）、試合には負けてしまった。',opts:['だから','しかし','または'],lab:'アイウ',a:'イ',pts:1,lv:'L4'},
+  {sub:'問5　次の文の主語と述語を書きなさい。'},
+  {k:'fill',id:'p5',tpl:'「白い犬が、公園を元気に走る。」\n主語{}　述語{}',b:[{a:['犬が','いぬが'],w:8},{a:['走る','はしる'],w:8}],pts:1,each:true,lv:'L3'},
+  {sub:'問6　数え方をひらがなで書きなさい。'},
+  {k:'fill',id:'p6',tpl:'本が三{}　　犬が二{}　　えんぴつが五{}',b:[{a:['さつ','冊'],w:4},{a:['ひき','匹'],w:4},{a:['ほん','本'],w:4}],pts:1,each:true,lv:'L1'},
+  {sub:'問7　ことわざについて答えなさい。'},
+  {k:'fill',id:'p7a',tpl:'□に入る動物を書きなさい。　「{}も木から落ちる」',b:[{a:['さる','サル','猿'],w:6}],pts:1,lv:'L4'},
+  {k:'choice',id:'p7b',q:'このことわざの意味をえらびなさい。',opts:['高いところはあぶない','名人でも失敗することがある','動物は木登りがうまい'],lab:'アイウ',a:'イ',pts:1,lv:'L4'}]},
+ {h:'四　次の文章を読んで、問いに答えなさい。',passage:[
+  '日曜日の朝、ケンはおじいさんといっしょに、近くの川へつりに行きました。ケンにとって、つりは初めてです。',
+  'おじいさんは、えさのつけ方やさおの持ち方を、ていねいに教えてくれました。しかし、一時間たっても魚は一ぴきもつれません。となりにいた男の子は、もう三びきもつっています。ケンはだんだんつまらなくなって、「もう帰りたい。」と言いました。',
+  'するとおじいさんは、わらって言いました。「つりはな、魚を待つ時間を楽しむものなんだよ。ほら、川の音を聞いてごらん。」',
+  'ケンは目をとじました。水の流れる音、鳥の声、風が木の葉をゆらす音が聞こえてきます。それは、家の中では聞いたことのない音でした。',
+  'そのときです。さおの先が、ぐっと引かれました。ケンはあわててさおを上げました。つれたのは、手のひらほどの小さな魚でした。それでもケンは、今までで一番うれしい気持ちになりました。'],
+  items:[
+  {k:'long',id:'r1',q:'問1　ケンは、だれと、どこへ行きましたか。（2点）',rows:3,model:'おじいさんと、近くの川へ行った。',rubric:'「だれと」「どこへ」各1点',pts:2,lv:'L3'},
+  {k:'long',id:'r2',q:'問2　ケンが「もう帰りたい。」と言ったのは、なぜですか。（3点）',rows:3,model:'一時間たっても魚がつれず、つまらなくなったから。',rubric:'「つれない」2点、「つまらない」または「となりの子はつれている」1点',pts:3,lv:'L3'},
+  {k:'long',id:'r3',q:'問3　「それは、家の中では聞いたことのない音でした。」の「それ」は、何を指していますか。（2点）',rows:3,model:'水の流れる音、鳥の声、風が木の葉をゆらす音。',rubric:'3つのうち2つ以上で2点、1つで1点',pts:2,lv:'L3'},
+  {k:'choice',id:'r4',q:'問4　おじいさんがケンに伝えたかったことをえらびなさい。（2点）',opts:['魚をたくさんつるには練習がいる','待っている時間にも楽しさがある','川の近くはしずかにしたほうがよい'],lab:'アイウ',a:'イ',pts:2,lv:'L4'},
+  {k:'long',id:'r5',q:'問5　小さな魚だったのに、ケンが一番うれしい気持ちになったのは、なぜだと思いますか。自分の考えを書きなさい。（3点）',rows:3,model:'（例）長い時間待って、初めて自分でつった魚だから。',rubric:'本文に合う理由が書けていれば3点。理由はあるが文になっていない場合は1〜2点',pts:3,lv:'L4'}]}
+ ]},
+{id:'t1s',group:'実力テスト',title:'算数',min:30,pts:50,
+ levels:[['L1','小1〜2'],['L3','小3'],['L4','小4'],['LX','受験算数の入口']],
+ sections:[
+ {h:'一　計算をしなさい。（各1点）',items:[
+  calc(1,'8 ＋ 7 ＝','15','L1'),calc(2,'15 － 9 ＝','6','L1'),calc(3,'46 ＋ 38 ＝','84','L1'),calc(4,'7 × 8 ＝','56','L1'),
+  calc(5,'503 － 267 ＝','236','L3'),calc(6,'36 × 24 ＝','864','L3'),calc(7,'84 ÷ 7 ＝','12','L4'),calc(8,'2.4 ＋ 3.8 ＝','6.2','L3'),
+  calc(9,'936 ÷ 24 ＝','39','L4'),calc(10,'12 ＋ 6 ×（9 － 4）＝','42','L4'),calc(11,'3/7 ＋ 2/7 ＝','5/7','L3'),
+  calc(12,'1と2/5 － 4/5 ＝（「1と2/5」は帯分数です）','3/5','L4'),SCR('sc1')]},
+ {h:'二　□にあてはまる数を書きなさい。（各2点）',items:[
+  {k:'fill',id:'u1',tpl:'1 m 35 cm ＝{}cm',b:[{a:['135'],t:'num',w:6}],pts:2,lv:'L1'},
+  {k:'fill',id:'u2',tpl:'2 km 300 m ＝{}m',b:[{a:['2300'],t:'num',w:6}],pts:2,lv:'L3'},
+  {k:'fill',id:'u3',tpl:'3.5 L ＝{}dL',b:[{a:['35'],t:'num',w:6}],pts:2,lv:'L1'},
+  {k:'fill',id:'u4',tpl:'午前9時40分から午前11時15分までは、{}時間{}分',b:[{a:['1'],t:'num',w:3},{a:['35'],t:'num',w:3}],pts:2,lv:'L3'},
+  {k:'fill',id:'u5',tpl:'「三百五万二千」を数字で書くと{}',b:[{a:['3052000'],t:'num',w:10}],pts:2,lv:'L3'},
+  {k:'fill',id:'u6',tpl:'4728 を四捨五入して、百の位までのがい数にすると{}',b:[{a:['4700'],t:'num',w:8}],pts:2,lv:'L4'},SCR('sc2')]},
+ {h:'三　図形の問題に答えなさい。（各2点）',items:[
+  {k:'fill',id:'z1',tpl:'半径が 5 cm の円の直径は何 cm ですか。　{}cm',b:[{a:['10'],t:'num',w:6}],pts:2,lv:'L3'},
+  {k:'fill',id:'z2',tpl:'たて 6 cm、横 9 cm の長方形のまわりの長さは何 cm ですか。　{}cm',b:[{a:['30'],t:'num',w:6}],pts:2,lv:'L3'},
+  {k:'fill',id:'z3',tpl:'たて 6 cm、横 9 cm の長方形の面積は何 cm² ですか。　{}cm²',b:[{a:['54'],t:'num',w:6}],pts:2,lv:'L4'},
+  {k:'fill',id:'z4',tpl:'時計の長いはりは、15分間に何度回りますか。　{}度',b:[{a:['90'],t:'num',w:6}],pts:2,lv:'L4'},SCR('sc3')]},
+ {h:'四　文章題に答えなさい。式も書きなさい。（各3点：式1点、答え2点）',items:[
+  {k:'fill',id:'m1',q:'りんごが、1ふくろに 6 こずつ入っています。4 ふくろでは、りんごは全部で何こですか。',tpl:'答え{}こ',b:[{a:['24'],t:'num',w:6}],pts:2,work:{label:'式',model:'6 × 4 ＝ 24',pts:1},lv:'L1'},
+  {k:'fill',id:'m2',q:'250 円のノートを 1 さつと、1 本 80 円のえんぴつを 3 本買いました。500 円を出すと、おつりは何円ですか。',tpl:'答え{}円',b:[{a:['10'],t:'num',w:6}],pts:2,work:{label:'式',model:'250 ＋ 80 × 3 ＝ 490、500 － 490 ＝ 10',pts:1},lv:'L3'},
+  {k:'fill',id:'m3',q:'あめが 50 こあります。1 人に 6 こずつ配ると、何人に配れて、何こあまりますか。',tpl:'答え{}人に配れて、{}こあまる',b:[{a:['8'],t:'num',w:4},{a:['2'],t:'num',w:4}],pts:2,work:{label:'式',model:'50 ÷ 6 ＝ 8 あまり 2',pts:1},lv:'L3'},
+  {k:'fill',id:'m4',q:'長さ 7.2 m のリボンを、6 人で同じ長さに分けます。1 人分は何 m ですか。',tpl:'答え{}m',b:[{a:['1.2'],t:'num',w:6}],pts:2,work:{label:'式',model:'7.2 ÷ 6 ＝ 1.2',pts:1},lv:'L4'},
+  {k:'fill',id:'m5',q:'兄と弟のカードは、合わせて 50 まいです。兄は弟より 8 まい多く持っています。兄と弟は、それぞれ何まい持っていますか。',tpl:'答え　兄{}まい、弟{}まい',b:[{a:['29'],t:'num',w:4},{a:['21'],t:'num',w:4}],pts:2,work:{label:'考え方',model:'（50 － 8）÷ 2 ＝ 21、21 ＋ 8 ＝ 29',pts:1},lv:'LX'},
+  {k:'fill',id:'m6',q:'長さ 60 m の道のかたがわに、はしからはしまで 5 m おきに木を植えます。木は全部で何本いりますか。',tpl:'答え{}本',b:[{a:['13'],t:'num',w:6}],pts:2,work:{label:'考え方',model:'60 ÷ 5 ＝ 12、12 ＋ 1 ＝ 13（両はしに植えるので間の数＋1）',pts:1},lv:'LX'}]}
+ ]},
+{id:'t1e',group:'実力テスト',title:'英語 English',min:35,pts:50,en:true,
+ levels:[['E1','基礎（Grade 3〜4の目安）'],['E2','標準（Grade 5の目安）'],['E3','発展（Grade 6〜7の目安）']],
+ sections:[
+ {h:'Part 1　Vocabulary (1 point each)',note:'Choose the best word to complete each sentence.',items:[
+  mc('v1','The soup is too ______ to eat right now. Let it cool down.',['loud','tall','hot','fast'],'C',1,'E1'),
+  mc('v2','She was ______ because she lost her favorite toy.',['proud','upset','brave','polite'],'B',1,'E1'),
+  mc('v3','We need to ______ the plants every day, or they will die.',['paint','borrow','count','water'],'D',1,'E1'),
+  mc('v4','The museum has a large ______ of old coins.',['collection','direction','permission','condition'],'A',1,'E2'),
+  mc('v5','He ______ to tell his mother about the broken window, but in the end he told the truth.',['celebrated','recovered','hesitated','volunteered'],'C',1,'E2'),
+  mc('v6','The bridge was closed ______ because of the storm. It opened again two days later.',['generously','temporarily','curiously','politely'],'B',1,'E2'),
+  mc('v7','Scientists are trying to ______ why the bees are disappearing.',['decorate','deliver','defend','determine'],'D',1,'E3'),
+  mc('v8','Her explanation was so ______ that everyone understood it immediately.',['vague','tedious','lucid','hostile'],'C',1,'E3'),
+  mc('v9','The new rule was ______; some people loved it, and others were strongly against it.',['controversial','invisible','fragile','ancient'],'A',1,'E3'),
+  mc('v10','Despite many failures, she ______ and finally completed the experiment.',['surrendered','persevered','exaggerated','vanished'],'B',1,'E3')]},
+ {h:'Part 2　Grammar (1 point each)',note:'Choose the best answer.',items:[
+  mc('g1','My brother ______ soccer every Saturday.',['play','plays','playing','are playing'],'B',1,'E1'),
+  mc('g2','There ______ three books on the table yesterday.',['is','are','was','were'],'D',1,'E1'),
+  mc('g3','This is the ______ movie I have ever seen.',['good','better','best','most good'],'C',1,'E1'),
+  mc('g4','We ______ dinner when the phone rang.',['have','are having','were having','has had'],'C',1,'E2'),
+  mc('g5','I have lived here ______ 2020.',['for','since','from','during'],'B',1,'E2'),
+  mc('g6','If it ______ tomorrow, we will stay home.',['rains','will rain','rained','raining'],'A',1,'E2'),
+  mc('g7','The letter ______ by my grandmother last week.',['wrote','was written','has writing','is write'],'B',1,'E2'),
+  mc('g8','She asked me where ______.',['did I live','I lived','do I live','lived I'],'B',1,'E3'),
+  mc('g9','If I ______ you, I would apologize.',['am','was being','were','will be'],'C',1,'E3'),
+  mc('g10','The boy ______ bike was stolen went to the police.',['who','whom','whose','which'],'C',1,'E3')]},
+ {h:'Part 3　Reading A (2 points each)',passage:[
+  "Mia's class has a small garden behind the school. Every Monday, the students check the plants. Last week, Mia noticed that the tomato leaves had tiny holes in them. She looked closely and found small green caterpillars under the leaves.",
+  'Some students wanted to spray the plants, but their teacher, Mr. Tan, had another idea. "Let\'s move the caterpillars to the wild bushes near the fence," he said. The students carefully carried them over, one by one.',
+  'Two weeks later, the tomato plants were healthy again. And near the fence, the class saw something new: three white butterflies.'],items:[
+  mc('a1','What problem did Mia notice?',['The tomatoes were too small.','The leaves had holes in them.','The garden had no water.','The fence was broken.'],'B',2,'E1'),
+  mc('a2','What did Mr. Tan suggest?',['Spraying the plants','Picking the tomatoes early','Moving the caterpillars','Building a new fence'],'C',2,'E1'),
+  mc('a3','The word "carefully" shows that the students were ______.',['gentle','angry','bored','in a hurry'],'A',2,'E1'),
+  mc('a4','Where did the butterflies most likely come from?',['Another school','The tomato plants','A shop','The caterpillars the class moved'],'D',2,'E1')]},
+ {h:'Part 4　Reading B (Questions 1–4: 4 points each; Question 5: 6 points)',passage:[
+  'When a new park or campus opens, the designers usually decide where the paths should go. But people do not always follow the plan. If a paved path takes the long way around a lawn, many walkers simply cut across the grass. Over time, their footsteps wear a narrow line of bare earth. These unofficial routes are often called "desire paths."',
+  'Some people see desire paths as a problem. They damage the grass, and they can make a carefully designed space look messy. Managers sometimes respond with fences or signs. However, these barriers rarely work for long; people tend to find another shortcut.',
+  'Other designers take the opposite view. To them, a desire path is useful information. It shows, more honestly than any survey, where people actually want to go. A few planners have even waited before building any paths at all. They let people walk freely for several months and then paved the routes that had appeared naturally.',
+  'The idea reaches beyond parks. Whenever people keep ignoring a rule or a system, it may be worth asking whether the people are wrong, or whether the design is.'],items:[
+  mc('b1','What is a "desire path"?',['A paved path planned by designers','A fence that protects the grass','A route worn into the ground by people taking shortcuts','A survey about where people walk'],'C',4,'E3'),
+  mc('b2','According to the passage, why do fences and signs often fail?',['People find a different shortcut.','They are too expensive.','They damage the grass.','Designers remove them.'],'A',4,'E3'),
+  mc('b3','Why do some designers think desire paths are "useful information"?',['They show where grass grows best.','They prove that surveys are accurate.','They make parks look more natural.','They show where people really want to walk.'],'D',4,'E3'),
+  mc('b4','What is the main idea of the last paragraph?',['Rules should never be broken.','When people often ignore a system, the system itself may need to change.','Parks need more paths than other places.','People who ignore rules should be punished.'],'B',4,'E3'),
+  {k:'long',id:'b5',q:'Think of a rule or system at your school or home that people often ignore. Describe it and explain how you would redesign it. Write 3–5 sentences.',rows:10,en:true,model:'',rubric:'ルールや仕組みの具体例が書けている 2点、改善案とその理由がある 2点、英文が正確で意味が通る 2点',pts:6,lv:'E3'}]}
+ ]},
+{id:'t1w',group:'実力テスト',title:'作文',min:20,pts:0,
+ sections:[
+ {h:'一　日本語（10分）',items:[
+  {k:'ink',id:'j1',q:'「今、いちばんすきなこと」について、5〜8文で書きなさい。何がすきか、なぜすきか、これからどうしたいかを入れましょう。',h:1500,cls:'tall',ruled:true,pts:0,
+   view:'量：5文以上書けたか ／ 構成：「何が・なぜ・これから」がそろっているか ／ 正確さ：助詞、文末（です・ます）、漢字の使用'}]},
+ {h:'二　English (10 minutes)',en:true,items:[
+  {k:'long',id:'e1',q:'Write about a time you learned something new. What happened, and what did you learn from it? Write about 80–120 words.',rows:17,en:true,pts:0,
+   view:'量：80語以上書けたか ／ 構成：出来事と学んだことの両方があるか ／ 正確さ：時制、文のつながり、語彙の幅'}]}
+ ]}
+];
+const TASK={},WEEKS=[],BASE=TASKS.length;
+function setWeeks(list){TASKS.length=BASE;WEEKS.length=0;
+  (list||[]).filter(w=>w&&w.id&&Array.isArray(w.days)).sort((a,b)=>a.id<b.id?1:-1).forEach(w=>{w=JSON.parse(JSON.stringify(w));WEEKS.push(w);w._d=[];
+    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:d.wd+'曜日',date:d.d,min:d.min||30,pts:0,hw:true,sections:d.sections||[]})});
+    if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,group:w.label,title:'土曜テスト',date:w.test.d,min:w.test.min||30,pts:0,test:true,sections:w.test.sections||[]})}});
+  for(const k in TASK)delete TASK[k];TASKS.forEach(t=>TASK[t.id]=t);
+  TASKS.slice(BASE).forEach(t=>{if(t.test)t.pts=items(t).reduce((n,it)=>n+(it.k==='fill'?(it.each?it.pts*it.b.length:it.pts)+(it.work?it.work.pts:0):(it.pts||0)),0)})}
+const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
+
+/* ---------- state ---------- */
+const S={vals:{},grades:{},ink:{},screen:'home',task:null,ptab:TASKS[0].id,running:false,parentOK:false};
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+(function loadLocal(){
+  setWeeks(LS.get('gk1.weeks'));
+  const d=LS.get('gk1');if(d){S.vals=d.vals||{};S.grades=d.grades||{}}
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('gk1.ink.')){const v=LS.get(k);if(v)S.ink[k.slice(8)]=v}}}catch(e){}
+  const r=LS.get('gk1.route');if(r&&r.task&&TASK[r.task]){S.screen='task';S.task=r.task}
+})();
+const V=t=>S.vals[t]||(S.vals[t]={v:{},el:0,started:false,done:false,t:0});
+const G=t=>S.grades[t]||(S.grades[t]={m:{},o:{},read:{},t:0});
+const ikey=(t,id)=>t+'__'+id;
+const saveLocal=()=>LS.set('gk1',{vals:S.vals,grades:S.grades});
+
+/* ---------- sync (private GitHub repository) ---------- */
+const REPO='https://api.github.com/repos/RyoNagamatsu/gakushu-data',GH=REPO+'/contents/';
+let token=LS.get('gk1.token')||'',saveErr=false,syncing=false,syncTm=null,hashDone=false;
+const dirty=LS.get('gk1.dirty')||{},shas=LS.get('gk1.shas')||{};
+const hdr=x=>Object.assign({Authorization:'Bearer '+token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},x||{});
+const b64=s=>{const u=new TextEncoder().encode(s);let o='';for(let i=0;i<u.length;i+=0x8000)o+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(o)};
+function mark(path,now){dirty[path]=1;LS.set('gk1.dirty',dirty);clearTimeout(syncTm);syncTm=setTimeout(sync,now?200:6000);status()}
+function bodyFor(path){const p=path.split('/'),tid=p[1].replace(/\.json$/,'');
+  if(p[0]==='grades')return S.grades[tid]||null;
+  const v=S.vals[tid];if(!v)return null;const ink={};let t=v.t||0;
+  Object.keys(S.ink).forEach(k=>{if(k.startsWith(tid+'__')){ink[k]=S.ink[k];t=Math.max(t,S.ink[k].t||0)}});return {t,vals:v,ink}}
+async function put(path){const data=bodyFor(path);if(!data)return true;
+  const send=()=>fetch(GH+path,{method:'PUT',headers:hdr(),body:JSON.stringify({message:'save '+path,content:b64(JSON.stringify(data)),sha:shas[path]||undefined})});
+  let r=await send();
+  if(r.status===409||r.status===422){const g=await fetch(GH+path,{headers:hdr(),cache:'no-store'});if(g.ok){shas[path]=(await g.json()).sha;r=await send()}}
+  if(!r.ok)return false;shas[path]=(await r.json()).content.sha;LS.set('gk1.shas',shas);return true}
+async function sync(){if(!token||syncing)return;syncing=true;status();
+  try{for(const path of Object.keys(dirty)){delete dirty[path];let ok=false;try{ok=await put(path)}catch(e){}if(!ok){dirty[path]=1;saveErr=true;break}saveErr=false}}
+  finally{syncing=false;LS.set('gk1.dirty',dirty);status()}
+  if(Object.keys(dirty).length){clearTimeout(syncTm);syncTm=setTimeout(sync,saveErr?30000:500)}}
+function flushAll(){clearTimeout(syncTm);sync()}
+function touchVals(t){const v=V(t);v.t=Date.now();saveLocal();mark('data/'+t+'.json')}
+function touchGrades(t){const g=G(t);g.t=Date.now();saveLocal();mark('grades/'+t+'.json')}
+function touchInk(key){const r=S.ink[key];r.t=Date.now();LS.set('gk1.ink.'+key,r);mark('data/'+key.split('__')[0]+'.json')}
+function status(){const el=document.getElementById('save');if(!el)return;
+  el.className='save'+(token&&saveErr?' bad':'');
+  el.textContent=!token?'このiPadに保存ずみ':saveErr?'送信できていません':(syncing||Object.keys(dirty).length)?'保存中…':'保存ずみ'}
+async function loadWeeks(){try{const r=await fetch('weeks/index.json',{cache:'no-store'});if(!r.ok)return false;const ids=(await r.json()).slice(-8);
+    const list=(await Promise.all(ids.map(id=>fetch('weeks/'+id+'.json',{cache:'no-store'}).then(x=>x.ok?x.json():null).catch(()=>null)))).filter(Boolean);
+    if(list.length&&JSON.stringify(list)!==JSON.stringify(LS.get('gk1.weeks')||[])){LS.set('gk1.weeks',list);if(!S.running){setWeeks(list);return true}}}catch(e){}
+  return false}
+async function pull(){let ch=await loadWeeks();if(!token)return ch;
+  try{for(const dir of ['data','grades']){const r=await fetch(GH+dir,{headers:hdr(),cache:'no-store'});if(r.status===404)continue;if(!r.ok){saveErr=true;continue}
+      for(const f of await r.json()){const path=dir+'/'+f.name,tid=f.name.replace(/\.json$/,'');if(shas[path]===f.sha||dirty[path])continue;
+        const g=await fetch(GH+path,{headers:hdr({Accept:'application/vnd.github.raw+json'}),cache:'no-store'});if(!g.ok)continue;const x=await g.json();shas[path]=f.sha;
+        if(dir==='grades'){if((x.t||0)>((S.grades[tid]||{}).t||0)){x.m=x.m||{};x.o=x.o||{};x.read=x.read||{};S.grades[tid]=x;ch=true}}
+        else{if(x.vals&&(x.vals.t||0)>((S.vals[tid]||{}).t||0)){x.vals.v=x.vals.v||{};S.vals[tid]=x.vals;ch=true}
+          Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]={s:i.s,t:i.t};LS.set('gk1.ink.'+k,S.ink[k]);ch=true}})}}}
+    LS.set('gk1.shas',shas);if(ch)saveLocal()}catch(e){}
+  return ch}
+function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.find(x=>x.date===today&&!(S.vals[x.id]||{}).done);if(t){hashDone=true;go('task',t.id)}}
+(async function connect(){const ch=await pull();if(ch&&!S.running)render();status();openToday();sync()})();
+async function setToken(v){token=v;LS.set('gk1.token',v);if(!v)return '未設定';
+  try{const r=await fetch(REPO,{headers:hdr(),cache:'no-store'});if(!r.ok){saveErr=true;return 'つながりません。鍵を確認してください（'+r.status+'）'}}catch(e){saveErr=true;return 'つながりません。通信を確認してください'}
+  saveErr=false;await pull();Object.keys(S.vals).forEach(t=>{if(S.vals[t].t&&!shas['data/'+t+'.json'])mark('data/'+t+'.json',true)});Object.keys(S.grades).forEach(t=>{if(S.grades[t].t&&!shas['grades/'+t+'.json'])mark('grades/'+t+'.json',true)});return 'つながりました'}
+
+/* ---------- grading ---------- */
+function norm(s,t){s=String(s==null?'':s).normalize('NFKC').replace(/\s/g,'');
+  if(t==='num'){s=s.replace(/(\d+)分の(\d+)/,'$2/$1').replace(/[^0-9./]/g,'');if(/^(\d+\.?\d*|\.\d+)$/.test(s))s=String(parseFloat(s));return s}
+  return s.replace(/[。、．，.,・「」]/g,'').toLowerCase()}
+function blankOK(t,it,i){return G(t).o[it.id+'.'+i]===true}
+const bw=b=>Math.max(64,(b.w||6)*26),bh=b=>Math.round(72000/bw(b)),lh=it=>(it.rows||3)*90+30;
+const hasInk=(t,id)=>!!(S.ink[ikey(t,id)]&&S.ink[ikey(t,id)].s.length);
+function score(t,it){const g=G(t),v=V(t).v;let got=0,max=0,pend=0;
+  const man=(key,pts,empty)=>{max+=pts;if(typeof g.m[key]==='number')got+=g.m[key];else if(!empty&&pts>0)pend++};
+  if(it.k==='fill'){const oks=it.b.map((_,i)=>blankOK(t,it,i));
+    if(it.each){max+=it.pts*it.b.length;got+=it.pts*oks.filter(Boolean).length}else{max+=it.pts;if(oks.every(Boolean))got+=it.pts}
+    it.b.forEach((_,i)=>{const k=it.id+'.'+i;if(hasInk(t,k)&&typeof g.o[k]!=='boolean')pend++});
+    if(it.work)man(it.id+'.w',it.work.pts,!hasInk(t,it.id+'.w'))}
+  else if(it.k==='choice'){max+=it.pts;if(v[it.id]===it.a)got+=it.pts}
+  else if(it.k==='ink')man(it.id,it.pts,!hasInk(t,it.id));
+  else if(it.k==='long')man(it.id,it.pts,!hasInk(t,it.id));
+  return {got,max,pend}}
+const ymd=ms=>{const d=new Date(ms);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const md=s=>{const a=String(s||'').split('-');return a.length===3?(+a[1])+'/'+(+a[2]):''};
+function weekPts(w){let hw=0,full=0;const rows=[];w._d.forEach((id,i)=>{const v=S.vals[id]||{};let p=0;if(v.done)p=(v.doneAt&&ymd(v.doneAt)<=w.days[i].d)?10:5;if(p===10)full++;hw+=p;rows.push(p)});
+  const bonus=full===w._d.length&&full>0?10:0;let test=0,neat=0,prov=false;
+  if(w._t){const v=S.vals[w._t]||{};if(v.done){const T=total(w._t);if(T.pend||!T.max){test=10;prov=T.pend>0}else{const r=T.got/T.max;test=r>=0.8?30:r>=0.6?20:10}if((S.grades[w._t]||{}).neat===true)neat=10}}
+  return {rows,hw,bonus,test,neat,prov,sum:hw+bonus+test+neat}}
+function total(t){const r={got:0,max:0,pend:0,lv:{}};items(TASK[t]).forEach(it=>{const s=score(t,it);r.got+=s.got;r.max+=s.max;r.pend+=s.pend;
+  if(it.lv){const L=r.lv[it.lv]||(r.lv[it.lv]={got:0,max:0});L.got+=s.got;L.max+=s.max}});return r}
+
+/* ---------- helpers ---------- */
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rich=s=>esc(s).replace(/【(.+?)】/g,'<span class="tg">$1</span>').replace(/\n/g,'<br>');
+const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const app=document.getElementById('app'),modal=document.getElementById('modal');
+function ask(html,yes,no){return new Promise(res=>{
+  modal.innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true">${html}<div class="row end">${no?`<button class="btn ghost" id="mno">${esc(no)}</button>`:''}<button class="btn" id="myes">${esc(yes)}</button></div></div></div>`;
+  const done=v=>{modal.innerHTML='';res(v)};
+  modal.querySelector('#myes').onclick=()=>done(true);const n=modal.querySelector('#mno');if(n)n.onclick=()=>done(false)})}
+
+/* ---------- handwriting ---------- */
+let penSeen=false;const inks=[];
+function mkInk(host,key,lh,ro,ruled){
+  const c=document.createElement('canvas');c.className='ink'+(ruled?' ruled':'')+(ro?' ro':'');c.style.aspectRatio='1000/'+lh;c.setAttribute('aria-label','手書きのわく');host.appendChild(c);
+  const strokes=()=>((S.ink[key]||{}).s||[]);
+  let cur=null,drawer=null;
+  function draw(){const w=c.clientWidth;if(!w)return;const dpr=window.devicePixelRatio||1;const W=Math.round(w*dpr),H=Math.round(w*lh/1000*dpr);
+    if(c.width!==W||c.height!==H){c.width=W;c.height=H}
+    const x=c.getContext('2d'),k=W/1000;x.clearRect(0,0,W,H);x.lineCap='round';x.lineJoin='round';x.lineWidth=Math.max(1.6,2.4*dpr*(ro?0.8:1));
+    const col=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#1b2742';x.strokeStyle=col;x.fillStyle=col;
+    const all=strokes().map(s=>s.split(',').map(Number));if(cur)all.push(cur);
+    all.forEach(p=>{if(p.length<4){x.beginPath();x.arc(p[0]*k,p[1]*k,x.lineWidth*0.7,0,7);x.fill();return}
+      x.beginPath();x.moveTo(p[0]*k,p[1]*k);for(let i=2;i<p.length;i+=2)x.lineTo(p[i]*k,p[i+1]*k);x.stroke()})}
+  const pt=e=>{const r=c.getBoundingClientRect();return [Math.round((e.clientX-r.left)/r.width*1000),Math.round((e.clientY-r.top)/r.width*1000)]};
+  if(!ro){
+    c.addEventListener('pointerdown',e=>{if(V(S.task).done)return;if(e.pointerType==='pen')penSeen=true;if(penSeen&&e.pointerType==='touch')return;
+      e.preventDefault();try{c.setPointerCapture(e.pointerId)}catch(_){}drawer=e.pointerId;cur=pt(e);draw()});
+    c.addEventListener('pointermove',e=>{if(!cur||e.pointerId!==drawer)return;e.preventDefault();
+      const evs=(e.getCoalescedEvents&&e.getCoalescedEvents().length)?e.getCoalescedEvents():[e];
+      evs.forEach(ev=>{const p=pt(ev),n=cur.length;if(Math.abs(p[0]-cur[n-2])+Math.abs(p[1]-cur[n-1])>=3)cur.push(p[0],p[1])});draw()});
+    const end=e=>{if(!cur||e.pointerId!==drawer)return;const r=S.ink[key]||(S.ink[key]={s:[],t:0});r.s.push(cur.join(','));cur=null;drawer=null;touchInk(key);draw()};
+    c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
+  }
+  if(window.ResizeObserver)new ResizeObserver(draw).observe(c);requestAnimationFrame(draw);
+  const api={draw,undo(){const r=S.ink[key];if(r&&r.s.length){r.s.pop();touchInk(key);draw()}},clear(){const r=S.ink[key];if(r&&r.s.length){r.s=[];touchInk(key);draw()}}};
+  inks.push(api);return api}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>inks.forEach(i=>i.draw()))}catch(e){}
+
+/* ---------- stroke order (KanjiVG) ---------- */
+const KVP={};
+function kv(ch){const k=(ch.codePointAt(0)>>8).toString(16).padStart(2,'0');if(!KVP[k])KVP[k]=fetch('kv/'+k+'.json').then(r=>r.ok?r.json():{}).catch(()=>({}));return KVP[k].then(m=>m[ch]||null)}
+const GUIDE='<line x1="54.5" y1="0" x2="54.5" y2="109"/><line x1="0" y1="54.5" x2="109" y2="54.5"/>';
+function kvSvg(d,mode){return `<svg viewBox="0 0 109 109" class="kv ${mode}" aria-hidden="true">${GUIDE}${d?d.p.map(p=>`<path d="${p}"/>`).join(''):''}${d&&mode==='model'?d.n.map((n,i)=>`<text x="${n[0]}" y="${n[1]}">${i+1}</text>`).join(''):''}</svg>`}
+function sqHost(box){if(!box.classList.contains('sq'))return box;const w=document.createElement('div');w.className='sqw';w.innerHTML=kvSvg(null,'bg');box.appendChild(w);
+  if(box.dataset.kvbg)kv(box.dataset.kvbg).then(d=>{if(d&&w.isConnected){const c=w.querySelector('canvas');w.querySelector('svg').remove();w.insertAdjacentHTML('afterbegin',kvSvg(d,'bg'));if(c)w.appendChild(c)}});return w}
+function mountModels(){app.querySelectorAll('.kjm[data-kv]').forEach(m=>kv(m.dataset.kv).then(d=>{if(d&&m.isConnected)m.innerHTML=kvSvg(d,'model')}))}
+function play(box){const ps=[...box.querySelectorAll('path')];if(!ps.length)return;const tk=box._tk=(box._tk||0)+1;
+  ps.forEach(p=>{const L=p.getTotalLength();p.style.transition='none';p.style.strokeDasharray=L;p.style.strokeDashoffset=L});let i=0;
+  (function next(){if(box._tk!==tk||i>=ps.length)return;const p=ps[i++],ms=Math.max(350,p.getTotalLength()*9);p.getBoundingClientRect();p.style.transition='stroke-dashoffset '+ms+'ms linear';p.style.strokeDashoffset=0;setTimeout(next,ms+250)})()}
+
+/* ---------- screens ---------- */
+function go(screen,task,pv){if(S.running)stopClock();S.screen=screen;S.task=task||null;S.preview=!!pv;LS.set('gk1.route',{task:screen==='task'&&!pv?task:null});render();window.scrollTo(0,0);
+  if(screen!=='task')pull().then(ch=>{if(ch&&S.screen===screen)render()})}
+function render(){inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();status()}
+
+function renderHome(){
+  const groups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(t=>t.group))],today=ymd(Date.now());
+  const all=WEEKS.reduce((n,w)=>n+weekPts(w).sum,0);
+  app.innerHTML=`<div class="wrap">
+   <div><h1>学習ノート</h1><p class="sub">やるものをえらんで、タップしましょう。</p></div>
+   ${WEEKS.length?`<p class="ptline"><span>これまでのポイント</span><b>${all}</b></p>`:''}
+   ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
+     ${P?`<p class="ptline"><span>この週</span><b>${P.sum}</b><span class="sub">/ 100ポイント（宿題 ${P.hw}・5日そろい ${P.bonus}・テスト ${P.test}${P.prov?'（採点まち）':''}・ていねい ${P.neat}）</span></p>`:''}
+     ${TASKS.some(t=>t.group===g&&t.date&&t.date>today)?'<p class="sub">1日に1つずつひらきます。保護者の方は、下の「保護者用」から1週間分の問題用紙を見られます。</p>':''}
+     <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
+     if(t.date&&t.date>today)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.date)} にひらきます</span></div>`;
+     const st=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
+     return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></button>`}).join('')}</div></div>`}).join('')}
+   <div class="row"><button class="btn ghost sm" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
+   <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
+  </div>`;
+  app.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>go('task',b.dataset.open));
+  app.querySelector('#toParent').onclick=parentGate}
+
+async function parentGate(){
+  if(S.parentOK)return go('parent');
+  modal.innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true"><b>保護者の方へ</b><p class="sub">ご自身の生まれた年（西暦4けた）を入力してください。</p>
+   <input class="blank" id="py" inputmode="numeric" maxlength="4" autocomplete="off" style="width:8em"><div class="row end"><button class="btn ghost" id="pno">もどる</button><button class="btn" id="pyes">ひらく</button></div></div></div>`;
+  modal.querySelector('#pno').onclick=()=>modal.innerHTML='';
+  modal.querySelector('#pyes').onclick=()=>{const y=parseInt(norm(modal.querySelector('#py').value,'num'),10);if(y>=1930&&y<=2008){S.parentOK=true;modal.innerHTML='';go('parent')}else modal.querySelector('#py').value=''}}
+
+function itemHTML(t,it,n,ro){
+  const tid=t.id,v=V(tid).v,dis=ro?'disabled':'';
+  if(it.sub)return `<p class="q" style="font-weight:600">${rich(it.sub)}</p>`;
+  const num=n?`<span class="n">${n}</span>`:'';
+  const A=(ro&&t.hw)?x=>x?`<p class="ansline">こたえ：${esc(x)}</p>`:'':()=>'';
+  if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
+    return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
+      <div class="kji"><div><b>音</b>${esc(it.on||'－')}　<b>訓</b>${esc(it.kun||'－')}　<b>画数</b>${esc(it.st||'')}画</div><div><b>ことば</b>${(it.ex||[]).map(e=>esc(e[0])+'（'+esc(e[1])+'）').join('　')}</div>
+      ${it.tip?`<div class="ansline" style="font-size:.95rem">${esc(it.tip)}</div>`:''}<button class="btn ghost sm" data-play="1">書き順を見る</button></div></div>
+      <div class="kjb">${sq('t','なぞる',1)}${sq('a','見て書く')}${sq('b','もう一度')}</div>
+      ${it.rq?`<p class="q">読みをひらがなで書く：<span class="tg">${esc(it.rq[0])}</span><span class="ib" data-ink="${it.id}.y" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.rq[1])}`:''}
+      ${it.wq?`<p class="q">漢字で書く：<span class="tg">${esc(it.wq[0])}</span><span class="ib" data-ink="${it.id}.w" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.wq[1])}`:''}</div>`}
+  if(it.k==='fill'){let i=0;
+    const body=rich(it.tpl).split('{}').map((seg,j,arr)=>{if(j===arr.length-1)return seg;const b=it.b[i],k=it.id+'.'+i;i++;
+      return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
+    return `<div class="item">${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
+      ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${esc(it.work.label)}</span></div>`:''}
+      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}</div>`}
+  if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
+    return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
+      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${A(it.a)}</div>`}
+  if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model)}</div>`;
+  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model)}</div>`;
+  return ''}
+
+let clockTm=null,lastLocal=0;
+function startClock(){const t=S.task,v=V(t);S.running=true;v.started=true;touchVals(t);
+  clockTm=setInterval(()=>{v.el++;paintClock();if(v.el-lastLocal>=10){lastLocal=v.el;saveLocal()}},1000);paintClock()}
+function stopClock(){if(!S.running)return;S.running=false;clearInterval(clockTm);clockTm=null;if(S.task)touchVals(S.task)}
+function paintClock(){const el=document.getElementById('clock');if(!el)return;const t=TASK[S.task],v=V(S.task),left=t.min*60-v.el;
+  if(t.hw){el.textContent=mmss(v.el)+' / めやす'+t.min+'分';return}
+  el.textContent=left>=0?'のこり '+mmss(left):'＋'+mmss(-left);el.classList.toggle('over',left<0);
+  const b=document.getElementById('timeup');if(b)b.hidden=left>=0||v.done}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.running){stopClock();flushAll();if(S.screen==='task')gate()}else if(document.hidden)flushAll()});
+
+function renderTask(){
+  const t=TASK[S.task],v=V(t.id),pv=S.preview,ro=v.done||pv;
+  app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
+  <div class="wrap${t.en?' en':''}">
+   ${pv?'<p class="banner">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?'きょうの分はおわりです。おつかれさまでした。赤い字のこたえとくらべてみましょう。':'このテストは出しました。おつかれさまでした。'}</p>`:''}
+   <p class="banner red" id="timeup" hidden>時間です。ここまでにして、下の「おわる」をおしましょう。</p>
+   ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${esc(s.h)}</h3>${s.note?`<p class="note">${esc(s.note)}</p>`:''}
+     ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`:''}
+     <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro)).join('')}</div></section>`}).join('')}
+   ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
+  </div>`;
+  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink);const api=mkInk(sqHost(box),key,+box.dataset.h,ro,!!box.dataset.ruled);
+    if(!ro){const tools=document.createElement('div');tools.className='inktools';if(box.dataset.mini){const x=document.createElement('button');x.className='btn ghost';x.textContent='けす';x.onclick=()=>api.clear();box.appendChild(x);return}
+      tools.innerHTML='<button class="btn ghost sm" data-u>1つもどす</button><button class="btn ghost sm" data-x>ぜんぶけす</button>';box.appendChild(tools);
+      tools.querySelector('[data-u]').onclick=()=>api.undo();const x=tools.querySelector('[data-x]');let armed=0;
+      x.onclick=()=>{if(armed){api.clear();armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')}else{armed=1;x.textContent='ほんとうにけす';x.classList.add('red');setTimeout(()=>{armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')},3000)}}}});
+  mountModels();app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const m=b.closest('.kjh').querySelector('.kjm');play(m)});
+  app.querySelector('#back').onclick=()=>go(pv?'parent':'home');
+  const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
+    if(await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}出したあとは、なおせません。</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();go('home')}};
+  paintClock();if(!ro)gate()}
+function wc(ta){const el=app.querySelector(`[data-wcfor="${ta.dataset.k}"]`);if(el)el.textContent=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' words'}
+function countBlank(t){const v=V(t.id).v;let n=0;items(t).forEach(it=>{if(it.scratch)return;
+  if(it.k==='fill')it.b.forEach((_,i)=>{if(!hasInk(t.id,it.id+'.'+i))n++});
+  else if(it.k==='choice'){if(!v[it.id])n++}else if(it.k==='kanji'){if(!hasInk(t.id,it.id+'.a'))n++}else{if(!hasInk(t.id,it.id))n++}});return n}
+async function gate(){const t=TASK[S.task],v=V(t.id);if(v.done||S.running)return;
+  const ok=await ask(v.started?`<b>${esc(t.title)}</b><p class="sub">とちゅうで止まっています。${t.hw?'':'のこり時間：'+mmss(t.min*60-v.el)}</p>`
+   :`<b>${esc(t.title)}（${t.min}分${t.pts?'・'+t.pts+'点':''}）</b><ul><li>分からない問題は、空らんのままで大丈夫です。</li>${t.hw?'<li>手本をよく見て、ゆっくりていねいに書きましょう。</li>':'<li>辞書や電卓は使いません。</li>'}<li>答えは、わくの中にペンか指で書きます。</li><li>書いたものは自動で保存されます。</li></ul>`,
+   v.started?'つづける':'はじめる','もどる');
+  if(S.screen!=='task'||S.task!==t.id)return;if(ok)startClock();else go('home')}
+
+app.addEventListener('input',e=>{const el=e.target;if(S.screen!=='task'||!el.dataset||!el.dataset.k)return;V(S.task).v[el.dataset.k]=el.value;if(el.dataset.wc)wc(el);touchVals(S.task)});
+app.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-c]');if(!b||S.screen!=='task'||b.disabled)return;const v=V(S.task).v,k=b.dataset.c;
+  v[k]=v[k]===b.dataset.v?'':b.dataset.v;b.parentNode.querySelectorAll('.opt').forEach(o=>{const on=v[k]===o.dataset.v;o.classList.toggle('on',on);o.setAttribute('aria-checked',on)});touchVals(S.task)});
+
+/* ---------- parent ---------- */
+function verdict(got,max){const r=max?got/max:0;return r>=0.8?['a','定着']:r>=0.5?['b','復習が必要']:['c','学び直し']}
+function renderParent(){
+  const t=TASK[S.ptab]||TASKS[TASKS.length>BASE?BASE:0],v=V(t.id),g=G(t.id),T=total(t.id);S.ptab=t.id;
+  const rows=[];
+  t.sections.forEach(s=>{let n=0;const sh=s.h.split('　')[0];rows.push(`<h3 style="margin-top:14px">${esc(s.h)}</h3>`);
+   s.items.forEach(it=>{if(!it.k)return;const lab=it.scratch?'':(/^問/.test(it.q||'')?'':(++n)+'. ');
+    if(it.k==='fill'){const qt=(it.q?it.q+' ／ ':'')+it.tpl.replace(/\{\}/g,'□');
+      rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(qt)}</div><div class="ga">
+        ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"></div><div class="model">${esc(it.work.label)}：${esc(it.work.model)}</div>`:''}
+        ${it.b.map((b,i)=>{const k=it.id+'.'+i,o=g.o[k];return `<div class="row"><div class="inkbox" style="width:${bw(b)}px" data-ink="${k}" data-h="${bh(b)}"></div><span class="model">正答：${esc(b.a.join(' ／ '))}</span>
+          <button class="mk o${o===true?' sel':''}" data-o="${k}" data-val="1" aria-label="正解">○</button><button class="mk x${o===false?' sel':''}" data-o="${k}" data-val="0" aria-label="不正解">×</button></div>`}).join('')}</div>
+        <div class="gm">
+        ${it.work?pts(g,it.id+'.w',it.work.pts,it.work.label):''}
+        ${t.id==='t1s'&&it.work?`<label class="chk"><input type="checkbox" data-read="${it.id}" ${g.read[it.id]?'checked':''}>読み上げた</label>`:''}</div></div>`)}
+    else if(it.k==='choice'){const ok=v.v[it.id]===it.a;rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="ans">${esc(v.v[it.id]||'（空らん）')} <span class="model">正答：${esc(it.a)}</span></div></div><div class="gm"><span class="mk ${ok?'o':'x'}" style="display:grid;place-items:center">${ok?'○':'×'}</span></div></div>`)}
+    else if(it.k==='kanji'){const sc=k=>{const r=S.ink[ikey(t.id,it.id+'.'+k)];return r?r.s.length:0};
+      rows.push(`<div class="g"><div class="gq">漢字「${esc(it.ch)}」（${esc(it.st||'')}画）</div><div class="ga"><div class="row">${['t','a','b'].map(k=>`<div><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000"></div>${k!=='t'?`<span class="sub">${sc(k)}画で書いた</span>`:''}</div>`).join('')}</div>
+        ${it.rq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.y" data-h="${bh({w:8})}"></div><span class="model">${esc(it.rq[0])}＝${esc(it.rq[1])}</span></div>`:''}
+        ${it.wq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.w" data-h="${bh({w:8})}"></div><span class="model">${esc(it.wq[0])}＝${esc(it.wq[1])}</span></div>`:''}</div><div class="gm"></div></div>`)}
+    else if(it.k==='ink'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="inkbox ${it.cls==='s'?'s':''}" data-ink="${it.id}" data-h="${it.h}"></div>${it.model?`<div class="model">正答：${esc(it.model)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
+    else if(it.k==='long'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${rich(it.q)}</div><div class="ga"><div class="inkbox" style="width:100%" data-ink="${it.id}" data-h="${lh(it)}"></div>
+       ${it.model?`<div class="model">解答例：${esc(it.model)}</div>`:''}${it.rubric?`<div class="model">採点の目安：${esc(it.rubric)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
+   })});
+  const pgroups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(x=>x.group))],PW=WEEKS.find(w=>w.label===t.group),PP=PW?weekPts(PW):null;
+  app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">保護者用　採点・結果</span><span class="save" id="save"></span></div></div>
+  <div class="wrap">
+   <div class="tabs">${pgroups.map(x=>`<button class="tab${x===t.group?' on':''}" data-grp="${esc(x)}">${esc(x)}</button>`).join('')}</div>
+   <div class="tabs">${TASKS.filter(x=>x.group===t.group).map(x=>`<button class="tab${x.id===t.id?' on':''}" data-tab="${x.id}">${esc(x.title)}</button>`).join('')}</div>
+   <div class="row"><button class="btn ghost sm" id="pview">「${esc(t.title)}」の問題用紙を見る</button></div>
+   ${PW?`<section class="sec"><p class="ptline"><span>この週のポイント</span><b>${PP.sum}</b><span class="sub">/ 100</span></p><div class="tblw"><table><tbody>
+     ${PW.days.map((d,i)=>`<tr><td>${esc(d.wd)}曜日（${md(d.d)}）の宿題</td><td class="num">${PP.rows[i]}</td></tr>`).join('')}
+     <tr><td>5日そろったボーナス</td><td class="num">${PP.bonus}</td></tr><tr><td>土曜テスト${PP.prov?'（採点がすむと確定）':''}</td><td class="num">${PP.test}</td></tr><tr><td>ていねいボーナス</td><td class="num">${PP.neat}</td></tr></tbody></table></div>
+     <p class="sub">宿題は当日に出すと10、あとから出すと5です。テストは8割以上30、6〜8割20、6割未満10です。</p>
+     ${t.test?`<label class="chk"><input type="checkbox" id="neat" ${g.neat===true?'checked':''}>ていねいボーナスをつける（空らんがなく、字が読みやすい）</label>`:''}</section>`:''}
+   <section class="sec">
+    <div class="row"><div>${t.pts?`<div class="big">${T.got}<span style="font-size:1rem"> / ${T.max}点</span></div>`:'<b>点数はつけません</b>'}
+     <p class="sub">${v.done?'提出ずみ':v.started?'とちゅう':'まだ始めていません'}・使った時間 ${mmss(v.el||0)}（${t.hw?'めやす':'制限'} ${t.min}分）${T.pend?`・<span style="color:var(--shu)">未採点 ${T.pend}問</span>`:''}</p></div></div>
+    ${t.levels?`<div class="tblw"><table><thead><tr><th>レベル</th><th class="num">得点</th><th class="num">満点</th><th>判定</th></tr></thead><tbody>${t.levels.map(([k,name])=>{const L=T.lv[k]||{got:0,max:0},vd=verdict(L.got,L.max);
+       return `<tr><td>${esc(name)}</td><td class="num">${L.got}</td><td class="num">${L.max}</td><td>${!v.started?'－':T.pend?'採点がすむと出ます':`<span class="v ${vd[0]}">${vd[1]}</span>`}</td></tr>`}).join('')}</tbody></table></div>
+     <p class="sub">満点の8割以上で定着、5〜8割で復習が必要、5割未満はその学年の内容から学び直しです。${T.pend?'未採点の問題を採点すると判定が確定します。':''}</p>`:''}
+    <p class="sub">書きこみ欄は○か×をタップして採点します。式・記述は右の点数ボタンで採点します。選択問題は自動で採点されます。</p>
+   </section>
+   <section class="sec">${rows.join('')}</section>
+   <section class="sec"><h3>答えの送り先</h3><p class="sub">GitHubで作った鍵（トークン）を入れると、答えと手書きが非公開の保存場所に送られ、Claudeが採点できます。入れない場合は、このiPadの中だけに保存されます。</p>
+    <div class="row"><input class="blank" id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" style="width:min(100%,20em);text-align:left"><button class="btn" id="tokSave">保存してテスト</button><span class="sub" id="tokMsg">${token?'設定ずみ':'未設定'}</span></div></section>
+   <section class="sec"><h3>結果をClaudeに送る</h3><p class="sub">採点の結果をまとめた文です。コピーしてClaudeのチャットに貼りつけてください。手書きの内容は文に入らないので、見てほしい答案は画面の写真をいっしょに送ってください。</p>
+    <textarea class="long" id="report" rows="6" readonly style="font-size:.8rem;line-height:1.4;font-family:var(--f-en)"></textarea><div class="row"><button class="btn" id="copy">結果をコピー</button><span class="sub" id="copied"></span></div></section>
+   <section class="sec"><h3>やり直し</h3><div class="row"><button class="btn ghost" id="unlock" ${v.done?'':'disabled'}>もう一度書けるようにする</button><button class="btn red" id="wipe">この科目の答えをすべて消す</button></div></section>
+  </div>`;
+  app.querySelectorAll('[data-ink]').forEach(box=>mkInk(sqHost(box),ikey(t.id,box.dataset.ink),+box.dataset.h,true));
+  app.querySelector('#tokSave').onclick=async()=>{const v=app.querySelector('#tok').value.trim(),m=app.querySelector('#tokMsg');if(!v&&token){m.textContent='設定ずみ（変えるときは新しい鍵を入れてください）';return}m.textContent='確認中…';m.textContent=await setToken(v);status()};
+  const rp=app.querySelector('#report');rp.value=report();
+  app.querySelector('#copy').onclick=()=>{const done=m=>app.querySelector('#copied').textContent=m;rp.focus();rp.select();
+    try{navigator.clipboard.writeText(rp.value).then(()=>done('コピーしました'),()=>done('上の文を長押ししてコピーしてください'))}catch(e){done('上の文を長押ししてコピーしてください')}};
+  const keep=fn=>{const y=window.scrollY;fn();renderParent();status();window.scrollTo(0,y)};
+  app.querySelector('#back').onclick=()=>go('home');
+  app.querySelectorAll('[data-grp]').forEach(b=>b.onclick=()=>{S.ptab=TASKS.find(x=>x.group===b.dataset.grp).id;inks.length=0;renderParent();status();window.scrollTo(0,0)});
+  app.querySelector('#pview').onclick=()=>go('task',t.id,true);
+  const nb=app.querySelector('#neat');if(nb)nb.onchange=()=>keep(()=>{if(nb.checked)g.neat=true;else delete g.neat;touchGrades(t.id)});
+  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{S.ptab=b.dataset.tab;inks.length=0;renderParent();status();window.scrollTo(0,0)});
+  app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.o,val=b.dataset.val==='1';if(g.o[k]===val)delete g.o[k];else g.o[k]=val;touchGrades(t.id)}));
+  app.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.g,p=+b.dataset.p;if(g.m[k]===p)delete g.m[k];else g.m[k]=p;touchGrades(t.id)}));
+  app.querySelectorAll('[data-read]').forEach(c=>c.onchange=()=>{if(c.checked)g.read[c.dataset.read]=true;else delete g.read[c.dataset.read];touchGrades(t.id)});
+  app.querySelector('#unlock').onclick=()=>keep(()=>{v.done=false;touchVals(t.id)});
+  app.querySelector('#wipe').onclick=async()=>{if(await ask(`<b>${esc(t.title)}の答えと採点をすべて消しますか？</b><p class="sub">手書きもふくめて消えます。元にもどせません。</p>`,'消す','やめる'))keep(()=>{
+    S.vals[t.id]={v:{},el:0,started:false,done:false,t:0};touchVals(t.id);S.grades[t.id]={m:{},o:{},read:{},t:0};touchGrades(t.id);
+    Object.keys(S.ink).filter(k=>k.startsWith(t.id+'__')).forEach(k=>{if(S.ink[k].s.length){S.ink[k].s=[];touchInk(k)}})})}}
+function report(){const L=['【学習ノート 結果】'];
+  TASKS.filter(x=>x.group===(TASK[S.ptab]||TASKS[0]).group).forEach(t=>{const v=V(t.id),g=G(t.id),T=total(t.id);
+   L.push('',`■${t.title}：${v.done?'提出ずみ':v.started?'とちゅう':'未実施'}／時間 ${mmss(v.el||0)}（制限${t.min}分）`+(t.pts?`／${T.got}/${T.max}点`+(T.pend?`（未採点${T.pend}問）`:''):''));
+   if(t.levels)L.push(t.levels.map(([k,n])=>{const x=T.lv[k]||{got:0,max:0};return `${n} ${x.got}/${x.max}`}).join('、'));
+   if(!v.started)return;
+   items(t).forEach(it=>{if(it.scratch)return;
+    if(it.k==='fill'){L.push(`${it.id}: `+it.b.map((b,i)=>{const k=it.id+'.'+i,o=g.o[k];return o===true?'○':o===false?'×':hasInk(t.id,k)?'未採点':'空らん'}).join(' ')+(it.work?` ${it.work.label}=${typeof g.m[it.id+'.w']==='number'?g.m[it.id+'.w']+'点':hasInk(t.id,it.id+'.w')?'未採点':'なし'}`:'')+(g.read[it.id]?' 読み上げ':''))}
+    else if(it.k==='choice')L.push(`${it.id}: ${v.v[it.id]||'-'} ${v.v[it.id]===it.a?'○':'×'}`);
+    else if(it.k==='kanji')L.push(`${it.id}: 漢字「${it.ch}」 ${hasInk(t.id,it.id+'.a')?'書いた':'空らん'}`);
+    else if(it.k==='ink')L.push(`${it.id}: 手書き `+(it.pts?(typeof g.m[it.id]==='number'?g.m[it.id]+'点':hasInk(t.id,it.id)?'未採点':'空らん'):(hasInk(t.id,it.id)?'あり（写真で送付）':'空らん')));
+    else if(it.k==='long')L.push(`${it.id}: 手書き `+(it.pts?(typeof g.m[it.id]==='number'?g.m[it.id]+'点':hasInk(t.id,it.id)?'未採点':'空らん'):(hasInk(t.id,it.id)?'あり（写真で送付）':'空らん')))})});
+  return L.join('\n')}
+function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span>`:'';for(let p=0;p<=max;p++)h+=`<button class="pt${g.m[key]===p?' on':''}" data-g="${key}" data-p="${p}">${p}</button>`;return h}
+
+window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
+render();openToday();
+</script>
+
+</body>
+</html>
