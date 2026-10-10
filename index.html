@@ -241,6 +241,9 @@ body.bg-v .daychip{border-color:var(--d5);color:var(--warn)}
 .sm .mk{width:48px;height:48px;font-size:1.4rem;background:var(--sheet)}
 .auto{font-weight:900;font-size:1.4rem;width:44px;height:44px;border-radius:50%;display:inline-grid;place-items:center;border:2.5px solid var(--line);font-family:var(--f-ui)}
 .auto.o{color:var(--shu);border-color:var(--shu)}.auto.x{color:var(--soft)}
+.ckb{font:inherit;font-weight:900;font-size:.9rem;min-height:44px;padding:4px 14px;border-radius:999px;border:2.5px solid var(--shu);background:var(--sheet);color:var(--shu);cursor:pointer}
+.ckb.sel{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.btn:disabled{opacity:.45;box-shadow:none;cursor:default}
 .rvline{margin:0;font-size:1.2rem;font-weight:700}.rvline b{font-size:1.6rem;font-weight:900;color:var(--ai-d)}
 @media print{body{background:#fff!important}.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
 @media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
@@ -616,7 +619,8 @@ function itemHTML(t,it,n,ro){
   if(it.sub)return `<p class="q" style="font-weight:600">${rich(it.sub)}</p>`;
   const num=n?`<span class="n">${n}</span>`:'';
   const sf=V(tid).self||{},canMark=ro&&t.hw&&!S.preview;
-  const SM=key=>canMark&&key?`<span class="sm"><button class="mk o${sf[key]===1?' sel':''}" data-sm="${key}" data-val="1" aria-label="あっていた">○</button><button class="mk x${sf[key]===0?' sel':''}" data-sm="${key}" data-val="0" aria-label="ちがっていた">×</button></span>`:'';
+  const ck=V(tid).chk||{},CK=(key,show)=>`<button class="ckb${ck[key]?' sel':''}" data-ck="${key}" ${show?'':'hidden'}>${ck[key]?'✓ たしかめた':'たしかめた'}</button>`;
+  const SM=key=>canMark&&key?`<span class="sm"><button class="mk o${sf[key]===1?' sel':''}" data-sm="${key}" data-val="1" aria-label="あっていた">○</button><button class="mk x${sf[key]===0?' sel':''}" data-sm="${key}" data-val="0" aria-label="ちがっていた">×</button></span>${CK(key,sf[key]===0)}`:'';
   const A=(ro&&t.hw)?(x,key)=>(x?`<p class="ansline"><span>こたえ：${esc(x)}</span>${SM(key)}</p>`:'')+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):()=>'';
   if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
     return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
@@ -633,7 +637,7 @@ function itemHTML(t,it,n,ro){
       <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''),it.id)}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
-      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${(ro&&t.hw)?`<p class="ansline"><span>こたえ：${esc(it.a)}</span><span class="auto ${v[it.id]===it.a?'o':'x'}">${v[it.id]===it.a?'○':'×'}</span></p>`+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):''}</div>`}
+      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${(ro&&t.hw)?`<p class="ansline"><span>こたえ：${esc(it.a)}</span><span class="auto ${v[it.id]===it.a?'o':'x'}">${v[it.id]===it.a?'○':'×'}</span>${canMark&&v[it.id]!==it.a?CK(it.id,true):''}</p>`+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):''}</div>`}
   if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model,it.scratch?null:it.id)}</div>`;
   if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model,it.id)}</div>`;
   return ''}
@@ -663,7 +667,8 @@ function renderTask(){
      <p class="rvline">○ <b id="rvO"></b> こ　　× <b id="rvX"></b> こ　　まだ <b id="rvN"></b> こ</p>
      <p class="q">きょうの しゅくだいは、どうだった？</p>
      <div class="opts">${[['1','かんたん'],['2','ちょうどいい'],['3','むずかしい']].map(f=>`<button class="opt${v.feel===f[0]?' on':''}" data-feel="${f[0]}"><span>${f[1]}</span></button>`).join('')}</div>
-     <p class="note">× だった もんだいは、赤い字のこたえと「ポイント」を もういちど 読んでおこう。</p>
+     <p class="note">× だった もんだいは、赤い字のこたえと「ポイント」を もういちど 読んで、「たしかめた」を おそう。</p>
+     <p class="banner red" id="rvMsg" hidden></p>
      <div class="row end"><button class="btn" id="rvDone">${v.rev?'ホームに もどる':'ふりかえりを おわる'}</button></div></section>`:''}
    ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
   </div>`;
@@ -673,7 +678,7 @@ function renderTask(){
       tools.querySelector('[data-u]').onclick=()=>api.undo();const x=tools.querySelector('[data-x]');let armed=0;
       x.onclick=()=>{if(armed){api.clear();armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')}else{armed=1;x.textContent='ほんとうにけす';x.classList.add('red');setTimeout(()=>{armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')},3000)}}}});
   mountModels();app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const m=b.closest('.kjh').querySelector('.kjm');play(m)});
-  app.querySelector('#back').onclick=()=>go(pv?'parent':'home');
+  app.querySelector('#back').onclick=()=>{if(ro&&!pv&&t.hw&&!v.rev){const c=reviewCount(t);if(c.n+c.u>0){ask('<b>こたえあわせが まだ のこっています</b><p class="sub">ぜんぶの もんだいに ○か × をつけて、× の もんだいは「たしかめた」を おしてから もどろう。</p>','わかった');const r=document.getElementById('review');if(r)r.scrollIntoView();return}}go(pv?'parent':'home')};
   const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
     if(await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}出したあとは、なおせません。</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();
       const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>決勝、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で決勝です。':'5日そろいました。土曜テストが決勝です！'}</p><div class="tips">${tipsHTML(v.tip||0)}</div>`,'やった！')}
@@ -683,8 +688,11 @@ function renderTask(){
 function wc(ta){const el=app.querySelector(`[data-wcfor="${ta.dataset.k}"]`);if(el)el.textContent=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' words'}
 function markKeys(t){const k=[];items(t).forEach(it=>{if(it.scratch)return;if(it.k==='kanji'){if(it.rq)k.push(it.id+'.y');if(it.wq)k.push(it.id+'.w')}else if(it.k==='fill')k.push(it.id);else if((it.k==='ink'||it.k==='long')&&it.model)k.push(it.id)});return k}
 function reviewCount(t){const v=V(t.id),sf=v.self||{},ks=markKeys(t);let o=0,x=0;ks.forEach(k=>{if(sf[k]===1)o++;else if(sf[k]===0)x++});
-  items(t).forEach(it=>{if(it.k==='choice'){if(v.v[it.id]===it.a)o++;else x++}});return {o,x,n:ks.length-ks.filter(k=>sf[k]===1||sf[k]===0).length}}
-function paintReview(){const t=TASK[S.task];if(!t)return;const c=reviewCount(t),g=id=>document.getElementById(id);if(g('rvO')){g('rvO').textContent=c.o;g('rvX').textContent=c.x;g('rvN').textContent=c.n}}
+  const ck=v.chk||{};let u=ks.filter(k=>sf[k]===0&&!ck[k]).length;
+  items(t).forEach(it=>{if(it.k==='choice'){if(v.v[it.id]===it.a)o++;else{x++;if(!ck[it.id])u++}}});return {o,x,u,n:ks.length-ks.filter(k=>sf[k]===1||sf[k]===0).length}}
+function paintReview(){const t=TASK[S.task];if(!t)return;const c=reviewCount(t),g=id=>document.getElementById(id);if(g('rvO')){g('rvO').textContent=c.o;g('rvX').textContent=c.x;g('rvN').textContent=c.n;
+    const left=c.n+c.u,rev=V(t.id).rev;g('rvDone').disabled=!rev&&left>0;g('rvMsg').hidden=rev||left===0;
+    g('rvMsg').textContent=(c.n?'○× をつけていない もんだいが あと '+c.n+' こ。':'')+(c.u?'× の もんだいで「たしかめた」を おしていないものが あと '+c.u+' こ。':'')+'ぜんぶ おわると、ホームに もどれます。'}}
 function countBlank(t){const v=V(t.id).v;let n=0;items(t).forEach(it=>{if(it.scratch)return;
   if(it.k==='fill')it.b.forEach((_,i)=>{if(!hasInk(t.id,it.id+'.'+i))n++});
   else if(it.k==='choice'){if(!v[it.id])n++}else if(it.k==='kanji'){if(!hasInk(t.id,it.id+'.a'))n++}else{if(!hasInk(t.id,it.id))n++}});return n}
@@ -697,7 +705,11 @@ async function gate(){const t=TASK[S.task],v=V(t.id);if(v.done||S.running)return
 app.addEventListener('input',e=>{const el=e.target;if(S.screen!=='task'||!el.dataset||!el.dataset.k)return;V(S.task).v[el.dataset.k]=el.value;if(el.dataset.wc)wc(el);touchVals(S.task)});
 app.addEventListener('click',e=>{if(S.screen!=='task'||S.preview)return;const m=e.target.closest&&e.target.closest('[data-sm]'),f=e.target.closest&&e.target.closest('[data-feel]');
   if(m){const v=V(S.task);v.self=v.self||{};const k=m.dataset.sm,val=+m.dataset.val;if(v.self[k]===val)delete v.self[k];else v.self[k]=val;
-    m.parentNode.querySelectorAll('.mk').forEach(x=>x.classList.toggle('sel',v.self[k]===+x.dataset.val));touchVals(S.task);paintReview()}
+    m.parentNode.querySelectorAll('.mk').forEach(x=>x.classList.toggle('sel',v.self[k]===+x.dataset.val));
+    const cb=m.closest('.ansline').querySelector('[data-ck]');if(cb){cb.hidden=v.self[k]!==0;if(v.self[k]!==0&&v.chk){delete v.chk[k];cb.classList.remove('sel');cb.textContent='たしかめた'}}
+    touchVals(S.task);paintReview()}
+  const cbt=e.target.closest&&e.target.closest('[data-ck]');
+  if(cbt){const v=V(S.task);v.chk=v.chk||{};const k=cbt.dataset.ck;if(v.chk[k])delete v.chk[k];else v.chk[k]=true;cbt.classList.toggle('sel',!!v.chk[k]);cbt.textContent=v.chk[k]?'✓ たしかめた':'たしかめた';touchVals(S.task);paintReview()}
   if(f){const v=V(S.task);v.feel=f.dataset.feel;f.parentNode.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x===f));touchVals(S.task)}});
 app.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-c]');if(!b||S.screen!=='task'||b.disabled)return;const v=V(S.task).v,k=b.dataset.c;
   v[k]=v[k]===b.dataset.v?'':b.dataset.v;b.parentNode.querySelectorAll('.opt').forEach(o=>{const on=v[k]===o.dataset.v;o.classList.toggle('on',on);o.setAttribute('aria-checked',on)});touchVals(S.task)});
@@ -787,7 +799,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010132711';
+const BUILD='20261010133008';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
