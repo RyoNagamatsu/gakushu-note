@@ -409,7 +409,19 @@ function bodyFor(path){const p=path.split('/'),tid=p[1].replace(/\.json$/,'');
   if(p[0]==='grades')return S.grades[tid]||null;
   const v=S.vals[tid];if(!v)return null;const ink={};let t=v.t||0;
   Object.keys(S.ink).forEach(k=>{if(k.startsWith(tid+'__')){ink[k]=S.ink[k];t=Math.max(t,S.ink[k].t||0)}});return {t,vals:v,ink}}
-async function put(path){const data=bodyFor(path);if(!data)return true;
+// Merge one remote file into local state. Nothing is ever dropped: ink is merged box by box, and a finished task is not replaced by an unfinished copy unless a parent reopened it.
+function newerVals(a,b){if(!b)return false;if(!a)return true;if(!!a.done!==!!b.done){const d=a.done?a:b,u=a.done?b:a;return ((u.unlockedAt||0)>(d.doneAt||0))?u===b:d===b}return (b.t||0)>(a.t||0)}
+function mergeRemote(path,x){const p=path.split('/'),tid=p[1].replace(/\.json$/,'');let ch=false;if(!x)return ch;
+  if(p[0]==='grades'){if((x.t||0)>((S.grades[tid]||{}).t||0)){x.m=x.m||{};x.o=x.o||{};x.read=x.read||{};S.grades[tid]=x;ch=true}return ch}
+  if(x.vals&&newerVals(S.vals[tid],x.vals)){x.vals.v=x.vals.v||{};S.vals[tid]=x.vals;ch=true}
+  Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]={s:i.s,t:i.t};LS.set('gk1.ink.'+k,S.ink[k]);ch=true}});
+  if(ch)saveLocal();return ch}
+async function getRemote(path){const g=await fetch(GH+path+'?t='+Date.now(),{headers:hdr(),cache:'no-store'});if(g.status===404)return null;if(!g.ok)throw new Error('get '+g.status);const j=await g.json();shas[path]=j.sha;
+  let txt=j.content?new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\s/g,'')),c=>c.charCodeAt(0))):null;
+  if(txt===null){const r=await fetch(GH+path,{headers:hdr({Accept:'application/vnd.github.raw+json'}),cache:'no-store'});if(!r.ok)throw new Error('raw '+r.status);txt=await r.text()}
+  return JSON.parse(txt)}
+async function put(path){try{mergeRemote(path,await getRemote(path))}catch(e){return false}
+  const data=bodyFor(path);if(!data)return true;
   const send=()=>fetch(GH+path,{method:'PUT',headers:hdr(),body:JSON.stringify({message:'save '+path,content:b64(JSON.stringify(data)),sha:shas[path]||undefined})});
   let r=await send();
   if(r.status===409||r.status===422){const g=await fetch(GH+path,{headers:hdr(),cache:'no-store'});if(g.ok){shas[path]=(await g.json()).sha;r=await send()}}
@@ -431,11 +443,9 @@ async function loadWeeks(){try{const r=await fetch('weeks/index.json',{cache:'no
   return false}
 async function pull(){let ch=await loadWeeks();if(!token)return ch;
   try{for(const dir of ['data','grades']){const r=await fetch(GH+dir,{headers:hdr(),cache:'no-store'});if(r.status===404)continue;if(!r.ok){saveErr=true;continue}
-      for(const f of await r.json()){const path=dir+'/'+f.name,tid=f.name.replace(/\.json$/,'');if(shas[path]===f.sha||dirty[path])continue;
+      for(const f of await r.json()){const path=dir+'/'+f.name,tid=f.name.replace(/\.json$/,'');if(shas[path]===f.sha)continue;
         const g=await fetch(GH+path,{headers:hdr({Accept:'application/vnd.github.raw+json'}),cache:'no-store'});if(!g.ok)continue;const x=await g.json();shas[path]=f.sha;
-        if(dir==='grades'){if((x.t||0)>((S.grades[tid]||{}).t||0)){x.m=x.m||{};x.o=x.o||{};x.read=x.read||{};S.grades[tid]=x;ch=true}}
-        else{if(x.vals&&(x.vals.t||0)>((S.vals[tid]||{}).t||0)){x.vals.v=x.vals.v||{};S.vals[tid]=x.vals;ch=true}
-          Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]={s:i.s,t:i.t};LS.set('gk1.ink.'+k,S.ink[k]);ch=true}})}}}
+        if(mergeRemote(path,x))ch=true}}
     LS.set('gk1.shas',shas);if(ch)saveLocal()}catch(e){}
   return ch}
 function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.find(x=>x.date===today&&!(S.vals[x.id]||{}).done);if(t){hashDone=true;go('task',t.id)}}
@@ -717,9 +727,9 @@ function renderParent(){
   app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.o,val=b.dataset.val==='1';if(g.o[k]===val)delete g.o[k];else g.o[k]=val;touchGrades(t.id)}));
   app.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.g,p=+b.dataset.p;if(g.m[k]===p)delete g.m[k];else g.m[k]=p;touchGrades(t.id)}));
   app.querySelectorAll('[data-read]').forEach(c=>c.onchange=()=>{if(c.checked)g.read[c.dataset.read]=true;else delete g.read[c.dataset.read];touchGrades(t.id)});
-  app.querySelector('#unlock').onclick=()=>keep(()=>{v.done=false;touchVals(t.id)});
+  app.querySelector('#unlock').onclick=()=>keep(()=>{v.done=false;v.unlockedAt=Date.now();touchVals(t.id)});
   app.querySelector('#wipe').onclick=async()=>{if(await ask(`<b>${esc(t.title)}の答えと採点をすべて消しますか？</b><p class="sub">手書きもふくめて消えます。元にもどせません。</p>`,'消す','やめる'))keep(()=>{
-    S.vals[t.id]={v:{},el:0,started:false,done:false,t:0};touchVals(t.id);S.grades[t.id]={m:{},o:{},read:{},t:0};touchGrades(t.id);
+    S.vals[t.id]={v:{},el:0,started:false,done:false,unlockedAt:Date.now(),t:0};touchVals(t.id);S.grades[t.id]={m:{},o:{},read:{},t:0};touchGrades(t.id);
     Object.keys(S.ink).filter(k=>k.startsWith(t.id+'__')).forEach(k=>{if(S.ink[k].s.length){S.ink[k].s=[];touchInk(k)}})})}}
 function report(){const L=['【学習ノート 結果】'];
   TASKS.filter(x=>x.group===(TASK[S.ptab]||TASKS[0]).group).forEach(t=>{const v=V(t.id),g=G(t.id),T=total(t.id);
@@ -737,7 +747,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010095505';
+const BUILD='20261010095620';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
