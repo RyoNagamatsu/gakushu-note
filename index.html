@@ -241,6 +241,8 @@ body.bg-v .daychip{border-color:var(--d5);color:var(--warn)}
 .sm .mk{width:48px;height:48px;font-size:1.4rem;background:var(--sheet)}
 .auto{font-weight:900;font-size:1.4rem;width:44px;height:44px;border-radius:50%;display:inline-grid;place-items:center;border:2.5px solid var(--line);font-family:var(--f-ui)}
 .auto.o{color:var(--shu);border-color:var(--shu)}.auto.x{color:var(--soft)}
+.kst{display:block;font-size:.8rem;font-weight:900;min-height:1.4em;max-width:150px;line-height:1.4;margin-top:2px}
+.kst.ok{color:var(--ok)}.kst.ng{color:var(--shu)}.kst.fl{color:var(--warn)}
 .retry{border:2.5px dashed var(--shu);border-radius:16px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .retry>b{font-size:.9rem;color:var(--shu)}
 .retry .opts{width:100%}
@@ -534,7 +536,7 @@ function ask(html,yes,no){return new Promise(res=>{
 
 /* ---------- handwriting ---------- */
 let penSeen=false;const inks=[];
-function mkInk(host,key,lh,ro,ruled,free){
+function mkInk(host,key,lh,ro,ruled,free,onchg){
   const c=document.createElement('canvas');c.className='ink'+(ruled?' ruled':'')+(ro?' ro':'');c.style.aspectRatio='1000/'+lh;c.setAttribute('aria-label','手書きのわく');host.appendChild(c);
   const strokes=()=>((S.ink[key]||{}).s||[]);
   let cur=null,drawer=null;
@@ -552,11 +554,11 @@ function mkInk(host,key,lh,ro,ruled,free){
     c.addEventListener('pointermove',e=>{if(!cur||e.pointerId!==drawer)return;e.preventDefault();
       const evs=(e.getCoalescedEvents&&e.getCoalescedEvents().length)?e.getCoalescedEvents():[e];
       evs.forEach(ev=>{const p=pt(ev),n=cur.length;if(Math.abs(p[0]-cur[n-2])+Math.abs(p[1]-cur[n-1])>=3)cur.push(p[0],p[1])});draw()});
-    const end=e=>{if(!cur||e.pointerId!==drawer)return;const r=S.ink[key]||(S.ink[key]={s:[],t:0});r.s.push(cur.join(','));cur=null;drawer=null;touchInk(key);draw();if(free)paintReview()};
+    const end=e=>{if(!cur||e.pointerId!==drawer)return;const r=S.ink[key]||(S.ink[key]={s:[],t:0});r.s.push(cur.join(','));cur=null;drawer=null;touchInk(key);draw();if(free)paintReview();if(onchg)onchg()};
     c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
   }
   if(window.ResizeObserver)new ResizeObserver(draw).observe(c);requestAnimationFrame(draw);
-  const api={draw,undo(){const r=S.ink[key];if(r&&r.s.length){r.s.pop();touchInk(key);draw()}},clear(){const r=S.ink[key];if(r&&r.s.length){r.s=[];touchInk(key);draw();if(free)paintReview()}}};
+  const api={draw,undo(){const r=S.ink[key];if(r&&r.s.length){r.s.pop();touchInk(key);draw()}},clear(){const r=S.ink[key];if(r&&r.s.length){r.s=[];touchInk(key);draw();if(free)paintReview();if(onchg)onchg(true)}}};
   inks.push(api);return api}
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>inks.forEach(i=>i.draw()))}catch(e){}
 
@@ -571,6 +573,35 @@ function mountModels(){app.querySelectorAll('.kjm[data-kv]').forEach(m=>kv(m.dat
 function play(box){const ps=[...box.querySelectorAll('path')];if(!ps.length)return;const tk=box._tk=(box._tk||0)+1;
   ps.forEach(p=>{const L=p.getTotalLength();p.style.transition='none';p.style.strokeDasharray=L;p.style.strokeDashoffset=L});let i=0;
   (function next(){if(box._tk!==tk||i>=ps.length)return;const p=ps[i++],ms=Math.max(350,p.getTotalLength()*9);p.getBoundingClientRect();p.style.transition='stroke-dashoffset '+ms+'ms linear';p.style.strokeDashoffset=0;setTimeout(next,ms+250)})()}
+
+/* ---------- lenient kanji check ----------
+   Compares the child's strokes with the model (KanjiVG). Small differences in angle, size and position pass.
+   A box fails only when the number of strokes is wrong or a stroke is clearly somewhere else. After 3 failed tries the box is accepted and flagged for a parent. */
+const KREF={};
+function refStrokes(ch){if(!KREF[ch])KREF[ch]=kv(ch).then(d=>{if(!d)return null;const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.style.cssText='position:absolute;width:0;height:0;overflow:hidden';document.body.appendChild(svg);
+    const out=d.p.map(dd=>{const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',dd);svg.appendChild(p);const L=p.getTotalLength(),a=[];for(let i=0;i<8;i++){const q=p.getPointAtLength(L*i/7);a.push([q.x,q.y])}return a});svg.remove();return out}).catch(()=>null);return KREF[ch]}
+function resample(pts,n){const d=[0];for(let i=1;i<pts.length;i++)d.push(d[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));const L=d[d.length-1],o=[];
+  if(!L)return Array.from({length:n},()=>pts[0].slice());
+  for(let k=0,j=1;k<n;k++){const t=L*k/(n-1);while(j<pts.length-1&&d[j]<t)j++;const r=(t-d[j-1])/((d[j]-d[j-1])||1);o.push([pts[j-1][0]+(pts[j][0]-pts[j-1][0])*r,pts[j-1][1]+(pts[j][1]-pts[j-1][1])*r])}return o}
+function normSet(set){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;set.forEach(s=>s.forEach(p=>{x0=Math.min(x0,p[0]);y0=Math.min(y0,p[1]);x1=Math.max(x1,p[0]);y1=Math.max(y1,p[1])}));
+  const sc=Math.max(x1-x0,y1-y0)||1,cx=(x0+x1)/2,cy=(y0+y1)/2;return set.map(s=>s.map(p=>[(p[0]-cx)/sc,(p[1]-cy)/sc]))}
+const sdist=(a,b,rev)=>{let t=0;for(let i=0;i<a.length;i++){const q=b[rev?b.length-1-i:i];t+=Math.hypot(a[i][0]-q[0],a[i][1]-q[1])}return t/a.length};
+function childStrokes(key){const r=S.ink[key];if(!r)return [];return r.s.map(x=>{const a=x.split(',').map(Number),p=[];for(let i=0;i<a.length;i+=2)p.push([a[i],a[i+1]]);return p})
+  .filter(p=>{let L=0;for(let i=1;i<p.length;i++)L+=Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]);return L>=18||p.length<=2&&false})}
+// returns 'ok' | 'note' (shape fine, order or direction differs) | 'ng' | 'few' (fewer strokes than the model so far) | null (empty)
+async function judgeKanji(key,ch){const ref=await refStrokes(ch);if(!ref)return null;const cs=childStrokes(key);if(!cs.length)return null;if(cs.length<ref.length)return 'few';if(cs.length>ref.length)return 'ng';
+  const R=normSet(ref),C=normSet(cs.map(s=>resample(s,8)));
+  if(R.every((r,i)=>sdist(r,C[i])<0.24))return 'ok';
+  const used=new Set();for(const r of R){let best=-1,bd=9;C.forEach((c,j)=>{if(used.has(j))return;const d=Math.min(sdist(r,c),sdist(r,c,true));if(d<bd){bd=d;best=j}});if(bd>=0.3)return 'ng';used.add(best)}
+  return 'note'}
+async function judgeBox(tid,ikeyPart,ch,cleared,quiet){const v=V(tid),key=ikey(tid,ikeyPart);v.kj=v.kj||{};const st=v.kj[ikeyPart]||(v.kj[ikeyPart]={n:0});
+  if(cleared){st.r=null;st.c=false}else{const r=await judgeKanji(key,ch);
+    if(r==='ng'&&!st.c&&!quiet){st.n=(st.n||0)+1;st.c=true}if(r==='ok'||r==='note')st.c=false;st.r=r;if(r==='ng'&&st.n>=3)st.f=true}
+  if(!quiet)touchVals(tid);
+  const el=document.querySelector('[data-kst="'+ikeyPart+'"]');if(!el)return;const bad=st.r==='ng'&&!st.f;
+  el.className='kst'+(st.r==='ok'||st.r==='note'?' ok':bad?' ng':st.r==='ng'?' fl':'');
+  el.textContent=st.r==='ok'?'○ よくかけました':st.r==='note'?'○ かたちはOK。かきじゅんを 見てみよう':bad?'もういちど かこう（「けす」を おす）':st.r==='ng'?'おうちの人に 見てもらおう':''}
+function badKanji(t){const kj=V(t.id).kj||{};return Object.keys(kj).filter(k=>(kj[k].r==='ng'&&!kj[k].f)||kj[k].r==='few')}
 
 /* ---------- furigana for interface words ---------- */
 const FURI={'学習':'がくしゅう','宿題':'しゅくだい','準優勝':'じゅんゆうしょう','優勝':'ゆうしょう','決勝':'けっしょう','突破':'とっぱ','月曜日':'げつようび','火曜日':'かようび','水曜日':'すいようび','木曜日':'もくようび','金曜日':'きんようび','土曜':'どよう','週':'しゅう','第':'だい','漢字':'かんじ','国語':'こくご','算数':'さんすう','保存':'ほぞん','採点':'さいてん','道':'みち','回':'かい','点':'てん','時間':'じかん','問題':'もんだい','毎日':'まいにち','前':'まえ','土曜日':'どようび'};
@@ -627,7 +658,7 @@ function itemHTML(t,it,n,ro){
   const RT=key=>canMark&&key?`<div class="retry" data-rt="${key}" ${sf[key]===0?'':'hidden'}><b>もういちど、正しいこたえを かこう</b>${big?`<div class="inkbox" data-ink="${key}.r" data-h="300" data-ruled="1"></div>`:`<span class="ib" data-ink="${key}.r" data-h="${bh({w:12})}" data-mini="1" style="width:${bw({w:12})}px"></span>`}</div>`:'';
   const SM=key=>canMark&&key?`<span class="sm"><button class="mk o${sf[key]===1?' sel':''}" data-sm="${key}" data-val="1" aria-label="あっていた">○</button><button class="mk x${sf[key]===0?' sel':''}" data-sm="${key}" data-val="0" aria-label="ちがっていた">×</button></span>`:'';
   const A=(ro&&t.hw)?(x,key)=>(x?`<p class="ansline"><span>こたえ：${esc(x)}</span>${SM(key)}</p>${RT(key)}`:'')+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):()=>'';
-  if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
+  if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:`data-kch="${esc(it.ch)}"`}></div>${bg?'':`<span class="kst" data-kst="${it.id}.${k}"></span>`}</div>`;
     return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
       <div class="kji"><div><b>音</b>${esc(it.on||'－')}　<b>訓</b>${esc(it.kun||'－')}　<b>かくすう</b>${esc(it.st||'')}かく</div><div><b>ことば</b>${(it.ex||[]).map(e=>esc(e[0])+'（'+esc(e[1])+'）').join('　')}</div>
       ${it.tip?`<div class="ansline" style="font-size:.95rem">${rich(it.tip)}</div>`:''}<button class="btn ghost sm" data-play="1">かきじゅんを 見る</button></div></div>
@@ -677,14 +708,17 @@ function renderTask(){
      <div class="row end"><button class="btn" id="rvDone">${v.rev?'ホームに もどる':'ふりかえりを おわる'}</button></div></section>`:''}
    ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
   </div>`;
-  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink),free=!!box.closest('.retry'),bro=free?pv:ro;const api=mkInk(sqHost(box),key,+box.dataset.h,bro,!!box.dataset.ruled,free);
+  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink),free=!!box.closest('.retry'),bro=free?pv:ro,kch=box.dataset.kch;const api=mkInk(sqHost(box),key,+box.dataset.h,bro,!!box.dataset.ruled,free,kch&&!bro?(cleared=>judgeBox(t.id,box.dataset.ink,kch,cleared)):null);if(kch)judgeBox(t.id,box.dataset.ink,kch,false,true);
     if(!bro){const tools=document.createElement('div');tools.className='inktools';if(box.dataset.mini){const x=document.createElement('button');x.className='btn ghost';x.textContent='けす';x.onclick=()=>api.clear();box.appendChild(x);return}
       tools.innerHTML='<button class="btn ghost sm" data-u>1つもどす</button><button class="btn ghost sm" data-x>ぜんぶけす</button>';box.appendChild(tools);
       tools.querySelector('[data-u]').onclick=()=>api.undo();const x=tools.querySelector('[data-x]');let armed=0;
       x.onclick=()=>{if(armed){api.clear();armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')}else{armed=1;x.textContent='ほんとうにけす';x.classList.add('red');setTimeout(()=>{armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')},3000)}}}});
   mountModels();app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const m=b.closest('.kjh').querySelector('.kjm');play(m)});
   app.querySelector('#back').onclick=()=>{if(ro&&!pv&&t.hw&&!v.rev){const c=reviewCount(t);if(c.n+c.u>0){ask('<b>こたえあわせが まだ のこっています</b><p class="sub">ぜんぶの もんだいに ○か × をつけて、× の もんだいを もういちど かいてから もどろう。</p>','わかった');const r=document.getElementById('review');if(r)r.scrollIntoView();return}}go(pv?'parent':'home')};
-  const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
+  const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const bk=t.hw?badKanji(t):[];
+    if(bk.length){await ask(`<b>かんじの かきなおしが ${bk.length} こ あります</b><p class="sub">「もういちど かこう」と出ている わくを、「けす」を おして かきなおそう。手本と 画の数、線のむきを くらべてみよう。</p>`,'わかった');bk.forEach(k=>{if((v.kj[k]||{}).r==='few'){const e2=app.querySelector('[data-kst="'+k+'"]');if(e2){e2.className='kst ng';e2.textContent='画の数が たりないよ。手本を 見て かきたそう'}}});
+      const el=app.querySelector('[data-kst="'+bk[0]+'"]');if(el)el.closest('.item').scrollIntoView();return}
+    const blanks=countBlank(t);
     if(await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}出したあとは、なおせません。</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();
       const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>決勝、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で決勝です。':'5日そろいました。土曜テストが決勝です！'}</p><div class="tips">${tipsHTML(v.tip||0)}</div>`,'やった！')}
       if(t.hw){go('task',t.id)}else go('home')}};
@@ -806,7 +840,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010133203';
+const BUILD='20261010133541';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
