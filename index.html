@@ -412,17 +412,18 @@ function satBefore(mon){const d=new Date(mon+'T12:00:00');d.setDate(d.getDate()-
 function addDays(d,n){const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return ymd(x.getTime())}
 const hwAll=w=>w._d.every(id=>{const v=S.vals[id]||{};return v.done&&v.rev});
 function lockInfo(t,today){if(!t.open)return null;
-  // The test opens as soon as all five homeworks (incl. answer check) are finished, or on its Saturday at the latest.
-  if(t.test){const w=WEEKS.find(x=>x._t===t.id);if(w&&hwAll(w))return null;return t.open>today?'月〜金の宿題を ぜんぶ おわらせると ひらきます':null}
+  // No calendar: the child moves at his own pace. The test opens as soon as all five homeworks (incl. answer check) are finished.
+  if(t.test){const w=WEEKS.find(x=>x._t===t.id);if(w&&hwAll(w))return null;return '5日分の宿題を ぜんぶ おわらせると ひらきます'}
   // While the test is open and not handed in, homework stays closed, so answers cannot be looked up.
-  if(t.hw&&WEEKS.some(w=>w._t&&w.test&&w.id>=t.week&&(hwAll(w)||(w.test.d<=today&&today<addDays(w.id,7)))&&!(S.vals[w._t]||{}).done))return 'テストを出すまで見られません';
-  if(t.hw){const d=new Date(t.week+'T12:00:00');d.setDate(d.getDate()-7);const pid=ymd(d.getTime()),pw=WEEKS.find(w=>w.id===pid);
-    if(pw&&pw._t&&today<t.week){if((S.vals[pw._t]||{}).done)return null;return 'まえの週のテストを出すとひらきます'}}
-  return t.open>today?md(t.open)+' にひらきます':null}
+  if(t.hw&&WEEKS.some(w=>w._t&&w.test&&w.id>=t.week&&hwAll(w)&&!(S.vals[w._t]||{}).done))return 'テストを出すまで見られません';
+  // A week opens once the previous week's test has been handed in.
+  if(t.hw){const pw=WEEKS.filter(w=>w.id<t.week).sort((a,b)=>a.id<b.id?1:-1)[0];
+    if(pw&&pw._t){if((S.vals[pw._t]||{}).done)return null;return 'まえの週のテストを出すとひらきます'}}
+  return null}
 function setWeeks(list){TASKS.length=BASE;WEEKS.length=0;
-  (list||[]).filter(w=>w&&w.id&&Array.isArray(w.days)).sort((a,b)=>a.id<b.id?1:-1).forEach(w=>{w=JSON.parse(JSON.stringify(w));WEEKS.push(w);w._d=[];
-    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:d.wd+'曜日',date:d.d,open:satBefore(w.id),week:w.id,min:d.min||30,pts:0,hw:true,sections:d.sections||[]})});
-    if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,group:w.label,title:'土曜テスト',date:w.test.d,open:w.test.d,min:w.test.min||30,pts:0,test:true,sections:w.test.sections||[]})}});
+  (list||[]).filter(w=>w&&w.id&&Array.isArray(w.days)).sort((a,b)=>a.id<b.id?1:-1).forEach(w=>{w=JSON.parse(JSON.stringify(w));if(w.n)w.label=w.n+'w';WEEKS.push(w);w._d=[];
+    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:(i+1)+'日目',day:i+1,open:true,week:w.id,min:d.min||30,pts:0,hw:true,sections:d.sections||[]})});
+    if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,group:w.label,title:'テスト',open:true,min:w.test.min||30,pts:0,test:true,sections:w.test.sections||[]})}});
   for(const k in TASK)delete TASK[k];TASKS.forEach(t=>TASK[t.id]=t);
   TASKS.slice(BASE).forEach(t=>{if(t.test)t.pts=items(t).reduce((n,it)=>n+(it.k==='fill'?(it.each?it.pts*it.b.length:it.pts)+(it.work?it.work.pts:0):(it.pts||0)),0)})}
 const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
@@ -491,7 +492,7 @@ async function pull(){let ch=await loadWeeks();if(!token)return ch;
         if(mergeRemote(path,x))ch=true}}
     LS.set('gk1.shas',shas);if(ch)saveLocal()}catch(e){}
   return ch}
-function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.find(x=>x.date===today&&!(S.vals[x.id]||{}).done&&!lockInfo(x,today));if(t){hashDone=true;go('task',t.id)}}
+function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.slice(BASE).find(x=>!(S.vals[x.id]||{}).done&&!lockInfo(x,today));if(t){hashDone=true;go('task',t.id)}}
 (async function connect(){const ch=await pull();if(ch&&!S.running)render();status();openToday();sync()})();
 async function setToken(v){token=v;LS.set('gk1.token',v);if(!v)return '未設定';
   try{const r=await fetch(REPO,{headers:hdr(),cache:'no-store'});if(!r.ok){saveErr=true;return 'つながりません。鍵を確認してください（'+r.status+'）'}}catch(e){saveErr=true;return 'つながりません。通信を確認してください'}
@@ -516,7 +517,7 @@ function score(t,it){const g=G(t),v=V(t).v;let got=0,max=0,pend=0;
   return {got,max,pend}}
 const ymd=ms=>{const d=new Date(ms);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const md=s=>{const a=String(s||'').split('-');return a.length===3?(+a[1])+'/'+(+a[2]):''};
-function weekPts(w){let hw=0,full=0;const rows=[];w._d.forEach((id,i)=>{const v=S.vals[id]||{};let p=0;if(v.done){const on=v.doneAt&&ymd(v.doneAt)<=w.days[i].d;p=(on?3:1)+(v.rev?(on?2:1):0)}if(p===5)full++;hw+=p;rows.push(p)});
+function weekPts(w){let hw=0,full=0;const rows=[];w._d.forEach((id,i)=>{const v=S.vals[id]||{};let p=0;if(v.done){p=3+(v.rev?2:0)}if(p===5)full++;hw+=p;rows.push(p)});
   const bonus=full===w._d.length&&full>0?5:0;let test=0,neat=0,prov=false;
   if(w._t){const v=S.vals[w._t]||{};if(v.done){const T=total(w._t);if(T.pend||!T.max){test=5;prov=T.pend>0}else{const r=T.got/T.max;test=r>=0.8?15:r>=0.6?10:5}if((S.grades[w._t]||{}).neat===true)neat=5}}
   return {rows,hw,bonus,test,neat,prov,sum:hw+bonus+test+neat}}
@@ -648,12 +649,12 @@ function renderHome(){
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
      ${w?cupHTML(w):''}
      ${P?`<p class="ptline"><span>この週</span><b>${P.sum}</b><span class="sub">/ 50ポイント（宿題 ${P.hw}・5日そろい ${P.bonus}・テスト ${P.test}${P.prov?'（採点まち）':''}・ていねい ${P.neat}）</span></p>`:''}
-     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub noruby">テストは、月〜金の宿題を答え合わせまで全部終えるとひらきます（土曜日になればひらきます）。次の週の宿題は、テストを出すとひらきます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub noruby">テストは、5日分の宿題を答え合わせまで全部終えるとひらきます。次の週の宿題は、テストを出すとひらきます。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
-     const dn=t.hw?('月火水木金'.indexOf(t.title[0])+1):t.test?6:(TASKS.indexOf(t)%6+1),dot=`<span class="dot d${dn}">${esc(t.test?'土':t.title[0])}</span>`;
-     const lk=lockInfo(t,today);if(lk)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${esc(lk)}</span></div></div>`;
+     const dn=t.hw?t.day:t.test?6:(TASKS.indexOf(t)%6+1),dot=`<span class="dot d${dn}">${esc(t.test?'テ':t.hw?String(t.day):t.title[0])}</span>`;
+     const lk=lockInfo(t,today);if(lk)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${t.min}分</small><span class="st">${esc(lk)}</span></div></div>`;
      const st=v.done?((t.hw&&!v.rev)?['go','こたえあわせ']:['done','おわり']):v.started?['go','とちゅう']:['','まだ'];
-     return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}">${dot}<span class="cb"><b>${esc(t.title)}</b><small>${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></span></button>`}).join('')}</div></div>`}).join('')}
+     return `<button class="card" data-open="${t.id}">${dot}<span class="cb"><b>${esc(t.title)}</b><small>${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${st[0]}">${st[1]}</span></span></button>`}).join('')}</div></div>`}).join('')}
    ${token?'':'<p class="banner noruby">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
    <div class="row"><button class="btn ghost sm noruby" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
@@ -818,9 +819,9 @@ function renderParent(){
    <div class="tabs">${TASKS.filter(x=>x.group===t.group).map(x=>`<button class="tab${x.id===t.id?' on':''}" data-tab="${x.id}">${esc(x.title)}</button>`).join('')}</div>
    <div class="row"><button class="btn ghost sm" id="pview">「${esc(t.title)}」の問題用紙を見る</button></div>
    ${PW?`<section class="sec"><p class="ptline"><span>この週のポイント</span><b>${PP.sum}</b><span class="sub">/ 50</span></p><div class="tblw"><table><tbody>
-     ${PW.days.map((d,i)=>`<tr><td>${esc(d.wd)}曜日（${md(d.d)}）の宿題</td><td class="num">${PP.rows[i]}</td></tr>`).join('')}
-     <tr><td>5日そろったボーナス</td><td class="num">${PP.bonus}</td></tr><tr><td>土曜テスト${PP.prov?'（採点がすむと確定）':''}</td><td class="num">${PP.test}</td></tr><tr><td>ていねいボーナス</td><td class="num">${PP.neat}</td></tr></tbody></table></div>
-     <p class="sub">宿題は当日までに出すと3、答え合わせと間違いのやり直しまで終えるとさらに2で、1日5です（あとから出した日は1＋1）。5日とも満点ならボーナス5。テストは8割以上15、6〜8割10、6割未満5。ていねいボーナスは5。1週間の満点は50ポイントです。</p>
+     ${PW.days.map((d,i)=>`<tr><td>${i+1}日目の宿題</td><td class="num">${PP.rows[i]}</td></tr>`).join('')}
+     <tr><td>5日そろったボーナス</td><td class="num">${PP.bonus}</td></tr><tr><td>テスト${PP.prov?'（採点がすむと確定）':''}</td><td class="num">${PP.test}</td></tr><tr><td>ていねいボーナス</td><td class="num">${PP.neat}</td></tr></tbody></table></div>
+     <p class="sub">宿題は出すと3、答え合わせと間違いのやり直しまで終えるとさらに2で、1日5です。5日とも満点ならボーナス5。テストは8割以上15、6〜8割10、6割未満5。ていねいボーナスは5。1週間の満点は50ポイントです。</p>
      <p class="sub">優勝への道：毎週ちがう大会に挑戦します（ワールドカップ → J3 → J2 → J1 → 天皇杯 → オランダ → フランス → イタリア → ドイツ → スペイン → プレミアリーグ → チャンピオンズリーグ、12週で一巡）。宿題を1日終えるごとに1つ進みます。テストが8割以上で宿題も5日そろっていれば優勝、6割以上で準優勝（リーグは2位）、それ未満はベスト4（リーグは4位）です。結果は採点がすむと出ます。</p>
      ${t.test?`<label class="chk"><input type="checkbox" id="neat" ${g.neat===true?'checked':''}>ていねいボーナスをつける（空らんがなく、字が読みやすい）</label>`:''}</section>`:''}
    <section class="sec">
@@ -870,7 +871,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011150530';
+const BUILD='20261011150740';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
