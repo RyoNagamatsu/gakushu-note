@@ -390,9 +390,9 @@ function score(t,it){const g=G(t),v=V(t).v;let got=0,max=0,pend=0;
   return {got,max,pend}}
 const ymd=ms=>{const d=new Date(ms);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const md=s=>{const a=String(s||'').split('-');return a.length===3?(+a[1])+'/'+(+a[2]):''};
-function weekPts(w){let hw=0,full=0;const rows=[];w._d.forEach((id,i)=>{const v=S.vals[id]||{};let p=0;if(v.done)p=(v.doneAt&&ymd(v.doneAt)<=w.days[i].d)?10:5;if(p===10)full++;hw+=p;rows.push(p)});
-  const bonus=full===w._d.length&&full>0?10:0;let test=0,neat=0,prov=false;
-  if(w._t){const v=S.vals[w._t]||{};if(v.done){const T=total(w._t);if(T.pend||!T.max){test=10;prov=T.pend>0}else{const r=T.got/T.max;test=r>=0.8?30:r>=0.6?20:10}if((S.grades[w._t]||{}).neat===true)neat=10}}
+function weekPts(w){let hw=0,full=0;const rows=[];w._d.forEach((id,i)=>{const v=S.vals[id]||{};let p=0;if(v.done){const on=v.doneAt&&ymd(v.doneAt)<=w.days[i].d;p=(on?3:1)+(v.rev?(on?2:1):0)}if(p===5)full++;hw+=p;rows.push(p)});
+  const bonus=full===w._d.length&&full>0?5:0;let test=0,neat=0,prov=false;
+  if(w._t){const v=S.vals[w._t]||{};if(v.done){const T=total(w._t);if(T.pend||!T.max){test=5;prov=T.pend>0}else{const r=T.got/T.max;test=r>=0.8?15:r>=0.6?10:5}if((S.grades[w._t]||{}).neat===true)neat=5}}
   return {rows,hw,bonus,test,neat,prov,sum:hw+bonus+test+neat}}
 function total(t){const r={got:0,max:0,pend:0,lv:{}};items(TASK[t]).forEach(it=>{const s=score(t,it);r.got+=s.got;r.max+=s.max;r.pend+=s.pend;
   if(it.lv){const L=r.lv[it.lv]||(r.lv[it.lv]={got:0,max:0});L.got+=s.got;L.max+=s.max}});return r}
@@ -579,7 +579,7 @@ function renderHome(){
     <div class="pyon-tx">
      ${fed?`<p class="pyon-say">${fed.grew?'にんじんを たべて、おおきく なったよ！':'もぐもぐ… にんじん、おいしい！ ありがとう。'}</p>`:''}
      <p class="pyon-name">ぴょんぴょん<span class="st go">${STAGES[st][1]}</span></p>
-     <p class="ptline"><span>たべた にんじん</span><b>${n}</b><span>本</span></p>
+     <p class="ptline"><span>たべた にんじん</span><b>${n}</b><span>本</span>${WEEKS.length?`<span>　ポイント</span><b>${WEEKS.reduce((a,w)=>a+weekPts(w).sum,0)}</b>`:''}</p>
      <div class="meter" role="img" aria-label="つぎに おおきく なるまで ${pct}パーセント"><i style="width:${pct}%"></i></div>
      <p class="sub">${nx?`あと ${nx[0]-n}本で「${nx[1]}」に なるよ。`:'いちばん おおきく なりました。'}</p>
      <div class="track">${ct.map(t=>`<span class="${isDone(t)?'done':''}">${CARROT}</span>`).join('')}</div>
@@ -589,13 +589,14 @@ function renderHome(){
    ${(()=>{let l=null;Object.values(S.vals).forEach(x=>{if(x&&typeof x.tip==='number'&&(!l||(x.revAt||0)>(l.revAt||0)))l=x});if(!l)return '';
      return `<section class="tips"><h2>きょうの まめちしき</h2><div class="tip"><b>たいそうの コツ</b><p>${esc(TIPS_G[l.tip%TIPS_G.length])}</p></div><div class="tip"><b>うさぎの おはなし</b><p>${esc(TIPS_R[l.tip%TIPS_R.length])}</p></div></section>`})()}
    ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
-   ${groups.map(g=>`<div class="grp"><h2>${esc(g)}</h2>
+   ${groups.map(g=>{const gw=WEEKS.find(x=>x.label===g),P=gw?weekPts(gw):null;return `<div class="grp"><h2>${esc(g)}</h2>
+     ${P?`<p class="ptline"><span>この しゅうの ポイント</span><b>${P.sum}</b><span class="sub">/ 50（しゅくだい ${P.hw}・5日 そろい ${P.bonus}・テスト ${P.test}${P.prov?'（さいてんまち）':''}・ていねい ${P.neat}）</span></p>`:''}
      ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub">げつようびから きんようびまで、すきな ときに できます。5つ ぜんぶ こたえあわせまで おわると テスト、テストを 出すと つぎの しゅうが ひらきます。</p>':''}
      ${TASKS.some(t=>t.group===g&&t.set)?'<p class="sub">きょう、3つ やりましょう。1つ 10分、ぜんぶで 30分です。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
      const lk=lockInfo(t,today);if(lk)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${esc(lk)}</span></div>`;
      const sx=v.done?((t.hw&&!v.rev)?['go','こたえあわせ']:['done','おわり']):v.started?['go','とちゅう']:['','まだ'];
-     return `<button class="card${nxt&&t.id===nxt.id?' today':''}" data-open="${t.id}"><span class="cc${isFinId(t.id)?' done':''}">${CARROT}</span><b>${esc(t.title)}</b><small>${t.day?t.day+'日め・':''}${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${sx[0]}">${sx[1]}</span></button>`}).join('')}</div></div>`).join('')}
+     return `<button class="card${nxt&&t.id===nxt.id?' today':''}" data-open="${t.id}"><span class="cc${isFinId(t.id)?' done':''}">${CARROT}</span><b>${esc(t.title)}</b><small>${t.day?t.day+'日め・':''}${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${sx[0]}">${sx[1]}</span></button>`}).join('')}</div></div>`}).join('')}
    <div class="row"><button class="btn ghost sm" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
   </div>`;
@@ -746,10 +747,10 @@ function renderParent(){
    <div class="tabs">${pgroups.map(x=>`<button class="tab${x===t.group?' on':''}" data-grp="${esc(x)}">${esc(x)}</button>`).join('')}</div>
    <div class="tabs">${TASKS.filter(x=>x.group===t.group).map(x=>`<button class="tab${x.id===t.id?' on':''}" data-tab="${x.id}">${esc(x.title)}</button>`).join('')}</div>
    <div class="row"><button class="btn ghost sm" id="pview">「${esc(t.title)}」の問題用紙を見る</button></div>
-   ${PW?`<section class="sec"><p class="ptline"><span>この週のポイント</span><b>${PP.sum}</b><span class="sub">/ 100</span></p><div class="tblw"><table><tbody>
+   ${PW?`<section class="sec"><p class="ptline"><span>この週のポイント</span><b>${PP.sum}</b><span class="sub">/ 50</span></p><div class="tblw"><table><tbody>
      ${PW.days.map((d,i)=>`<tr><td>${esc(d.wd)}ようび（${md(d.d)}）の宿題</td><td class="num">${PP.rows[i]}</td></tr>`).join('')}
      <tr><td>ぜんぶ そろったボーナス</td><td class="num">${PP.bonus}</td></tr><tr><td>土曜テスト${PP.prov?'（採点がすむと確定）':''}</td><td class="num">${PP.test}</td></tr><tr><td>ていねいボーナス</td><td class="num">${PP.neat}</td></tr></tbody></table></div>
-     <p class="sub">宿題は当日に出すと10、あとから出すと5です。テストは8割以上30、6〜8割20、6割未満10です。</p>
+     <p class="sub">1週間の上限は50ポイントです。宿題は当日までに出すと3、答え合わせと間違いの書き直しまで終えるとさらに2で、1日5です（日付より後に出した日は1＋1）。5日とも5ポイントならボーナス5。土曜テストは8割以上15、6〜8割10、6割未満5（採点がすむまでは5）。ていねいボーナスは5で、保護者がつけます。</p>
      ${t.test?`<label class="chk"><input type="checkbox" id="neat" ${g.neat===true?'checked':''}>ていねいボーナスをつける（空らんがなく、字が読みやすい）</label>`:''}</section>`:''}
    <section class="sec">
     <div class="row"><div>${t.pts?`<div class="big">${T.got}<span style="font-size:1rem"> / ${T.max}点</span></div>`:'<b>点数はつけません</b>'}
@@ -799,7 +800,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011121548';
+const BUILD='20261011150423';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
