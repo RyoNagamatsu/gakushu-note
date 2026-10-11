@@ -25,6 +25,9 @@
   --f-en:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
+/* Writing with the Pencil must never start a text selection or the copy / look-up bubble. Only the fields a parent types in stay selectable. */
+html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+input,textarea{-webkit-user-select:text;user-select:text}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -685,7 +688,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011115103';
+const BUILD='20261011115831';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
