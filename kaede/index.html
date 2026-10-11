@@ -276,7 +276,7 @@ function setWeeks(list){TASKS.length=BASE;WEEKS.length=0;
   TASKS.slice(BASE).forEach(t=>{if(t.test)t.pts=items(t).reduce((n,it)=>n+(it.k==='fill'?(it.each?it.pts*it.b.length:it.pts)+(it.work?it.work.pts:0):(it.pts||0)),0)})}
 const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
 /* ---------- what is open ---------- */
-// She may run ahead: handing in one homework opens the next, Friday's opens the Saturday test, and the test opens the next week. Dates only open things that are still closed when the day arrives.
+// She may run ahead: Monday to Friday of an open week are all open at once, handing in all five opens the Saturday test, and handing in the test opens the next week. Dates only open things that are still closed when the day arrives.
 const isDoneId=id=>!!(S.vals[id]||{}).done;
 function weekOpen(w,today){if(today>=w.id)return true;const pw=WEEKS[WEEKS.indexOf(w)+1];
   if(pw)return pw._t?isDoneId(pw._t):pw._d.every(isDoneId);return TASKS.slice(0,BASE).every(t=>isDoneId(t.id))}
@@ -286,7 +286,6 @@ function lockInfo(t,today){if(!t.week)return null;const w=WEEKS.find(x=>x.id===t
   if(t.test)return (all||t.date<=today)?null:'きんようびまで ぜんぶ 出すと ひらきます';
   // While the test is open and not handed in, finished homework (with its red answers) stays closed.
   if(isDoneId(t.id))return (w._t&&!isDoneId(w._t)&&(all||w.test.d<=today))?'テストを 出すまで 見られません':null;
-  const i=w._d.indexOf(t.id);if(i>0&&!isDoneId(w._d[i-1])&&t.date>today)return 'まえの しゅくだいを 出すと ひらきます';
   return null}
 function nextTask(today){for(let i=WEEKS.length-1;i>=0;i--){const w=WEEKS[i];for(const id of w._d.concat(w._t?[w._t]:[])){if(!isDoneId(id)&&TASK[id]&&!lockInfo(TASK[id],today))return TASK[id]}}return null}
 
@@ -482,7 +481,7 @@ function renderHome(){
    </section>
    ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
    ${groups.map(g=>`<div class="grp"><h2>${esc(g)}</h2>
-     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub">1つ 出すと、つぎが ひらきます。きんようびまで おわると テスト、テストを 出すと つぎの しゅうが ひらきます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub">げつようびから きんようびまで、すきな ときに できます。5つ ぜんぶ 出すと テスト、テストを 出すと つぎの しゅうが ひらきます。</p>':''}
      ${TASKS.some(t=>t.group===g&&t.set)?'<p class="sub">きょう、3つ やりましょう。1つ 10分、ぜんぶで 30分です。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
      const lk=lockInfo(t,today);if(lk)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${esc(lk)}</span></div>`;
@@ -656,7 +655,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011071228';
+const BUILD='20261011071510';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
