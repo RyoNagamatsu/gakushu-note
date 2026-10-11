@@ -368,8 +368,8 @@ function touchVals(t){const v=V(t);v.t=Date.now();saveLocal();mark('data/'+t+'.j
 function touchGrades(t){const g=G(t);g.t=Date.now();saveLocal();mark('grades/'+t+'.json')}
 function touchInk(key){const r=S.ink[key];r.t=Date.now();LS.set('gk2.ink.'+key,r);mark('data/'+key.split('__')[0]+'.json')}
 function status(){const el=document.getElementById('save');if(!el)return;
-  el.className='save'+(token&&saveErr?' bad':'');
-  el.textContent=!token?'このiPadに保存ずみ':saveErr?'送信できていません':(syncing||Object.keys(dirty).length)?'保存中…':'保存ずみ'}
+  el.className='save'+(token&&saveErr&&navigator.onLine!==false?' bad':'');
+  el.textContent=!token?'このiPadに保存ずみ':(navigator.onLine===false)?'オフライン（iPadに保存ずみ）':saveErr?'送信できていません':(syncing||Object.keys(dirty).length)?'保存中…':'保存ずみ'}
 async function loadWeeks(){try{const r=await fetch('weeks/index.json',{cache:'no-store'});if(!r.ok)return false;const ids=(await r.json()).slice(-8);
     const list=(await Promise.all(ids.map(id=>fetch('weeks/'+id+'.json',{cache:'no-store'}).then(x=>x.ok?x.json():null).catch(()=>null)))).filter(Boolean);
     if(list.length&&JSON.stringify(list)!==JSON.stringify(LS.get('gk2.weeks')||[])){LS.set('gk2.weeks',list);if(!S.running){setWeeks(list);return true}}}catch(e){}
@@ -629,6 +629,9 @@ function inkSheets(t,L){const tiles=[];L.forEach((x,n)=>{const st=((S.ink[ikey(t
     g.fillStyle='#d00';g.font='bold 16px sans-serif';g.fillText('#'+(n+1),4,16);g.strokeStyle='#bbb';g.lineWidth=1;g.strokeRect(0.5,0.5,499,h-1);tiles.push(c)});
   const sheets=[];let cur=[],y=0;const flush=()=>{if(!cur.length)return;const c=document.createElement('canvas');c.width=500;c.height=y;const g=c.getContext('2d');let yy=0;cur.forEach(tl=>{g.drawImage(tl,0,yy);yy+=tl.height});sheets.push(c.toDataURL('image/png').split(',')[1]);cur=[];y=0};
   tiles.forEach(tl=>{if(y+tl.height>1500)flush();cur.push(tl);y+=tl.height});flush();return sheets}
+function netFail(e){return navigator.onLine===false||e instanceof TypeError}
+let aiCatching=false;
+async function aiCatchUp(){if(!akey||aiCatching||navigator.onLine===false)return;aiCatching=true;try{for(const t of TASKS){const v=S.vals[t.id];if(!v||!v.done||!v.aiWait)continue;delete v.aiWait;delete v.aicq;await aiCheckTask(t);if(v.aiWait)break}}finally{aiCatching=false}}
 async function aiCheckTask(t,force){if(!akey)return;const v=V(t.id);if(v.aicq)return;const L=aiKeys(t).filter(x=>force||!(v.aic||{})[x.key]);if(!L.length)return;
   v.aic=v.aic||{};v.aicq=1;if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render();
   const test=!!t.test;
@@ -653,7 +656,7 @@ Return ONLY a JSON object: {"#1":{"ok":true|false|null,"read":"what she wrote","
       if(test){const g=G(t.id);if(x.o&&r.ok!==null&&typeof g.o[x.key]!=='boolean')g.o[x.key]=r.ok===true;
         if(x.m&&x.pts>0&&typeof g.m[x.key]!=='number'){const p=typeof r.pts==='number'?r.pts:(r.ok===true?x.pts:r.ok===false?0:null);if(p!==null)g.m[x.key]=Math.max(0,Math.min(x.pts,Math.round(p)))}}});
     if(test)touchGrades(t.id);touchVals(t.id)}}
-  catch(e){v.aicErr=String(e.message||e).slice(0,160)}
+  catch(e){if(netFail(e))v.aiWait=1;else v.aicErr=String(e.message||e).slice(0,160)}
   delete v.aicq;touchVals(t.id);if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render()}
 function aiSug(t,key){const v=S.vals[t.id]||{},a=(v.aic||{})[key];if(!a)return (v.aicq&&akey)?'<span class="aisug wait">AI…</span>':'';
   return `<span class="aisug ${a.ok===true?'o':a.ok===false?'x':'n'}">AI：${a.ok===true?'○':a.ok===false?'×':'？'}${a.why?' '+esc(a.why):''}</span>`}
@@ -953,11 +956,20 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011163116';
+const BUILD='20261011171352';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
-checkUpdate();document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
+checkUpdate();document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkUpdate();aiCatchUp()}});
+/* ---------- offline (the service worker is shared with the app one folder up) ---------- */
+if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('../sw.js').catch(()=>{});
+function warmFonts(){if(navigator.onLine===false||!document.fonts||!document.fonts.load)return;
+  let txt='';try{txt=document.documentElement.textContent+JSON.stringify(LS.get('gk2.weeks')||[])}catch(e){return}
+  const ch=[...new Set(txt)].filter(c=>c>' ').join('');
+  ['400 16px "Klee One"','600 16px "Klee One"','500 16px "Zen Maru Gothic"','700 16px "Zen Maru Gothic"','400 16px "Atkinson Hyperlegible"','700 16px "Atkinson Hyperlegible"'].forEach(f=>{try{document.fonts.load(f,ch).catch(()=>{})}catch(e){}})}
+setTimeout(warmFonts,4000);setTimeout(aiCatchUp,6000);
+window.addEventListener('online',()=>{saveErr=false;status();flushAll();checkUpdate();pull().then(ch=>{if(ch&&!S.running&&S.screen!=='task')render();warmFonts()});aiCatchUp()});
+window.addEventListener('offline',()=>status());
 </script>
 
 

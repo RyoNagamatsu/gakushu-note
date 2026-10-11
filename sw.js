@@ -1,7 +1,7 @@
 /* Offline support. Network first for the app and weekly files (so an update is never held back), saved copy when there is no connection.
    Stroke-order data and web fonts do not change, so they are served from the saved copy. Requests to api.github.com and api.anthropic.com are not touched. */
 const C='gk-offline-1';
-const CORE=['./','manifest.webmanifest','icon-180.png','icon-512.png','weeks/index.json'];
+const CORE=['./','manifest.webmanifest','icon-180.png','icon-512.png','weeks/index.json','kaede/','kaede/manifest.webmanifest','kaede/icon-180.png','kaede/icon-512.png','kaede/weeks/index.json'];
 const KV='30 4e 4f 50 51 52 53 54 55 56 57 58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f 80 81 82 83 84 85 86 87 88 89 8a 8b 8c 8d 8e 8f 90 91 92 93 94 95 96 97 98 99 9a 9b 9c 9d 9e 9f'.split(' ');
 const key=u=>{const x=new URL(u);x.search='';x.hash='';return x.href};
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>Promise.all(CORE.map(p=>fetch(p,{cache:'reload'}).then(r=>{if(r.ok)return c.put(key(new URL(p,self.registration.scope).href),r)}).catch(()=>{})))).then(()=>self.skipWaiting()))});
