@@ -726,8 +726,6 @@ function renderHome(){
    </section>
    ${advHTML(R,nxt)}
    ${WEEKS.length?walletHTML():''}
-   ${(()=>{let l=null;Object.values(S.vals).forEach(x=>{if(x&&typeof x.tip==='number'&&(!l||(x.revAt||0)>(l.revAt||0)))l=x});if(!l)return '';
-     return `<section class="tips"><h2>きょうの まめちしき</h2><div class="tip"><b>たいそうの コツ</b><p>${esc(TIPS_G[l.tip%TIPS_G.length])}</p></div><div class="tip"><b>うさぎの おはなし</b><p>${esc(TIPS_R[l.tip%TIPS_R.length])}</p></div></section>`})()}
    ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
    ${groups.map(g=>{const gw=WEEKS.find(x=>x.label===g),P=gw?weekPts(gw):null;return `<div class="grp"><h2>${esc(g)}</h2>
      ${P?`<p class="ptline"><span>この しゅうの ポイント</span><b>${P.sum}</b><span class="sub">/ 50（しゅくだい ${P.hw}・5日 そろい ${P.bonus}・テスト ${P.test}${P.prov?'（さいてんまち）':''}・ていねい ${P.neat}）</span></p>`:''}
@@ -824,7 +822,9 @@ function renderTask(){
     if(c.left>0){const sf=v.self||{},rc=v.rc||{};let el=[...app.querySelectorAll('[data-rv]')].find(r=>typeof sf[r.dataset.rv]!=='number');
       if(!el)el=[...app.querySelectorAll('.retry[data-rt]')].find(r=>{const k=r.dataset.rt;return r.querySelector('[data-rc]')?rc[k]!==(items(t).find(i=>i.id===k)||{}).a:(sf[k]===0&&!hasInk(t.id,k+'.r'))});
       if(el)el.scrollIntoView({block:'center',behavior:'smooth'});return}
-    const b0=stageOf(carrots()),l0=rpg().lv;v.rev=true;v.revAt=Date.now();if(typeof v.tip!=='number')v.tip=Object.values(S.vals).filter(x=>x&&typeof x.tip==='number').length;touchVals(t.id);flushAll();S.fed={grew:stageOf(carrots())>b0,lv:rpg().lv>l0?rpg().lv:0};go('home')}}
+    const b0=stageOf(carrots()),l0=rpg().lv;v.rev=true;v.revAt=Date.now();if(typeof v.tip!=='number')v.tip=Object.values(S.vals).filter(x=>x&&typeof x.tip==='number').length;touchVals(t.id);flushAll();S.fed={grew:stageOf(carrots())>b0,lv:rpg().lv>l0?rpg().lv:0};go('home');
+      // The two tips are shown once, right after the answer check, and not kept on the home screen.
+      ask(`<b>きょうの まめちしき</b><div class="tip"><b>たいそうの コツ</b><p>${esc(TIPS_G[v.tip%TIPS_G.length])}</p></div><div class="tip"><b>うさぎの おはなし</b><p>${esc(TIPS_R[v.tip%TIPS_R.length])}</p></div>`,'よんだよ　OK')}}
   paintClock();if(!ro)gate()}
 // Keys she marks herself, and what is still left: unmarked answers, × answers not written again, wrong choices not picked again.
 function markKeys(t){const ks=[];items(t).forEach(it=>{if(it.scratch)return;
@@ -953,7 +953,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011163035';
+const BUILD='20261011163116';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
