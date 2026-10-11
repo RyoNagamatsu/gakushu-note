@@ -237,6 +237,7 @@ rt{font-size:.5em;font-family:var(--f-ui);font-weight:500;color:var(--soft);lett
 .ansline.todo .sm::before{content:"○か×を おしてね →";font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--warn);margin-right:6px}
 @keyframes flash{0%,60%{background:#ffe27a}100%{background:transparent}}
 .flash{animation:flash 1.4s}
+.ansline.sample{display:block;line-height:1.9}
 .whyline{margin:0;font-family:var(--f-q);background:var(--sun-bg);border-radius:12px;padding:6px 12px;line-height:2.2}
 .whyline::before{content:"ポイント：";font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--warn)}
 .sec>h3{line-height:2}
@@ -681,12 +682,12 @@ function itemHTML(t,it,n,ro,side){
       return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
     return `<div class="item${side?' calc':''}">${side?'<div class="cm">':''}${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
       ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${esc(it.work.label)}</span></div>`:''}
-      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''),it.id)}${side?`</div><div class="inkbox cs" data-ink="${it.id}.c" data-h="520"><span class="sub">けいさん</span></div>`:''}</div>`}
+      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''),it.id)}${side?`</div><div class="inkbox cs" data-ink="${it.id}.c" data-h="520" data-free="1"><span class="sub">けいさん</span></div>`:''}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
       `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${(ro&&t.hw)?`<p class="ansline"><span>こたえ：${esc(it.a)}</span><span class="auto ${v[it.id]===it.a?'o':'x'}">${v[it.id]===it.a?'○':'×'}</span></p>${canMark&&v[it.id]!==it.a?`<div class="retry" data-rt="${it.id}"><b>もういちど、正しいこたえを えらぼう</b><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="rcres" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div>`:''}`+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):''}</div>`}
   if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model,it.scratch?null:it.id)}</div>`;
-  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model,it.id)}</div>`;
+  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model,it.id)}${(ro&&t.hw&&it.sample)?`<p class="ansline sample"><span><b>${it.en?'Example（れい）':'れい'}：</b>${esc(it.sample)}</span></p><p class="sub">${it.en?'Your answer can be different. Compare: how many sentences? Is there a reason?':'こたえは 1つでは ありません。じぶんの文と くらべてみよう。'}</p>`:''}</div>`;
   return ''}
 
 let clockTm=null,lastLocal=0;
@@ -719,7 +720,7 @@ function renderTask(){
      <div class="row end"><button class="btn" id="rvDone">${v.rev?'ホームに もどる':'ふりかえりを おわる'}</button></div></section>`:''}
    ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
   </div>`;
-  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink),free=!!box.closest('.retry'),bro=free?pv:ro,kch=box.dataset.kch;const api=mkInk(sqHost(box),key,+box.dataset.h,bro,!!box.dataset.ruled,free,kch&&!bro?(cleared=>judgeBox(t.id,box.dataset.ink,kch,cleared)):null);if(kch)judgeBox(t.id,box.dataset.ink,kch,false,true);
+  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink),free=!!box.closest('.retry')||(!!box.dataset.free&&!!t.hw),bro=free?pv:ro,kch=box.dataset.kch;const api=mkInk(sqHost(box),key,+box.dataset.h,bro,!!box.dataset.ruled,free,kch&&!bro?(cleared=>judgeBox(t.id,box.dataset.ink,kch,cleared)):null);if(kch)judgeBox(t.id,box.dataset.ink,kch,false,true);
     if(!bro){const tools=document.createElement('div');tools.className='inktools';if(box.dataset.mini){const x=document.createElement('button');x.className='btn ghost';x.textContent='けす';x.onclick=()=>api.clear();box.appendChild(x);return}
       tools.innerHTML='<button class="btn ghost sm" data-u>1つもどす</button><button class="btn ghost sm" data-x>ぜんぶけす</button>';box.appendChild(tools);
       tools.querySelector('[data-u]').onclick=()=>api.undo();const x=tools.querySelector('[data-x]');let armed=0;
@@ -855,7 +856,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011012530';
+const BUILD='20261011013605';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}

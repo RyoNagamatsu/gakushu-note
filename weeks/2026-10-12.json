@@ -468,7 +468,8 @@
        "q": "Write 2 sentences. Use \"persevere\" in one of them.",
        "rows": 4,
        "en": true,
-       "pts": 0
+       "pts": 0,
+       "sample": "Math was hard for me at first, but I persevered. Now I can solve the problems by myself."
       }
      ]
     }
@@ -887,7 +888,8 @@
        "q": "Write 5 sentences about what you did today. Use the past tense. Fill all five lines before you stop.",
        "rows": 8,
        "en": true,
-       "pts": 0
+       "pts": 0,
+       "sample": "This morning I ate rice and eggs for breakfast. Then I went to school by car. In PE, we played soccer and I scored one goal. After school, I did my homework at the table. In the evening, I watched a volleyball match with my family."
       }
      ]
     }
@@ -1690,7 +1692,8 @@
        "q": "Write 3 sentences. Use \"meticulous\" or \"ambiguous\" in one of them.",
        "rows": 5,
        "pts": 0,
-       "en": true
+       "en": true,
+       "sample": "My sister is meticulous about her homework. She checks every answer twice. Her notebook is always clean."
       }
      ]
     }
@@ -2560,7 +2563,8 @@
        "q": "At your school, students run in the hallway. Write 4–5 sentences: (1) What is the problem? (2) How would you change the rule or the hallway? (3) Why would your idea work?",
        "rows": 8,
        "en": true,
-       "pts": 0
+       "pts": 0,
+       "sample": "At our school, many students run in the hallway. This is a problem because someone could fall and get hurt. I would paint walking lanes on the floor, like a road. Then students would know where to walk, and they would slow down. I think this would work because it is easier to follow a line than to remember a rule."
       }
      ]
     },
@@ -3390,7 +3394,8 @@
        "q": "Write 3 sentences about the best thing that happened this week.",
        "rows": 5,
        "en": true,
-       "pts": 0
+       "pts": 0,
+       "sample": "The best thing this week was our soccer game. I passed the ball to my friend, and he scored. We won 2–1, and everyone was very happy."
       }
      ]
     },
