@@ -529,6 +529,27 @@ const STAGES=['リーグ突破','ベスト16','ベスト8','ベスト4','決勝�
 const COMPS=[['ワールドカップ','cup','世界一をきめる大会'],['J3リーグ','lg','日本のプロリーグ。ここからスタート'],['J2リーグ','lg','J3から昇格。つぎはJ1をめざす'],['J1リーグ','lg','日本でいちばん上のリーグ'],['天皇杯','cup','日本一をきめるカップ戦'],
  ['エールディビジ','lg','オランダのリーグ。海外にちょうせん'],['リーグ・アン','lg','フランスのリーグ'],['セリエA','lg','イタリアのリーグ'],['ブンデスリーガ','lg','ドイツのリーグ'],['ラ・リーガ','lg','スペインのリーグ'],['プレミアリーグ','lg','イングランドのリーグ'],['チャンピオンズリーグ','cup','ヨーロッパ一をきめる大会']];
 function comp(w){const i=((((w.n||1)-1)%COMPS.length)+COMPS.length)%COMPS.length,c=COMPS[i];return {name:c[0],lg:c[1]==='lg',desc:c[2],fin:c[1]==='lg'?'優勝決定戦':'決勝',stages:c[1]==='lg'?LSTAGES:STAGES}}
+/* ---------- point wallet (points can be exchanged for baht; the child records what he spent) ---------- */
+const WALLET='wallet';
+function wallet(){const w=V(WALLET);if(!Array.isArray(w.log))w.log=[];if(!(w.rate>0))w.rate=1;return w}
+function walletSum(){const w=wallet(),earned=WEEKS.reduce((n,x)=>n+weekPts(x).sum,0),used=w.log.reduce((n,e)=>n+(+e.pts||0),0);return {earned,used,left:earned-used,rate:w.rate,baht:Math.floor((earned-used)*w.rate)}}
+const dstr=t=>{const d=new Date(t);return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()};
+function walletHTML(){const W=walletSum(),w=wallet();
+  return `<div class="sec wallet"><h2 style="margin:0">ポイントのさいふ</h2>
+   <div class="row"><p class="ptline"><span>もらった</span><b>${W.earned}</b></p><p class="ptline"><span>つかった</span><b>${W.used}</b></p><p class="ptline"><span>のこり</span><b>${W.left}</b><span class="sub">ポイント ＝ ${W.baht} バーツ</span></p></div>
+   <p class="sub">1ポイント ＝ ${w.rate} バーツ。おこづかいにかえたら、下のボタンでつかったポイントを書きます。</p>
+   <div class="row"><button class="btn" id="spend" ${W.left<=0?'disabled':''}>ポイントをつかう</button></div>
+   ${w.log.length?`<details><summary>つかった記録（${w.log.length}回）</summary><div class="tblw"><table><tbody>${w.log.slice().reverse().map(e=>`<tr><td>${dstr(e.t)}</td><td>${esc(e.what||'')}</td><td class="num">${e.pts}ポイント（${Math.floor(e.pts*(e.rate||w.rate))}バーツ）</td></tr>`).join('')}</tbody></table></div></details>`:''}
+  </div>`}
+function spendDialog(){const W=walletSum(),w=wallet();return new Promise(res=>{
+  modal.innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true"><b>ポイントをつかう</b><p class="sub">のこり ${W.left} ポイント（${W.baht} バーツ）</p>
+   <label>なんポイント？ <input class="blank" id="spts" type="number" inputmode="numeric" min="1" max="${W.left}" style="width:6em"></label>
+   <label>なにに？ <input class="blank" id="swhat" type="text" style="width:min(100%,16em);text-align:left" placeholder="れい：おかし、ゲーム"></label>
+   <p class="sub" id="smsg"></p><div class="row end"><button class="btn ghost" id="mno">やめる</button><button class="btn" id="myes">きろくする</button></div></div></div>`;
+  furi(modal);const done=v=>{modal.innerHTML='';res(v)};modal.querySelector('#mno').onclick=()=>done(false);
+  modal.querySelector('#myes').onclick=()=>{const n=Math.floor(+modal.querySelector('#spts').value),what=modal.querySelector('#swhat').value.trim(),m=modal.querySelector('#smsg');
+    if(!(n>=1)){m.textContent='ポイントの数を書いてね';return}if(n>W.left){m.textContent='のこりは '+W.left+' ポイントだよ';return}if(!what){m.textContent='なにに つかったか 書いてね';return}
+    w.log.push({id:Date.now().toString(36),t:Date.now(),pts:n,what,rate:w.rate});touchVals(WALLET);done(true)}})}
 function cup(w){const n=w._d.length,done=w._d.filter(id=>(S.vals[id]||{}).done).length;let res=null;
   if(w._t&&(S.vals[w._t]||{}).done){const T=total(w._t);if(T.pend||!T.max)res='wt';else{const r=T.got/T.max;res=(r>=0.8&&done===n)?'win':r>=0.6?'s2':'s3'}}
   const C=comp(w);return {n,done,res,C,stage:done?C.stages[Math.min(done,5)-1]:'キックオフ前'}}
@@ -645,7 +666,7 @@ function renderHome(){
   app.innerHTML=`<div class="wrap">
    <div class="hero"><img src="icon-180.png" alt=""><div><h1>学習ノート</h1><p class="sub">やるものをえらんで、タップしましょう。</p><span class="daychip">${dayTheme()?'きょうは バレーボールの日':'きょうは サッカーの日'}</span></div></div>
    ${wins?`<p class="cabinet"><span>優勝 ${wins}回</span>${Array.from({length:Math.min(wins,12)},()=>'<img src="icon-180.png" alt="">').join('')}</p><p class="titles">${won.map(w=>`<span>${esc(comp(w).name)}</span>`).join('')}</p>`:''}
-   ${WEEKS.length?`<p class="ptline"><span>これまでのポイント</span><b>${all}</b></p>`:''}
+   ${WEEKS.length?walletHTML():''}
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
      ${w?cupHTML(w):''}
      ${P?`<p class="ptline"><span>この週</span><b>${P.sum}</b><span class="sub">/ 50ポイント（宿題 ${P.hw}・5日そろい ${P.bonus}・テスト ${P.test}${P.prov?'（採点まち）':''}・ていねい ${P.neat}）</span></p>`:''}
@@ -660,6 +681,7 @@ function renderHome(){
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
   </div>`;
   app.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>go('task',b.dataset.open));
+  const sp=app.querySelector('#spend');if(sp)sp.onclick=async()=>{if(await spendDialog())render()};
   app.querySelector('#toParent').onclick=parentGate}
 
 async function parentGate(){
@@ -815,6 +837,9 @@ function renderParent(){
   <div class="wrap">
    <section class="sec"><h3>答えの送り先</h3><p class="sub">GitHubで作った鍵（トークン）を入れると、答えと手書きが非公開の保存場所に送られ、Claudeが採点できます。入れない場合は、このiPadの中だけに保存されます。</p>
     <div class="row"><input class="blank" id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" style="width:min(100%,20em);text-align:left"><button class="btn" id="tokSave">保存してテスト</button><span class="sub" id="tokMsg">${token?'設定ずみ':'未設定'}</span></div></section>
+   <section class="sec"><h3 style="margin:0">ポイントの換金</h3>${(()=>{const W=walletSum(),w=wallet();return `<p class="sub">もらった ${W.earned}・つかった ${W.used}・のこり ${W.left} ポイント（${W.baht} バーツ）</p>
+    <div class="row"><label>1ポイント ＝ <input class="blank" id="rate" type="number" inputmode="decimal" min="0" step="0.1" value="${w.rate}" style="width:5em"> バーツ</label><button class="btn ghost sm" id="rateSave">保存</button></div>
+    ${w.log.length?`<div class="tblw"><table><tbody>${w.log.slice().reverse().map(e=>`<tr><td>${dstr(e.t)}</td><td>${esc(e.what||'')}</td><td class="num">${e.pts}</td><td><button class="btn ghost sm" data-del="${esc(e.id)}">取り消す</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="sub">まだ使った記録はありません。本人がホームの「ポイントをつかう」から入力します。</p>'}`})()}</section>
    <div class="tabs">${pgroups.map(x=>`<button class="tab${x===t.group?' on':''}" data-grp="${esc(x)}">${esc(x)}</button>`).join('')}</div>
    <div class="tabs">${TASKS.filter(x=>x.group===t.group).map(x=>`<button class="tab${x.id===t.id?' on':''}" data-tab="${x.id}">${esc(x.title)}</button>`).join('')}</div>
    <div class="row"><button class="btn ghost sm" id="pview">「${esc(t.title)}」の問題用紙を見る</button></div>
@@ -846,6 +871,8 @@ function renderParent(){
   app.querySelector('#back').onclick=()=>go('home');
   app.querySelectorAll('[data-grp]').forEach(b=>b.onclick=()=>{S.ptab=TASKS.find(x=>x.group===b.dataset.grp).id;inks.length=0;renderParent();status();window.scrollTo(0,0)});
   app.querySelector('#pview').onclick=()=>go('task',t.id,true);
+  app.querySelector('#rateSave').onclick=()=>{const r=+app.querySelector('#rate').value;if(r>=0){wallet().rate=r;touchVals(WALLET);render()}};
+  app.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(await ask('<b>この記録を取り消しますか？</b>','取り消す','やめる')){const w=wallet();w.log=w.log.filter(e=>e.id!==b.dataset.del);touchVals(WALLET);render()}});
   const nb=app.querySelector('#neat');if(nb)nb.onchange=()=>keep(()=>{if(nb.checked)g.neat=true;else delete g.neat;touchGrades(t.id)});
   app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{S.ptab=b.dataset.tab;inks.length=0;renderParent();status();window.scrollTo(0,0)});
   app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.o,val=b.dataset.val==='1';if(g.o[k]===val)delete g.o[k];else g.o[k]=val;touchGrades(t.id)}));
@@ -871,7 +898,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011150740';
+const BUILD='20261011151425';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
