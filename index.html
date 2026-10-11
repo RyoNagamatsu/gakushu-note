@@ -83,6 +83,10 @@ h1{font-size:1.7rem}
 .inkbox{display:flex;flex-direction:column;gap:4px;max-width:100%}
 .inkbox.s{width:300px}
 .item>.inkbox:not(.s){margin-right:48px}
+.item.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
+.item.calc>.cm{display:flex;flex-direction:column;gap:8px;min-width:0}
+.item.calc>.inkbox.cs{margin-right:0}
+@media(max-width:560px){.item.calc{grid-template-columns:1fr}}
 canvas.ink.ro{touch-action:auto}
 canvas.ink{display:block;width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--sheet);touch-action:none;user-select:none;-webkit-user-select:none}
 canvas.ink.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0 63px,var(--line) 63px 64px)}
@@ -399,11 +403,14 @@ const TASK={},WEEKS=[],BASE=TASKS.length;
 function satBefore(mon){const d=new Date(mon+'T12:00:00');d.setDate(d.getDate()-2);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 // Homework opens once the previous week's Saturday test has been handed in (or when its own Monday arrives, so a missed test never blocks a week).
 function addDays(d,n){const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return ymd(x.getTime())}
+const hwAll=w=>w._d.every(id=>{const v=S.vals[id]||{};return v.done&&v.rev});
 function lockInfo(t,today){if(!t.open)return null;
-  // On test day (and the Sunday after), homework stays closed until the test is handed in, so answers cannot be looked up.
-  if(t.hw&&WEEKS.some(w=>w._t&&w.test&&w.id>=t.week&&w.test.d<=today&&today<addDays(w.id,7)&&!(S.vals[w._t]||{}).done))return 'テストを出すまで見られません';
+  // The test opens as soon as all five homeworks (incl. answer check) are finished, or on its Saturday at the latest.
+  if(t.test){const w=WEEKS.find(x=>x._t===t.id);if(w&&hwAll(w))return null;return t.open>today?'月〜金の宿題を ぜんぶ おわらせると ひらきます':null}
+  // While the test is open and not handed in, homework stays closed, so answers cannot be looked up.
+  if(t.hw&&WEEKS.some(w=>w._t&&w.test&&w.id>=t.week&&(hwAll(w)||(w.test.d<=today&&today<addDays(w.id,7)))&&!(S.vals[w._t]||{}).done))return 'テストを出すまで見られません';
   if(t.hw){const d=new Date(t.week+'T12:00:00');d.setDate(d.getDate()-7);const pid=ymd(d.getTime()),pw=WEEKS.find(w=>w.id===pid);
-    if(pw&&pw._t&&today<t.week){if((S.vals[pw._t]||{}).done)return null;return today<t.open?md(t.open)+' の土曜テストのあとにひらきます':'土曜テストを出すとひらきます'}}
+    if(pw&&pw._t&&today<t.week){if((S.vals[pw._t]||{}).done)return null;return 'まえの週のテストを出すとひらきます'}}
   return t.open>today?md(t.open)+' にひらきます':null}
 function setWeeks(list){TASKS.length=BASE;WEEKS.length=0;
   (list||[]).filter(w=>w&&w.id&&Array.isArray(w.days)).sort((a,b)=>a.id<b.id?1:-1).forEach(w=>{w=JSON.parse(JSON.stringify(w));WEEKS.push(w);w._d=[];
@@ -629,7 +636,7 @@ function renderHome(){
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
      ${w?cupHTML(w):''}
      ${P?`<p class="ptline"><span>この週</span><b>${P.sum}</b><span class="sub">/ 50ポイント（宿題 ${P.hw}・5日そろい ${P.bonus}・テスト ${P.test}${P.prov?'（採点まち）':''}・ていねい ${P.neat}）</span></p>`:''}
-     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub noruby">次の週の宿題は、土曜テストを出すと1週間分がひらきます。土曜テストは、その土曜日にひらきます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub noruby">テストは、月〜金の宿題を答え合わせまで全部終えるとひらきます（土曜日になればひらきます）。次の週の宿題は、テストを出すとひらきます。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
      const dn=t.hw?('月火水木金'.indexOf(t.title[0])+1):t.test?6:(TASKS.indexOf(t)%6+1),dot=`<span class="dot d${dn}">${esc(t.test?'土':t.title[0])}</span>`;
      const lk=lockInfo(t,today);if(lk)return `<div class="card lock">${dot}<div class="cb"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${esc(lk)}</span></div></div>`;
@@ -649,7 +656,7 @@ async function parentGate(){
   modal.querySelector('#pno').onclick=()=>modal.innerHTML='';
   modal.querySelector('#pyes').onclick=()=>{const y=parseInt(norm(modal.querySelector('#py').value,'num'),10);if(y>=1930&&y<=2008){S.parentOK=true;modal.innerHTML='';go('parent')}else modal.querySelector('#py').value=''}}
 
-function itemHTML(t,it,n,ro){
+function itemHTML(t,it,n,ro,side){
   const tid=t.id,v=V(tid).v,dis=ro?'disabled':'';
   if(it.sub)return `<p class="q" style="font-weight:600">${rich(it.sub)}</p>`;
   const num=n?`<span class="n">${n}</span>`:'';
@@ -668,9 +675,9 @@ function itemHTML(t,it,n,ro){
   if(it.k==='fill'){let i=0;
     const body=rich(it.tpl).split('{}').map((seg,j,arr)=>{if(j===arr.length-1)return seg;const b=it.b[i],k=it.id+'.'+i;i++;
       return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
-    return `<div class="item">${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
+    return `<div class="item${side?' calc':''}">${side?'<div class="cm">':''}${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
       ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${esc(it.work.label)}</span></div>`:''}
-      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''),it.id)}</div>`}
+      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''),it.id)}${side?`</div><div class="inkbox cs" data-ink="${it.id}.c" data-h="520"><span class="sub">けいさん</span></div>`:''}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
       `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${(ro&&t.hw)?`<p class="ansline"><span>こたえ：${esc(it.a)}</span><span class="auto ${v[it.id]===it.a?'o':'x'}">${v[it.id]===it.a?'○':'×'}</span></p>${canMark&&v[it.id]!==it.a?`<div class="retry" data-rt="${it.id}"><b>もういちど、正しいこたえを えらぼう</b><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="rcres" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div>`:''}`+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):''}</div>`}
@@ -698,7 +705,7 @@ function renderTask(){
    <p class="banner red" id="timeup" hidden>時間です。ここまでにして、下の「おわる」をおしましょう。</p>
    ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${rich(s.h)}</h3>${s.note?`<p class="note">${rich(s.note)}</p>`:''}
      ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${rich(p)}</p>`).join('')}</div>`:''}
-     <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro)).join('')}</div></section>`}).join('')}
+     <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro,it.k==='fill'&&s.items.some(x=>x.scratch))).join('')}</div></section>`}).join('')}
    ${ro&&!pv&&t.hw?`<section class="sec" id="review"><h3>ふりかえり</h3>
      <p class="rvline">○ <b id="rvO"></b> こ　　× <b id="rvX"></b> こ　　まだ <b id="rvN"></b> こ</p>
      <p class="q">きょうの しゅくだいは、どうだった？</p>
@@ -840,7 +847,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261010133541';
+const BUILD='20261011012126';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
