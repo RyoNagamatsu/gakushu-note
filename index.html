@@ -233,6 +233,10 @@ canvas.ink{border-width:2.5px;border-radius:16px}
 .tip.tv b{color:var(--warn)}
 rt{font-size:.5em;font-family:var(--f-ui);font-weight:500;color:var(--soft);letter-spacing:0}
 .q{line-height:2.3}.note{font-size:1.05rem;line-height:2.3;color:var(--ink);background:var(--tint);border-radius:14px;padding:10px 14px}
+.ansline.todo{outline:3px dashed var(--warn);outline-offset:4px;border-radius:12px}
+.ansline.todo .sm::before{content:"○か×を おしてね →";font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--warn);margin-right:6px}
+@keyframes flash{0%,60%{background:#ffe27a}100%{background:transparent}}
+.flash{animation:flash 1.4s}
 .whyline{margin:0;font-family:var(--f-q);background:var(--sun-bg);border-radius:12px;padding:6px 12px;line-height:2.2}
 .whyline::before{content:"ポイント：";font-family:var(--f-ui);font-weight:900;font-size:.85rem;color:var(--warn)}
 .sec>h3{line-height:2}
@@ -729,7 +733,10 @@ function renderTask(){
     if(await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}出したあとは、なおせません。</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();
       const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>決勝、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で決勝です。':'5日そろいました。土曜テストが決勝です！'}</p><div class="tips">${tipsHTML(v.tip||0)}</div>`,'やった！')}
       if(t.hw){go('task',t.id)}else go('home')}};
-  paintReview();const rd=app.querySelector('#rvDone');if(rd)rd.onclick=()=>{if(!v.rev){v.rev=true;touchVals(t.id);flushAll()}go('home')};
+  paintReview();const rd=app.querySelector('#rvDone');if(rd)rd.onclick=()=>{if(!v.rev){const c=reviewCount(t);if(c.n+c.u>0){const sf=v.self||{},rc=v.rc||{};let el=document.querySelector('.ansline.todo');
+      if(!el)el=[...document.querySelectorAll('.retry[data-rt]')].find(r=>{const k=r.dataset.rt;return r.querySelector('[data-rc]')?rc[k]!==(items(t).find(i=>i.id===k)||{}).a:(sf[k]===0&&!hasInk(t.id,k+'.r'))});
+      if(el){el.scrollIntoView({block:'center',behavior:'smooth'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}return}
+      v.rev=true;touchVals(t.id);flushAll()}go('home')};
   paintClock();if(!ro)gate()}
 function wc(ta){const el=app.querySelector(`[data-wcfor="${ta.dataset.k}"]`);if(el)el.textContent=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' words'}
 function markKeys(t){const k=[];items(t).forEach(it=>{if(it.scratch)return;if(it.k==='kanji'){if(it.rq)k.push(it.id+'.y');if(it.wq)k.push(it.id+'.w')}else if(it.k==='fill')k.push(it.id);else if((it.k==='ink'||it.k==='long')&&it.model)k.push(it.id)});return k}
@@ -737,7 +744,8 @@ function reviewCount(t){const v=V(t.id),sf=v.self||{},ks=markKeys(t);let o=0,x=0
   const rc=v.rc||{};let u=ks.filter(k=>sf[k]===0&&!hasInk(t.id,k+'.r')).length;
   items(t).forEach(it=>{if(it.k==='choice'){if(v.v[it.id]===it.a)o++;else{x++;if(rc[it.id]!==it.a)u++}}});return {o,x,u,n:ks.length-ks.filter(k=>sf[k]===1||sf[k]===0).length}}
 function paintReview(){const t=TASK[S.task];if(!t)return;const c=reviewCount(t),g=id=>document.getElementById(id);if(g('rvO')){g('rvO').textContent=c.o;g('rvX').textContent=c.x;g('rvN').textContent=c.n;
-    const left=c.n+c.u,rev=V(t.id).rev;g('rvDone').disabled=!rev&&left>0;g('rvMsg').hidden=rev||left===0;
+    const left=c.n+c.u,rev=V(t.id).rev;g('rvDone').textContent=rev?'ホームに もどる':left>0?'まだの もんだいへ すすむ（あと '+left+' こ）':'ふりかえりを おわる';g('rvMsg').hidden=rev||left===0;
+    document.querySelectorAll('.ansline').forEach(a=>{const m=a.querySelector('.sm');if(m)a.classList.toggle('todo',!rev&&!m.querySelector('.sel'))});
     g('rvMsg').textContent=(c.n?'○× をつけていない もんだいが あと '+c.n+' こ。':'')+(c.u?'× の もんだいで、まだ やりなおしていないものが あと '+c.u+' こ。':'')+'ぜんぶ おわると、ホームに もどれます。'}}
 function countBlank(t){const v=V(t.id).v;let n=0;items(t).forEach(it=>{if(it.scratch)return;
   if(it.k==='fill')it.b.forEach((_,i)=>{if(!hasInk(t.id,it.id+'.'+i))n++});
@@ -847,7 +855,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011012126';
+const BUILD='20261011012530';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
