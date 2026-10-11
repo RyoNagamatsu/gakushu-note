@@ -19,7 +19,7 @@
 <style>
 /* Layout: one answer sheet per screen, a single wide column sized for an iPad held upright; a slim sticky bar carries time and save state. */
 :root{
-  --paper:#ffe3ee; --sheet:#ffffff; --ink:#4a2a3a; --soft:#8a6475; --line:#f9b8d0; --ai:#d9347f; --ai-bg:#ffd6e6; --shu:#d8442b; --ok:#2f8a5f; --warn:#a86a10; --hl:#fff0a6; --dot:#ffc9dd; --carrot:#f0862a; --leaf:#4fa35a; --gold:#f4b93a; --rb:#ffffff; --rb-line:#c79fb0; --rb-pink:#ff9fc0; --rb-eye:#3b2530;
+  --paper:#ffe3ee; --sheet:#ffffff; --ink:#4a2a3a; --soft:#8a6475; --line:#f9b8d0; --ai:#d9347f; --ai-bg:#ffd6e6; --shu:#d8442b; --ok:#2f8a5f; --warn:#a86a10; --hl:#fff0a6; --dot:#ffc9dd; --carrot:#f0862a; --leaf:#4fa35a; --gold:#f4b93a; --rb:#ffffff; --rb-line:#c79fb0; --rb-pink:#ff9fc0; --rb-eye:#3b2530; --hat:#7a5cc9;
   --f-q:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
   --f-ui:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
   --f-en:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
@@ -170,6 +170,21 @@ h1{color:var(--ai)}
 .meter{height:12px;border-radius:999px;background:var(--ai-bg);overflow:hidden}
 .meter i{display:block;height:100%;background:var(--ai);border-radius:999px}
 .track{display:flex;gap:6px;flex-wrap:wrap}
+button.pyon-pic{border:0;cursor:pointer;font:inherit}.pyon-pic.hop .rb{animation:hop .5s ease-in-out 1}
+.lv{font-family:var(--f-en);font-size:1rem;font-weight:700;background:var(--ai);color:var(--sheet);border-radius:999px;padding:0 12px}
+.stat{display:grid;grid-template-columns:5.2em minmax(0,1fr) auto;gap:8px;align-items:center;font-size:.9rem}.stat .sub{font-size:.8rem;min-width:2.2em;text-align:right}
+.meter.k i{background:var(--hat)}.meter.c i{background:var(--carrot)}
+.rb-g *{fill:none;stroke:var(--rb-eye);stroke-width:3}.rb-hat{fill:var(--hat);stroke:var(--rb-line);stroke-width:2}.rb-star{fill:var(--gold)}
+.rb-band{fill:var(--shu)}.rb-cape{fill:var(--shu);stroke:var(--rb-line);stroke-width:2}
+.adv{gap:12px}.path{display:flex;align-items:center;gap:0;flex-wrap:nowrap;max-width:100%}
+.path i{flex:1 1 8px;height:4px;background:var(--line);min-width:6px}
+.pn{flex:none;width:40px;height:40px;border-radius:50%;border:3px solid var(--line);background:var(--sheet);display:grid;place-items:center;font-size:1.1rem;font-weight:700;color:var(--ok)}
+.pn.ok{border-color:var(--ok);background:var(--ai-bg)}.pn.here{border-color:var(--ai);background:var(--hl);font-size:1.4rem}.pn.door{border-radius:10px}
+.zukan summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.zk{display:flex;flex-wrap:wrap;gap:8px}.zi,.zf{border:1.5px solid var(--line);border-radius:14px;padding:4px 10px;font-size:.85rem;display:inline-flex;gap:6px;align-items:center;background:var(--sheet)}
+.zi b{font-size:1.4rem;line-height:1.2}.zi.no,.zf.no{color:var(--soft);background:var(--paper);border-style:dashed}
+.tbox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}.tb-e{font-size:5rem;line-height:1.2}.tb-e.rare{filter:drop-shadow(0 0 10px var(--gold))}
+@media (prefers-reduced-motion:no-preference){.tb-e{animation:pop .5s cubic-bezier(.2,1.6,.4,1) 1}@keyframes pop{0%{transform:scale(.2) rotate(-20deg);opacity:0}100%{transform:scale(1);opacity:1}}}
 .kn .kjm{width:104px;height:104px}.kn .kjf{font-size:70px}.kn .inkbox.sq{width:118px}.knr{font-family:var(--f-en);font-size:1.7rem;font-weight:700;color:var(--ai);line-height:1.2}
 .note{white-space:pre-line}
 .item.calcrow{flex-direction:row;flex-wrap:wrap;gap:10px 18px;align-items:flex-start}.cq{flex:1 1 250px;min-width:0;display:flex;flex-direction:column;gap:8px}
@@ -553,7 +568,8 @@ function carrots(){let n=TASKS.filter(t=>isFinId(t.id)).length;WEEKS.forEach(w=>
 function stageOf(n){let s=0;STAGES.forEach((x,i)=>{if(n>=x[0])s=i});return s}
 const CPATH='<path class="lf" d="M12 11C10 6 7 4 5 4M12 11C12 6 12 3 12 1M12 11C14 6 17 4 19 4"/><path class="bd" d="M12 33C7 25 5 17 6 13a6 4.5 0 0 1 12 0C19 17 17 25 12 33z"/>';
 const CARROT='<svg viewBox="0 0 24 34" class="crt" aria-hidden="true">'+CPATH+'</svg>';
-function rabbit(st,eat){return `<svg viewBox="0 0 200 224" class="rb" style="width:${[70,90,108,124,140][st]}px" role="img" aria-label="しろい うさぎの ぴょんぴょん">
+function rabbit(st,eat,br){br=br||'t';const B=x=>st>=2&&br===x;return `<svg viewBox="0 0 200 224" class="rb" style="width:${[70,90,108,124,140][st]}px" role="img" aria-label="しろい うさぎの ぴょんぴょん">
+${B('c')&&st>=3?'<path class="rb-cape" d="M66 148Q26 196 40 216L160 216Q174 196 134 148z"/>':''}${B('c')&&st>=4?'<g class="rb-w"><ellipse cx="40" cy="150" rx="26" ry="12" transform="rotate(-35 40 150)"/><ellipse cx="160" cy="150" rx="26" ry="12" transform="rotate(35 160 150)"/></g>':''}
 <g class="rb-w"><ellipse cx="146" cy="188" rx="12" ry="11"/>
 <ellipse cx="78" cy="52" rx="16" ry="46" transform="rotate(-9 78 52)"/><ellipse cx="122" cy="52" rx="16" ry="46" transform="rotate(9 122 52)"/>
 <ellipse cx="100" cy="172" rx="44" ry="38"/><ellipse cx="74" cy="208" rx="19" ry="9"/><ellipse cx="126" cy="208" rx="19" ry="9"/>
@@ -562,9 +578,11 @@ function rabbit(st,eat){return `<svg viewBox="0 0 200 224" class="rb" style="wid
 <g class="rb-p"><ellipse cx="78" cy="54" rx="7" ry="32" transform="rotate(-9 78 54)"/><ellipse cx="122" cy="54" rx="7" ry="32" transform="rotate(9 122 54)"/><ellipse cx="66" cy="124" rx="10" ry="6" opacity=".55"/><ellipse cx="134" cy="124" rx="10" ry="6" opacity=".55"/><ellipse cx="100" cy="121" rx="5" ry="3.5"/></g>
 <g class="rb-e"><circle cx="81" cy="107" r="5.5"/><circle cx="119" cy="107" r="5.5"/></g><circle cx="83" cy="105" r="1.8" class="rb-h"/><circle cx="121" cy="105" r="1.8" class="rb-h"/>
 <path class="rb-m" d="M100 125q-6 8-13 2M100 125q6 8 13 2"/>
-${st>=2?'<g class="rb-r"><path d="M136 80l-17-10v20zM136 80l17-10v20z"/><circle cx="136" cy="80" r="5.5"/></g>':''}
-${st>=3?'<g class="rb-f"><circle cx="62" cy="74" r="5"/><circle cx="70" cy="80" r="5"/><circle cx="67" cy="89" r="5"/><circle cx="57" cy="89" r="5"/><circle cx="54" cy="80" r="5"/><circle class="ct" cx="62" cy="82" r="4.5"/></g>':''}
-${st>=4?'<path class="rb-c" d="M82 74l-4-23 12 10 10-16 10 16 12-10-4 23z"/>':''}
+${B('k')?'<g class="rb-g"><circle cx="81" cy="107" r="13"/><circle cx="119" cy="107" r="13"/><path d="M94 107h12"/></g>':''}${B('k')&&st>=3?'<path class="rb-hat" d="M80 76L100 26 120 76z"/><ellipse class="rb-hat" cx="100" cy="76" rx="30" ry="6"/><circle class="rb-star" cx="100" cy="56" r="5"/>':''}${B('k')&&st>=4?'<circle class="rb-star" cx="30" cy="70" r="6"/><circle class="rb-star" cx="172" cy="60" r="5"/><circle class="rb-star" cx="166" cy="120" r="4"/>':''}
+${B('c')?'<path class="rb-band" d="M49 93Q100 74 151 93L152 103Q100 84 48 103z"/>':''}${B('c')&&st>=4?'<path class="rb-c" d="M82 74l-4-23 12 10 10-16 10 16 12-10-4 23z"/>':''}
+${B('t')?'<g class="rb-r"><path d="M136 80l-17-10v20zM136 80l17-10v20z"/><circle cx="136" cy="80" r="5.5"/></g>':''}
+${B('t')&&st>=3?'<g class="rb-f"><circle cx="62" cy="74" r="5"/><circle cx="70" cy="80" r="5"/><circle cx="67" cy="89" r="5"/><circle cx="57" cy="89" r="5"/><circle cx="54" cy="80" r="5"/><circle class="ct" cx="62" cy="82" r="4.5"/></g>':''}
+${B('t')&&st>=4?'<path class="rb-c" d="M82 74l-4-23 12 10 10-16 10 16 12-10-4 23z"/>':''}
 ${eat?'<g transform="translate(84 126) scale(1.35)"><g class="rb-crt">'+CPATH+'</g></g>':''}</svg>`}
 
 /* ---------- point wallet (points → baht; she records what she spent) ---------- */
@@ -640,26 +658,73 @@ Return ONLY a JSON object: {"#1":{"ok":true|false|null,"read":"what she wrote","
 function aiSug(t,key){const v=S.vals[t.id]||{},a=(v.aic||{})[key];if(!a)return (v.aicq&&akey)?'<span class="aisug wait">AI…</span>':'';
   return `<span class="aisug ${a.ok===true?'o':a.ok===false?'x':'n'}">AI：${a.ok===true?'○':a.ok===false?'×':'？'}${a.why?' '+esc(a.why):''}</span>`}
 function aiNote(t,key){const c=((S.vals[t.id]||{}).aic||{})[key];if(!c)return '';return `<span class="sub">AI：${c.ok===true?'○':c.ok===false?'×':'読めず'}${typeof c.pts==='number'?' '+c.pts+'点':''}${c.read?'「'+esc(c.read)+'」':''}${c.why?' '+esc(c.why):''}</span>`}
+/* ---------- adventure: levels, a form that depends on how she studies, treasure boxes, a map ----------
+   Everything is derived from the saved answers, so it is the same on every device. The only stored bit is vals.box (when a treasure box was opened). */
+const hash=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
+const FORMS={'0':'あかちゃん うさぎ','1':'こうさぎ','2k':'めがね うさぎ','2c':'はちまき うさぎ','2t':'リボン うさぎ','3k':'まほうつかい うさぎ','3c':'ゆうしゃ うさぎ','3t':'おはなの うさぎ','4k':'ほしの けんじゃ うさぎ','4c':'そらとぶ ゆうしゃ うさぎ','4t':'うさぎの プリンセス'};
+const ITEMS_C=[['🥕','きんいろの にんじん'],['🍓','いちご'],['🍎','りんご'],['🌼','きいろい はな'],['🍀','よつばの クローバー'],['🎀','ピンクの リボン'],['🧣','あったか マフラー'],['🌂','みずたまの かさ'],['🎈','あかい ふうせん'],['🧸','くまの ぬいぐるみ'],['📚','えほん'],['✏️','まほうの えんぴつ'],['🎵','うたの おんぷ'],['🔔','ちいさな すず'],['🍪','クッキー'],['🍰','いちごの ケーキ'],['🍡','おだんご'],['🍙','おにぎり'],['🧃','にんじん ジュース'],['🐥','ひよこの ともだち'],['🐿️','りすの ともだち'],['🦔','はりねずみの ともだち'],['🐢','かめの ともだち'],['🦋','ちょうちょの ともだち'],['🐞','てんとうむしの ともだち'],['🦉','ふくろうの せんせい'],['🍄','きのこの いす'],['🌰','どんぐり'],['🐚','かいがら'],['🪁','たこ']];
+const ITEMS_R=[['👑','きんの かんむり'],['💎','ほうせき'],['🌈','にじの かけら'],['⭐','ながれぼし'],['🪄','まほうの つえ'],['🦄','ユニコーンの ともだち'],['🏰','おしろの かぎ'],['🎠','メリーゴーランド'],['🌙','おつきさまの かけら'],['🩰','バレエ シューズ']];
+const AREAS=['にんじんばたけ','もりの こみち','おはなの おか','きのこの もり','にじの はし','くもの うえ','ほしの やま','つきの おしろ','うみの そこ','ゆきの くに','おかしの まち','そらの しま'];
+const SAY=['なでなで うれしいな。','ぴょん！','きょうは なにを するの？','にんじん だいすき！','いっしょに いると たのしいね。','たからばこ、なにが 出るかな。','そくてん、できるように なりたいな。','もっと おおきく なりたいな。'];
+function finList(){return TASKS.filter(t=>isFinId(t.id)).map(t=>({t,at:(S.vals[t.id].revAt||S.vals[t.id].doneAt||0)})).sort((a,b)=>a.at-b.at||(a.t.id<b.t.id?-1:1)).map(x=>x.t)}
+// right answers by subject: k = words and letters, c = sums. Homework uses her own ○×, tests use the grading.
+function taskScore(t){const v=S.vals[t.id]||{},sf=v.self||{},g=S.grades[t.id]||{},go=g.o||{},gm=g.m||{},k=[0,0],c=[0,0];
+  t.sections.forEach(s=>{const b=/さんすう|けいさん|Math/.test(s.h)?c:k;s.items.forEach(it=>{if(!it.k||it.scratch)return;
+    if(it.k==='choice'){b[1]++;if((v.v||{})[it.id]===it.a)b[0]++}
+    else if(it.k==='fill')it.b.forEach((_,i)=>{const key=it.id+'.'+i;b[1]++;if(t.hw?sf[key]===1:go[key]===true)b[0]++});
+    else if((it.k==='ink'||it.k==='long')&&it.model){b[1]++;if(t.hw?sf[it.id]===1:gm[it.id]>0)b[0]++}
+    else if(it.k==='kanji')[['y','rq'],['w','wq']].forEach(x=>{if(it[x[1]]){b[1]++;if(sf[it.id+'.'+x[0]]===1)b[0]++}})})});
+  return {k,c}}
+function rpg(){const L=finList();let exp=0;const K=[0,0],C=[0,0],marks=[],got=[],used={};
+  L.forEach(t=>{const s=taskScore(t);K[0]+=s.k[0];K[1]+=s.k[1];C[0]+=s.c[0];C[1]+=s.c[1];marks.push([K[0],K[1],C[0],C[1]]);
+    exp+=10+Math.round((s.k[0]+s.c[0])/2)+(t.test?10:0);
+    const all=s.k[1]+s.c[1],rare=t.test&&all>0&&(s.k[0]+s.c[0])/all>=0.8,pool=rare?ITEMS_R:ITEMS_C;let free=pool.filter(x=>!used[x[0]]);if(!free.length)free=pool;
+    const it=free[hash(t.id)%free.length];used[it[0]]=1;got.push({t,it,rare,open:!!(S.vals[t.id]||{}).box})});
+  let lv=1,need=20,rest=exp;while(rest>=need){rest-=need;lv++;need=20+(lv-1)*10}
+  // The form at each stage is settled by what she was better at up to that point; close scores give the third kind.
+  const branchAt=n=>{const m=marks[Math.min(n,marks.length)-1];if(!m||!m[1]||!m[3])return 't';const d=m[0]/m[1]-m[2]/m[3];return d>0.08?'k':d<-0.08?'c':'t'};
+  const st=stageOf(carrots()),forms=['0'];if(st>=1)forms.push('1');for(let i=2;i<=st;i++)forms.push(i+branchAt(STAGES[i][0]));
+  const pct=a=>a[1]?Math.round(a[0]/a[1]*100):0;
+  return {L,exp,lv,rest,need,K:pct(K),C:pct(C),n:L.length,got,st,form:forms[forms.length-1],forms,last:L.length?Math.max(...L.map(t=>(S.vals[t.id].revAt||S.vals[t.id].doneAt||0))):0}}
+function advHTML(R,nxt){const w=(nxt&&WEEKS.find(x=>x.id===nxt.week))||WEEKS[0];if(!w)return '';
+  const ids=w._d.concat(w._t?[w._t]:[]),pos=ids.filter(isFinId).length,area=AREAS[((w.n||1)-1)%AREAS.length],boxes=R.got.filter(x=>!x.open).length,found=R.got.filter(x=>x.open);
+  const all=ITEMS_C.concat(ITEMS_R),have={};found.forEach(x=>have[x.it[0]]=1);
+  return `<section class="sec adv"><h2 style="margin:0">ぴょんぴょんの ぼうけん</h2>
+   <p class="ptline"><span>いまの ばしょ</span><b>${esc(area)}</b><span class="sub">${esc(w.label)}　つぎの ばしょは ？？？</span></p>
+   <div class="path" role="img" aria-label="${pos} / ${ids.length}">${ids.map((id,i)=>`<span class="pn${i<pos?' ok':''}${i===pos?' here':''}${i===ids.length-1?' door':''}">${i===pos?'🐰':i<pos?'✓':i===ids.length-1?'🚪':''}</span>`).join('<i></i>')}${pos>=ids.length?'<i></i><span class="pn here">🐰</span>':''}</div>
+   <p class="sub">しゅくだいを 1つ おわると 1つ すすみます。さいごの とびらは テスト。おわるたびに たからばこが 1つ もらえます。</p>
+   ${boxes?`<div class="row"><button class="btn" id="openBox">🎁 たからばこを あける（${boxes}こ）　Open</button></div>`:'<p class="sub">つぎの たからばこまで、しゅくだい あと 1つ。なにが 出るかは おたのしみ。</p>'}
+   <details class="zukan"><summary>ずかん（たからもの ${found.length} / ${all.length}、すがた ${R.forms.length} / ${Object.keys(FORMS).length}）</summary>
+    <p class="sub">すがた</p><div class="zk">${Object.keys(FORMS).map(k=>R.forms.indexOf(k)>=0?`<span class="zf">${esc(FORMS[k])}</span>`:'<span class="zf no">？？？</span>').join('')}</div>
+    <p class="sub">たからもの</p><div class="zk">${all.map(x=>have[x[0]]?`<span class="zi"><b>${x[0]}</b>${esc(x[1])}</span>`:'<span class="zi no"><b>？</b></span>').join('')}</div></details></section>`}
+async function openBoxes(){for(;;){const R=rpg(),x=R.got.find(y=>!y.open);if(!x)break;V(x.t.id).box=Date.now();touchVals(x.t.id);const more=R.got.filter(y=>!y.open).length-1;
+  const again=await ask(`<div class="tbox"><p class="sub">${x.rare?'きらきらの たからばこ！':'たからばこが ひらいた！'}</p><div class="tb-e${x.rare?' rare':''}">${x.it[0]}</div><b>${esc(x.it[1])}</b><p class="sub">ずかんに 入ったよ。 Got it!</p></div>`,more>0?'つぎも あける（あと '+more+'こ）':'やったね！',more>0?'あとで':'');
+  if(!again||more<=0)break}render()}
+function moodLine(R){if(!R.n)return 'はじめまして！ いっしょに ぼうけんしよう。';const h=(Date.now()-R.last)/3600000;return h<20?'きょうも いっしょに がんばったね！':h<48?'そろそろ にんじん たべたいな。':'おなかが すいたよ… いっしょに やろう？'}
 function renderHome(){
   const today=ymd(Date.now()),nxt=nextTask(today);let groups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(t=>t.group))];
-  const isDone=t=>isFinId(t.id),n=carrots(),st=stageOf(n),nx=STAGES[st+1],fed=S.fed;
+  const isDone=t=>isFinId(t.id),n=carrots(),st=stageOf(n),nx=STAGES[st+1],fed=S.fed,R=rpg();
   const cur=nxt?nxt.group:(groups.find(g=>TASKS.some(t=>t.group===g&&!isDone(t)))||groups[0]),ct=TASKS.filter(t=>t.group===cur);
   groups=[cur].concat(groups.filter(g=>g!==cur));
   const pct=nx?Math.round((n-STAGES[st][0])/(nx[0]-STAGES[st][0])*100):100;
   app.innerHTML=`<div class="wrap">
    <div><h1>がくしゅうノート</h1><p class="sub">やる ものを えらんで、おしましょう。（Tap one to start.）こたえあわせまで おわると、ぴょんぴょんが にんじんを 1本 たべられます。</p></div>
    <section class="pyon${fed?' fed':''}">
-    <div class="pyon-pic">${rabbit(st,!!fed)}</div>
+    <button class="pyon-pic" id="pet" aria-label="ぴょんぴょんを なでる">${rabbit(st,!!fed,R.form.slice(1))}</button>
     <div class="pyon-tx">
-     ${fed?`<p class="pyon-say">${fed.grew?'にんじんを たべて、おおきく なったよ！':'もぐもぐ… にんじん、おいしい！ ありがとう。'}</p>`:''}
-     <p class="pyon-name">ぴょんぴょん<span class="st go">${STAGES[st][1]}</span></p>
+     <p class="pyon-say" id="say">${fed?(fed.grew?'すがたが かわったよ！ 「'+esc(FORMS[R.form])+'」に なった！':fed.lv?'レベルが あがって Lv.'+fed.lv+'に なったよ！':'もぐもぐ… にんじん、おいしい！ ありがとう。'):esc(moodLine(R))}</p>
+     <p class="pyon-name">ぴょんぴょん<span class="st go">${esc(FORMS[R.form])}</span><span class="lv">Lv.${R.lv}</span></p>
+     <div class="stat"><span>けいけんち</span><div class="meter"><i style="width:${Math.round(R.rest/R.need*100)}%"></i></div><span class="sub">つぎの レベルまで ${R.need-R.rest}</span></div>
+     <div class="stat"><span>かしこさ</span><div class="meter k"><i style="width:${R.K}%"></i></div><span class="sub">${R.K}</span></div>
+     <div class="stat"><span>ちから</span><div class="meter c"><i style="width:${R.C}%"></i></div><span class="sub">${R.C}</span></div>
      <p class="ptline"><span>たべた にんじん</span><b>${n}</b><span>本</span>${WEEKS.length?`<span>　ポイント</span><b>${WEEKS.reduce((a,w)=>a+weekPts(w).sum,0)}</b>`:''}</p>
      <div class="meter" role="img" aria-label="つぎに おおきく なるまで ${pct}パーセント"><i style="width:${pct}%"></i></div>
-     <p class="sub">${nx?`あと ${nx[0]-n}本で「${nx[1]}」に なるよ。`:'いちばん おおきく なりました。'}</p>
+     <p class="sub">${nx?`にんじん あと ${nx[0]-n}本で すがたが かわるよ。つぎの すがたは ？？？（こくごと さんすうの できかたで かわります）`:'いちばん おおきく なりました。'}</p>
      <div class="track">${ct.map(t=>`<span class="${isDone(t)?'done':''}">${CARROT}</span>`).join('')}</div>
      <p class="sub">${esc(cur)}の にんじん：${ct.filter(isDone).length} / ${ct.length}本</p>
     </div>
    </section>
+   ${advHTML(R,nxt)}
    ${WEEKS.length?walletHTML():''}
    ${(()=>{let l=null;Object.values(S.vals).forEach(x=>{if(x&&typeof x.tip==='number'&&(!l||(x.revAt||0)>(l.revAt||0)))l=x});if(!l)return '';
      return `<section class="tips"><h2>きょうの まめちしき</h2><div class="tip"><b>たいそうの コツ</b><p>${esc(TIPS_G[l.tip%TIPS_G.length])}</p></div><div class="tip"><b>うさぎの おはなし</b><p>${esc(TIPS_R[l.tip%TIPS_R.length])}</p></div></section>`})()}
@@ -676,6 +741,8 @@ function renderHome(){
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
   </div>`;
   app.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>go('task',b.dataset.open));
+  const ob=app.querySelector('#openBox');if(ob)ob.onclick=openBoxes;
+  const pet=app.querySelector('#pet');if(pet)pet.onclick=()=>{const sy=app.querySelector('#say');if(sy)sy.textContent=SAY[Math.floor(Math.random()*SAY.length)];pet.classList.remove('hop');void pet.offsetWidth;pet.classList.add('hop')};
   const sp=app.querySelector('#spend');if(sp)sp.onclick=async()=>{if(await spendDialog())render()};
   app.querySelector('#toParent').onclick=parentGate}
 
@@ -752,12 +819,12 @@ function renderTask(){
   mountModels();app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const m=b.closest('.kjh').querySelector('.kjm');play(m)});
   app.querySelector('#back').onclick=()=>go(pv?'parent':'home');
   const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
-    if(await ask(`<b>${esc(t.title)}を 出しますか？</b><p class="sub">${blanks?`まだ かいて いない もんだいが ${blanks}こ あります。`:''}出した あとは、なおせません。${t.hw?'出したら、こたえあわせを します。おわると、ぴょんぴょんが にんじんを たべられます。':'出すと、ぴょんぴょんが にんじんを たべられます。'}</p>`,'出す','もどる')){const b0=stageOf(carrots());stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();aiCheckTask(t);if(t.hw)return go('task',t.id);S.fed={grew:stageOf(carrots())>b0};go('home')}};
+    if(await ask(`<b>${esc(t.title)}を 出しますか？</b><p class="sub">${blanks?`まだ かいて いない もんだいが ${blanks}こ あります。`:''}出した あとは、なおせません。${t.hw?'出したら、こたえあわせを します。おわると、ぴょんぴょんが にんじんを たべられます。':'出すと、ぴょんぴょんが にんじんを たべられます。'}</p>`,'出す','もどる')){const b0=stageOf(carrots()),l0=rpg().lv;stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();aiCheckTask(t);if(t.hw)return go('task',t.id);S.fed={grew:stageOf(carrots())>b0,lv:rpg().lv>l0?rpg().lv:0};go('home')}};
   const rd=app.querySelector('#rvDone');if(rd){paintReview();rd.onclick=()=>{if(v.rev)return go('home');const c=reviewLeft(t);
     if(c.left>0){const sf=v.self||{},rc=v.rc||{};let el=[...app.querySelectorAll('[data-rv]')].find(r=>typeof sf[r.dataset.rv]!=='number');
       if(!el)el=[...app.querySelectorAll('.retry[data-rt]')].find(r=>{const k=r.dataset.rt;return r.querySelector('[data-rc]')?rc[k]!==(items(t).find(i=>i.id===k)||{}).a:(sf[k]===0&&!hasInk(t.id,k+'.r'))});
       if(el)el.scrollIntoView({block:'center',behavior:'smooth'});return}
-    const b0=stageOf(carrots());v.rev=true;v.revAt=Date.now();if(typeof v.tip!=='number')v.tip=Object.values(S.vals).filter(x=>x&&typeof x.tip==='number').length;touchVals(t.id);flushAll();S.fed={grew:stageOf(carrots())>b0};go('home')}}
+    const b0=stageOf(carrots()),l0=rpg().lv;v.rev=true;v.revAt=Date.now();if(typeof v.tip!=='number')v.tip=Object.values(S.vals).filter(x=>x&&typeof x.tip==='number').length;touchVals(t.id);flushAll();S.fed={grew:stageOf(carrots())>b0,lv:rpg().lv>l0?rpg().lv:0};go('home')}}
   paintClock();if(!ro)gate()}
 // Keys she marks herself, and what is still left: unmarked answers, × answers not written again, wrong choices not picked again.
 function markKeys(t){const ks=[];items(t).forEach(it=>{if(it.scratch)return;
@@ -886,7 +953,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011160143';
+const BUILD='20261011162323';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
