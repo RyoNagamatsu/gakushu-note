@@ -28,7 +28,8 @@
   --f-en:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--ai);outline-offset:2px}
@@ -537,6 +538,7 @@ function total(t){const r={got:0,max:0,pend:0,lv:{}};items(TASK[t]).forEach(it=>
 
 /* ---------- helpers ---------- */
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const unf=s=>String(s==null?'':s).replace(/｜([^《｜]+)《[^》]+》/g,'$1');
 const rich=s=>esc(s).replace(/｜([^《｜]+)《([^》]+)》/g,'<ruby>$1<rt>$2</rt></ruby>').replace(/【(.+?)】/g,'<span class="tg">$1</span>').replace(/\n/g,'<br>');
 const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 const app=document.getElementById('app'),modal=document.getElementById('modal');
@@ -681,8 +683,8 @@ function itemHTML(t,it,n,ro,side){
     const body=rich(it.tpl).split('{}').map((seg,j,arr)=>{if(j===arr.length-1)return seg;const b=it.b[i],k=it.id+'.'+i;i++;
       return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
     return `<div class="item${side?' calc':''}">${side?'<div class="cm">':''}${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
-      ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${esc(it.work.label)}</span></div>`:''}
-      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''),it.id)}${side?`</div><div class="inkbox cs" data-ink="${it.id}.c" data-h="520" data-free="1"><span class="sub">けいさん</span></div>`:''}</div>`}
+      ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${rich(it.work.label)}</span></div>`:''}
+      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+unf(it.work.label)+'：'+it.work.model+'）':''),it.id)}${side?`</div><div class="inkbox cs" data-ink="${it.id}.c" data-h="520" data-free="1"><span class="sub">けいさん</span></div>`:''}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
       `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${(ro&&t.hw)?`<p class="ansline"><span>こたえ：${esc(it.a)}</span><span class="auto ${v[it.id]===it.a?'o':'x'}">${v[it.id]===it.a?'○':'×'}</span></p>${canMark&&v[it.id]!==it.a?`<div class="retry" data-rt="${it.id}"><b>もういちど、正しいこたえを えらぼう</b><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="rcres" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div>`:''}`+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):''}</div>`}
@@ -780,11 +782,11 @@ function renderParent(){
    s.items.forEach(it=>{if(!it.k)return;const lab=it.scratch?'':(/^問/.test(it.q||'')?'':(++n)+'. ');
     if(it.k==='fill'){const qt=(it.q?it.q+' ／ ':'')+it.tpl.replace(/\{\}/g,'□');
       rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(qt)}</div><div class="ga">
-        ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"></div><div class="model">${esc(it.work.label)}：${esc(it.work.model)}</div>`:''}
+        ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"></div><div class="model">${esc(unf(it.work.label))}：${esc(it.work.model)}</div>`:''}
         ${it.b.map((b,i)=>{const k=it.id+'.'+i,o=g.o[k];return `<div class="row"><div class="inkbox" style="width:${bw(b)}px" data-ink="${k}" data-h="${bh(b)}"></div><span class="model">正答：${esc(b.a.join(' ／ '))}</span>
           <button class="mk o${o===true?' sel':''}" data-o="${k}" data-val="1" aria-label="正解">○</button><button class="mk x${o===false?' sel':''}" data-o="${k}" data-val="0" aria-label="不正解">×</button></div>`}).join('')}</div>
         <div class="gm">
-        ${it.work?pts(g,it.id+'.w',it.work.pts,it.work.label):''}
+        ${it.work?pts(g,it.id+'.w',it.work.pts,unf(it.work.label)):''}
         ${t.id==='t1s'&&it.work?`<label class="chk"><input type="checkbox" data-read="${it.id}" ${g.read[it.id]?'checked':''}>読み上げた</label>`:''}</div></div>`)}
     else if(it.k==='choice'){const ok=v.v[it.id]===it.a;rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="ans">${esc(v.v[it.id]||'（空らん）')} <span class="model">正答：${esc(it.a)}</span></div></div><div class="gm"><span class="mk ${ok?'o':'x'}" style="display:grid;place-items:center">${ok?'○':'×'}</span></div></div>`)}
     else if(it.k==='kanji'){const sc=k=>{const r=S.ink[ikey(t.id,it.id+'.'+k)];return r?r.s.length:0};
@@ -856,7 +858,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011013605';
+const BUILD='20261011015646';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
