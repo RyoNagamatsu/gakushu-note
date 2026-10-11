@@ -116,6 +116,7 @@ canvas.ink.ruled{background-image:repeating-linear-gradient(to bottom,transparen
 .kv line{stroke:var(--line);stroke-width:.6;stroke-dasharray:2 2}
 .kv text{font-size:7.5px;fill:var(--shu);font-family:var(--f-ui);font-weight:700}
 .ansline{color:var(--shu);font-family:var(--f-q);margin:0}
+.aicmt{background:var(--ai-bg);border-radius:12px;padding:10px 14px;font-size:.95rem}.aicmt p{margin:4px 0}.aicmt ul{margin:2px 0;padding-left:1.4em}
 .ptline{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;margin:0}
 .ptline b{font-size:1.5rem;font-variant-numeric:tabular-nums}
 .card.lock{opacity:.55;border-style:dashed}
@@ -529,6 +530,54 @@ const STAGES=['リーグ突破','ベスト16','ベスト8','ベスト4','決勝�
 const COMPS=[['ワールドカップ','cup','世界一をきめる大会'],['J3リーグ','lg','日本のプロリーグ。ここからスタート'],['J2リーグ','lg','J3から昇格。つぎはJ1をめざす'],['J1リーグ','lg','日本でいちばん上のリーグ'],['天皇杯','cup','日本一をきめるカップ戦'],
  ['エールディビジ','lg','オランダのリーグ。海外にちょうせん'],['リーグ・アン','lg','フランスのリーグ'],['セリエA','lg','イタリアのリーグ'],['ブンデスリーガ','lg','ドイツのリーグ'],['ラ・リーガ','lg','スペインのリーグ'],['プレミアリーグ','lg','イングランドのリーグ'],['チャンピオンズリーグ','cup','ヨーロッパ一をきめる大会']];
 function comp(w){const i=((((w.n||1)-1)%COMPS.length)+COMPS.length)%COMPS.length,c=COMPS[i];return {name:c[0],lg:c[1]==='lg',desc:c[2],fin:c[1]==='lg'?'優勝決定戦':'決勝',stages:c[1]==='lg'?LSTAGES:STAGES}}
+/* ---------- AI grading of English writing (Claude API, called from the iPad with the parent's key) ---------- */
+let akey=LS.get('gk1.akey')||'';
+const AI_MODELS=['claude-sonnet-5-5','claude-sonnet-4-5','claude-haiku-4-5-20251001'];
+function inkPNG(key,lh){const st=((S.ink[key]||{}).s||[]).map(x=>x.split(',').map(Number));if(!st.length)return null;
+  let my=0;st.forEach(p=>{for(let i=1;i<p.length;i+=2)my=Math.max(my,p[i])});const H=Math.min(Math.max(lh||400,my+40),4000);
+  const c=document.createElement('canvas');c.width=1000;c.height=H;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,1000,H);
+  x.strokeStyle='#000';x.fillStyle='#000';x.lineWidth=3;x.lineCap='round';x.lineJoin='round';
+  st.forEach(p=>{if(p.length<4){x.beginPath();x.arc(p[0],p[1],2,0,7);x.fill();return}x.beginPath();x.moveTo(p[0],p[1]);for(let i=2;i<p.length;i+=2)x.lineTo(p[i],p[i+1]);x.stroke()});
+  return c.toDataURL('image/png').split(',')[1]}
+async function aiCall(content,maxTok){let last='';for(const model of AI_MODELS){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':akey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model,max_tokens:maxTok||700,messages:[{role:'user',content}]})});
+  if(r.ok){const j=await r.json();return (j.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('')}
+  last=r.status+' '+(await r.text()).slice(0,200);if(r.status===404||/model/i.test(last))continue;throw new Error(last)}
+  throw new Error(last)}
+function aiItems(t){return items(t).filter(it=>it.k==='long'&&it.en&&!it.scratch)}
+async function aiGradeItem(t,it){const v=V(t.id);v.ai=v.ai||{};const png=inkPNG(ikey(t.id,it.id),lh(it));
+  if(!png){v.ai[it.id]={empty:true,t:Date.now()};touchVals(t.id);return}
+  const test=!!t.test,max=it.pts||0;
+  const ask=`You are grading handwritten English by a 10-year-old Japanese boy (grade 4, English-medium school, aiming at EIKEN pre-1). The image is his handwriting on ruled lines.
+Task given to him: "${it.q}"
+${it.sample?'Example answer (for reference only; his answer can be different): "'+it.sample+'"\n':''}${test?'This is a TEST question worth '+max+' points. Scoring guide (Japanese): '+(it.rubric||'')+'\n':'This is daily homework (no score).\n'}
+Read the handwriting carefully. Then return ONLY a JSON object with these keys:
+"readable": true/false (false if you cannot read most of it),
+"text": your best transcription,
+"sentences": number of sentences,
+"words": number of words,
+"spelling": list of [wrong, correct] pairs for misspelled words (max 5),
+"grammar": list of [wrong phrase, corrected phrase] for grammar mistakes (max 3),
+"good": one short sentence of specific praise in simple English for the child,
+"fix": one short sentence in simple English telling the child the most important thing to improve (length first if he wrote fewer sentences than asked),
+"score": ${test?'integer 0-'+max+' following the scoring guide':'null'},
+"reason": ${test?'1-2 sentences in Japanese for the parent explaining the score':'1 sentence in Japanese for the parent summarizing the writing'}`;
+  try{const txt=await aiCall([{type:'image',source:{type:'base64',media_type:'image/png',data:png}},{type:'text',text:ask}]);
+    const m=txt.match(/\{[\s\S]*\}/);const j=JSON.parse(m?m[0]:txt);j.t=Date.now();v.ai[it.id]=j;touchVals(t.id);
+    if(test&&j.readable&&typeof j.score==='number'){const g=G(t.id);if(typeof g.m[it.id]!=='number'){g.m[it.id]=Math.max(0,Math.min(max,Math.round(j.score)));touchGrades(t.id)}}}
+  catch(e){v.ai[it.id]={error:String(e.message||e).slice(0,160),t:Date.now()};touchVals(t.id)}}
+async function aiGradeTask(t,force){if(!akey)return;const v=V(t.id);const list=aiItems(t).filter(it=>force||!(v.ai||{})[it.id]);if(!list.length)return;
+  v.aiq=list.length;for(const it of list){await aiGradeItem(t,it);v.aiq--;if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render()}delete v.aiq;touchVals(t.id);if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render()}
+function aiHTML(t,it,forParent){const v=S.vals[t.id]||{},a=(v.ai||{})[it.id];
+  if(!a){if(!akey)return '';return v.aiq?`<p class="ansline sample"><span>⏳ ${forParent?'AIが読んでいます…':'AI is reading your writing…'}</span></p>`:''}
+  if(a.empty)return '';if(a.error)return `<p class="sub">AI採点でエラー：${esc(a.error)}</p>`;
+  if(!a.readable)return `<p class="ansline sample"><span>${forParent?'AIが読み取れませんでした（保護者が確認してください）':'AI could not read this. Please write bigger and clearer next time.'}</span></p>`;
+  const sp=(a.spelling||[]).map(x=>`<li>${esc(x[0])} → <b>${esc(x[1])}</b></li>`).join(''),gr=(a.grammar||[]).map(x=>`<li>${esc(x[0])} → <b>${esc(x[1])}</b></li>`).join('');
+  return `<div class="aicmt"><p><b>AI check:</b> ${a.sentences||0} sentences, ${a.words||0} words.${typeof a.score==='number'&&forParent?' <b>'+a.score+' / '+(it.pts||0)+'点</b>':''}</p>
+   ${sp?`<p>Spelling:</p><ul>${sp}</ul>`:''}${gr?`<p>Grammar:</p><ul>${gr}</ul>`:''}
+   ${a.good?`<p>👍 ${esc(a.good)}</p>`:''}${a.fix?`<p>✏️ ${esc(a.fix)}</p>`:''}
+   ${forParent?`<p class="sub">読み取り：${esc(a.text||'')}</p><p class="sub">${esc(a.reason||'')}</p>`:''}</div>`}
 /* ---------- point wallet (points can be exchanged for baht; the child records what he spent) ---------- */
 const WALLET='wallet';
 function wallet(){const w=V(WALLET);if(!Array.isArray(w.log))w.log=[];if(!(w.rate>0))w.rate=1;return w}
@@ -717,7 +766,7 @@ function itemHTML(t,it,n,ro,side){
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
       `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${(ro&&t.hw)?`<p class="ansline"><span>こたえ：${esc(it.a)}</span><span class="auto ${v[it.id]===it.a?'o':'x'}">${v[it.id]===it.a?'○':'×'}</span></p>${canMark&&v[it.id]!==it.a?`<div class="retry" data-rt="${it.id}"><b>もういちど、正しいこたえを えらぼう</b><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="rcres" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div>`:''}`+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):''}</div>`}
   if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model,it.scratch?null:it.id)}</div>`;
-  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model,it.id)}${(ro&&t.hw&&it.sample)?`<p class="ansline sample"><span><b>${it.en?'Example（れい）':'れい'}：</b>${esc(it.sample)}</span></p><p class="sub">${it.en?'Your answer can be different. Compare: how many sentences? Is there a reason?':'こたえは 1つでは ありません。じぶんの文と くらべてみよう。'}</p>`:''}</div>`;
+  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model,it.id)}${(ro&&t.hw&&it.sample)?`<p class="ansline sample"><span><b>${it.en?'Example（れい）':'れい'}：</b>${esc(it.sample)}</span></p><p class="sub">${it.en?'Your answer can be different. Compare: how many sentences? Is there a reason?':'こたえは 1つでは ありません。じぶんの文と くらべてみよう。'}</p>`:''}${(ro&&t.hw&&it.en)?aiHTML(t,it,false):''}</div>`;
   return ''}
 
 let clockTm=null,lastLocal=0;
@@ -763,7 +812,7 @@ function renderTask(){
     const blanks=countBlank(t);
     if(t.hw&&blanks){const see=await ask(`<b>まだ 書いていない もんだいが ${blanks} こ あります</b><p class="sub">さきに、のこりの もんだいを やろう。</p>`,'まだの もんだいを 見る','このまま 出す');
       if(see){const k=firstBlank(t),el=k&&(app.querySelector('[data-ink="'+k+'"]')||app.querySelector('[data-c="'+k+'"]'));const it=el&&(el.closest('.item')||el);if(it){it.scrollIntoView({block:'center',behavior:'smooth'});it.classList.remove('flash');void it.offsetWidth;it.classList.add('flash')}return}}
-    if((t.hw&&blanks)||await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}${t.hw?'出すと、こたえあわせに すすみます。':'出したあとは、なおせません。'}</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();
+    if((t.hw&&blanks)||await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}${t.hw?'出すと、こたえあわせに すすみます。':'出したあとは、なおせません。'}</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();aiGradeTask(t);
       const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>'+c.C.fin+'、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で'+c.C.fin+'です。':'5日そろいました。テストが'+c.C.fin+'です！'}</p><div class="tips">${tipsHTML(v.tip||0)}</div>`,'やった！')}
       if(t.hw){go('task',t.id)}else go('home')}};
   const ud=app.querySelector('#undoDone');if(ud)ud.onclick=async()=>{if(!await ask('<b>「出す」を とりけしますか？</b><p class="sub">もういちど 書けるように なります。書いたものと ○× は そのまま のこります。おわったら、もういちど「出す」を おして、ふりかえりを おわらせよう。</p>','とりけす','やめる'))return;
@@ -830,13 +879,15 @@ function renderParent(){
         ${it.wq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.w" data-h="${bh({w:8})}"></div><span class="model">${esc(it.wq[0])}＝${esc(it.wq[1])}</span></div>`:''}</div><div class="gm"></div></div>`)}
     else if(it.k==='ink'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="inkbox ${it.cls==='s'?'s':''}" data-ink="${it.id}" data-h="${it.h}"></div>${it.model?`<div class="model">正答：${esc(it.model)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
     else if(it.k==='long'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${rich(it.q)}</div><div class="ga"><div class="inkbox" style="width:100%" data-ink="${it.id}" data-h="${lh(it)}"></div>
-       ${it.model?`<div class="model">解答例：${esc(it.model)}</div>`:''}${it.rubric?`<div class="model">採点の目安：${esc(it.rubric)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
+       ${it.model?`<div class="model">解答例：${esc(it.model)}</div>`:''}${it.rubric?`<div class="model">採点の目安：${esc(it.rubric)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}${it.en?aiHTML(t,it,true)+(akey&&hasInk(t.id,it.id)?`<div class="row"><button class="btn ghost sm" data-ai="${it.id}">AIで採点する${(v.ai||{})[it.id]?'（やり直し）':''}</button></div>`:''):''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
    })});
   const pgroups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(x=>x.group))],PW=WEEKS.find(w=>w.label===t.group),PP=PW?weekPts(PW):null;
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">保護者用　採点・結果</span><span class="save" id="save"></span></div></div>
   <div class="wrap">
    <section class="sec"><h3>答えの送り先</h3><p class="sub">GitHubで作った鍵（トークン）を入れると、答えと手書きが非公開の保存場所に送られ、Claudeが採点できます。入れない場合は、このiPadの中だけに保存されます。</p>
     <div class="row"><input class="blank" id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" style="width:min(100%,20em);text-align:left"><button class="btn" id="tokSave">保存してテスト</button><span class="sub" id="tokMsg">${token?'設定ずみ':'未設定'}</span></div></section>
+   <section class="sec"><h3 style="margin:0">英作文の自動採点（Claude API）</h3><p class="sub">キーを入れると、英作文を出した直後にAIが読んで、宿題ではつづり・文の数・直す点を本人に見せ、テストでは点数を入れます（あとから○×や点で直せます）。キーはこのiPadの中にだけ保存されます。</p>
+    <div class="row"><input class="blank" id="akey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk-ant-…" style="width:min(100%,20em);text-align:left"><button class="btn" id="akeySave">保存してテスト</button><span class="sub" id="akeyMsg">${akey?'設定ずみ':'未設定'}</span></div></section>
    <section class="sec"><h3 style="margin:0">ポイントの換金</h3>${(()=>{const W=walletSum(),w=wallet();return `<p class="sub">もらった ${W.earned}・つかった ${W.used}・のこり ${W.left} ポイント（${W.baht} バーツ）</p>
     <div class="row"><label>1ポイント ＝ <input class="blank" id="rate" type="number" inputmode="decimal" min="0" step="0.1" value="${w.rate}" style="width:5em"> バーツ</label><button class="btn ghost sm" id="rateSave">保存</button></div>
     ${w.log.length?`<div class="tblw"><table><tbody>${w.log.slice().reverse().map(e=>`<tr><td>${dstr(e.t)}</td><td>${esc(e.what||'')}</td><td class="num">${e.pts}</td><td><button class="btn ghost sm" data-del="${esc(e.id)}">取り消す</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="sub">まだ使った記録はありません。本人がホームの「ポイントをつかう」から入力します。</p>'}`})()}</section>
@@ -871,6 +922,9 @@ function renderParent(){
   app.querySelector('#back').onclick=()=>go('home');
   app.querySelectorAll('[data-grp]').forEach(b=>b.onclick=()=>{S.ptab=TASKS.find(x=>x.group===b.dataset.grp).id;inks.length=0;renderParent();status();window.scrollTo(0,0)});
   app.querySelector('#pview').onclick=()=>go('task',t.id,true);
+  app.querySelector('#akeySave').onclick=async()=>{const k=app.querySelector('#akey').value.trim(),m=app.querySelector('#akeyMsg');if(!k){akey='';LS.set('gk1.akey','');m.textContent='未設定（消しました）';return}
+    akey=k;m.textContent='確認中…';try{const r=await aiCall([{type:'text',text:'Reply with the single word OK.'}],20);LS.set('gk1.akey',k);m.textContent=/ok/i.test(r)?'設定ずみ（接続OK）':'設定ずみ'}catch(e){akey=LS.get('gk1.akey')||'';m.textContent='つながりません：'+String(e.message||e).slice(0,120)}};
+  app.querySelectorAll('[data-ai]').forEach(b=>b.onclick=async()=>{const it=items(t).find(i=>i.id===b.dataset.ai);b.disabled=true;b.textContent='読んでいます…';const v=V(t.id);v.ai=v.ai||{};delete v.ai[it.id];const g=G(t.id);if(t.test)delete g.m[it.id];await aiGradeItem(t,it);touchGrades(t.id);render()});
   app.querySelector('#rateSave').onclick=()=>{const r=+app.querySelector('#rate').value;if(r>=0){wallet().rate=r;touchVals(WALLET);render()}};
   app.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(await ask('<b>この記録を取り消しますか？</b>','取り消す','やめる')){const w=wallet();w.log=w.log.filter(e=>e.id!==b.dataset.del);touchVals(WALLET);render()}});
   const nb=app.querySelector('#neat');if(nb)nb.onchange=()=>keep(()=>{if(nb.checked)g.neat=true;else delete g.neat;touchGrades(t.id)});
@@ -898,7 +952,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011151425';
+const BUILD='20261011153403';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
