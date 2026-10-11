@@ -9,6 +9,6 @@ git add -A
 git commit -q -m "$1
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01HxiQktTLpK5k1G46nB5u74"
+${CLAUDE_SESSION_LINE:-}"
 git push -q origin main
 git log --oneline | head -1
