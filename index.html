@@ -116,6 +116,7 @@ canvas.ink.ruled{background-image:repeating-linear-gradient(to bottom,transparen
 .kv line{stroke:var(--line);stroke-width:.6;stroke-dasharray:2 2}
 .kv text{font-size:7.5px;fill:var(--shu);font-family:var(--f-ui);font-weight:700}
 .ansline{color:var(--shu);font-family:var(--f-q);margin:0}
+.aisug{font-size:.85rem;border-radius:999px;padding:2px 10px;background:var(--ai-bg);color:var(--ai-d)}.aisug.o{background:#e3f7e8;color:#1b7a3a}.aisug.x{background:#ffe6e6;color:#b3261e}.aisug.wait{opacity:.6}
 .aicmt{background:var(--ai-bg);border-radius:12px;padding:10px 14px;font-size:.95rem}.aicmt p{margin:4px 0}.aicmt ul{margin:2px 0;padding-left:1.4em}
 .ptline{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;margin:0}
 .ptline b{font-size:1.5rem;font-variant-numeric:tabular-nums}
@@ -578,6 +579,52 @@ function aiHTML(t,it,forParent){const v=S.vals[t.id]||{},a=(v.ai||{})[it.id];
    ${sp?`<p>Spelling:</p><ul>${sp}</ul>`:''}${gr?`<p>Grammar:</p><ul>${gr}</ul>`:''}
    ${a.good?`<p>👍 ${esc(a.good)}</p>`:''}${a.fix?`<p>✏️ ${esc(a.fix)}</p>`:''}
    ${forParent?`<p class="sub">読み取り：${esc(a.text||'')}</p><p class="sub">${esc(a.reason||'')}</p>`:''}</div>`}
+/* ---------- AI check of all other handwritten answers (Japanese, kanji, math): suggestions for homework, scores for tests ---------- */
+function aiKeys(t){const L=[];items(t).forEach(it=>{if(it.scratch)return;
+  if(it.k==='kanji'){if(it.rq)L.push({key:it.id+'.y',q:'「'+it.rq[0]+'」の読みをひらがなで',ans:[it.rq[1]],kind:'reading'});if(it.wq)L.push({key:it.id+'.w',q:'「'+it.wq[0]+'」を漢字で',ans:[it.wq[1]],kind:'kanji'})}
+  else if(it.k==='fill'){const q=unf((it.q?it.q+' ／ ':'')+it.tpl);it.b.forEach((b,i)=>L.push({key:it.id+'.'+i,q:q+(it.b.length>1?'（'+(i+1)+'つ目の空らん）':''),ans:b.a,kind:b.t==='num'?'number':'blank',o:true,pts:it.each?it.pts:0}));
+    if(it.work)L.push({key:it.id+'.w',q:unf(it.q||it.tpl)+' の'+unf(it.work.label),ans:[it.work.model],kind:'work',m:true,pts:it.work.pts||0})}
+  else if(it.k==='ink'&&it.model)L.push({key:it.id,q:unf(it.q),ans:[it.model],kind:it.cls==='s'?'kanji':'ink',m:true,pts:it.pts||0});
+  else if(it.k==='long'&&it.model&&!it.en)L.push({key:it.id,q:unf(it.q),ans:[it.model],kind:'long',m:true,pts:it.pts||0})});
+  return L.filter(x=>hasInk(t.id,x.key))}
+function inkSheets(t,L){const tiles=[];L.forEach((x,n)=>{const st=((S.ink[ikey(t.id,x.key)]||{}).s||[]).map(y=>y.split(',').map(Number));let my=0;st.forEach(p=>{for(let i=1;i<p.length;i+=2)my=Math.max(my,p[i])});
+    const sc=0.5,h=Math.round((my+40)*sc)+26,c=document.createElement('canvas');c.width=500;c.height=h;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,500,h);
+    g.strokeStyle='#000';g.fillStyle='#000';g.lineWidth=2;g.lineCap='round';g.lineJoin='round';
+    st.forEach(p=>{if(p.length<4){g.beginPath();g.arc(p[0]*sc,p[1]*sc+24,1.5,0,7);g.fill();return}g.beginPath();g.moveTo(p[0]*sc,p[1]*sc+24);for(let i=2;i<p.length;i+=2)g.lineTo(p[i]*sc,p[i+1]*sc+24);g.stroke()});
+    g.fillStyle='#d00';g.font='bold 16px sans-serif';g.fillText('#'+(n+1),4,16);g.strokeStyle='#bbb';g.lineWidth=1;g.strokeRect(0.5,0.5,499,h-1);tiles.push(c)});
+  const sheets=[];let cur=[],y=0;const flush=()=>{if(!cur.length)return;const c=document.createElement('canvas');c.width=500;c.height=y;const g=c.getContext('2d');let yy=0;cur.forEach(tl=>{g.drawImage(tl,0,yy);yy+=tl.height});sheets.push(c.toDataURL('image/png').split(',')[1]);cur=[];y=0};
+  tiles.forEach(tl=>{if(y+tl.height>1500)flush();cur.push(tl);y+=tl.height});flush();return sheets}
+async function aiCheckTask(t,force){if(!akey)return;const v=V(t.id);if(v.aicq)return;const L=aiKeys(t).filter(x=>force||!(v.aic||{})[x.key]);if(!L.length)return;
+  v.aic=v.aic||{};v.aicq=1;if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render();
+  const test=!!t.test;
+  try{for(let i=0;i<L.length;i+=40){const part=L.slice(i,i+40),sheets=inkSheets(t,part);
+    const list=part.map((x,n)=>`#${n+1} [${x.kind}] 問題: ${x.q} ／ 正答: ${x.ans.join(' または ')}${test&&x.m?' ／ 配点 '+x.pts:''}`).join('\n');
+    const ask=`A 10-year-old Japanese boy (grade 4, international school) wrote these answers by hand on an iPad. The image(s) show his answer boxes, each labelled #n in red. Compare each with the correct answer below and judge it.
+${list}
+
+Rules:
+- kind=reading: hiragana reading; accept small handwriting irregularities; ok only if the kana are the correct ones.
+- kind=kanji: ok if the character(s) are the correct ones and the strokes are all there (a missing or extra stroke, or a clearly different character, is not ok). If okurigana are part of the correct answer (e.g. 大きい), they must be written too.
+- kind=blank: ok if the content matches any listed correct answer (hiragana instead of kanji is fine when listed, and vice versa when the meaning is identical).
+- kind=number: the number must match exactly (3/5 and 3/5 are the same; 0.6 is not 3/5 unless listed).
+- kind=work: an expression (式) is ok if it is mathematically equivalent and leads to the answer.
+- kind=long: ok if the meaning matches the model answer; if the question asks for 「〜から。」 the answer must end with から。
+- kind=ink: ok if it matches the model.
+- If a box is unreadable, set ok to null.
+Return ONLY a JSON object: {"#1":{"ok":true|false|null,"read":"what he wrote","why":"子ども向けに日本語で短く（○なら空でよい、×なら何がちがうか）"${test?',"pts":integer score 0..配点 for items that have 配点 (else omit)':''}}, "#2":...}`;
+    const txt=await aiCall([...sheets.map(d=>({type:'image',source:{type:'base64',media_type:'image/png',data:d}})),{type:'text',text:ask}],2500);
+    const m=txt.match(/\{[\s\S]*\}/);const j=JSON.parse(m?m[0]:txt);
+    part.forEach((x,n)=>{const r=j['#'+(n+1)];if(!r)return;v.aic[x.key]={ok:r.ok===true?true:r.ok===false?false:null,read:String(r.read||'').slice(0,120),why:String(r.why||'').slice(0,160),pts:typeof r.pts==='number'?r.pts:undefined,t:Date.now()};
+      if(test){const g=G(t.id);if(x.o&&r.ok!==null&&typeof g.o[x.key]!=='boolean')g.o[x.key]=r.ok===true;
+        if(x.m&&x.pts>0&&typeof g.m[x.key]!=='number'){const p=typeof r.pts==='number'?r.pts:(r.ok===true?x.pts:r.ok===false?0:null);if(p!==null)g.m[x.key]=Math.max(0,Math.min(x.pts,Math.round(p)))}}});
+    if(test)touchGrades(t.id);touchVals(t.id)}}
+  catch(e){v.aicErr=String(e.message||e).slice(0,160)}
+  delete v.aicq;touchVals(t.id);if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render()}
+function aiFor(t,mk){const v=S.vals[t.id]||{},c=v.aic||{};const ks=Object.keys(c).filter(k=>k===mk||new RegExp('^'+mk.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\.(\\d+|w)$').test(k));if(!ks.length)return null;
+  const rs=ks.map(k=>c[k]);const ok=rs.some(r=>r.ok===null)?null:rs.every(r=>r.ok===true);return {ok,why:rs.filter(r=>r.ok!==true&&r.why).map(r=>r.why).join(' ／ ')}}
+function aiSug(t,mk){const v=S.vals[t.id]||{};const a=aiFor(t,mk);if(!a){return (v.aicq&&akey)?'<span class="aisug wait">AI…</span>':''}
+  return `<span class="aisug ${a.ok===true?'o':a.ok===false?'x':'n'}">AI：${a.ok===true?'○':a.ok===false?'×':'？'}${a.why?' '+esc(a.why):''}</span>`}
+function aiNote(t,key){const c=((S.vals[t.id]||{}).aic||{})[key];if(!c)return '';return `<span class="sub">AI：${c.ok===true?'○':c.ok===false?'×':'読めず'}${typeof c.pts==='number'?' '+c.pts+'点':''}${c.read?'「'+esc(c.read)+'」':''}${c.why?' '+esc(c.why):''}</span>`}
 /* ---------- point wallet (points can be exchanged for baht; the child records what he spent) ---------- */
 const WALLET='wallet';
 function wallet(){const w=V(WALLET);if(!Array.isArray(w.log))w.log=[];if(!(w.rate>0))w.rate=1;return w}
@@ -747,7 +794,7 @@ function itemHTML(t,it,n,ro,side){
   const sf=V(tid).self||{},canMark=ro&&t.hw&&!S.preview;
   const big=it.k==='long'||(it.k==='ink'&&it.cls!=='s');
   const RT=key=>canMark&&key?`<div class="retry" data-rt="${key}" ${sf[key]===0?'':'hidden'}><b>もういちど、正しいこたえを かこう</b>${big?`<div class="inkbox" data-ink="${key}.r" data-h="300" data-ruled="1"></div>`:`<span class="ib" data-ink="${key}.r" data-h="${bh({w:12})}" data-mini="1" style="width:${bw({w:12})}px"></span>`}</div>`:'';
-  const SM=key=>canMark&&key?`<span class="sm"><button class="mk o${sf[key]===1?' sel':''}" data-sm="${key}" data-val="1" aria-label="あっていた">○</button><button class="mk x${sf[key]===0?' sel':''}" data-sm="${key}" data-val="0" aria-label="ちがっていた">×</button></span>`:'';
+  const SM=key=>canMark&&key?`${aiSug(t,key)}<span class="sm"><button class="mk o${sf[key]===1?' sel':''}" data-sm="${key}" data-val="1" aria-label="あっていた">○</button><button class="mk x${sf[key]===0?' sel':''}" data-sm="${key}" data-val="0" aria-label="ちがっていた">×</button></span>`:'';
   const A=(ro&&t.hw)?(x,key)=>(x?`<p class="ansline"><span>こたえ：${esc(x)}</span>${SM(key)}</p>${RT(key)}`:'')+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):()=>'';
   if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:`data-kch="${esc(it.ch)}"`}></div>${bg?'':`<span class="kst" data-kst="${it.id}.${k}"></span>`}</div>`;
     return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
@@ -791,6 +838,7 @@ function renderTask(){
      ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${rich(p)}</p>`).join('')}</div>`:''}
      <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro,it.k==='fill'&&s.items.some(x=>x.scratch))).join('')}</div></section>`}).join('')}
    ${ro&&!pv&&t.hw?`<section class="sec" id="review"><h3>ふりかえり</h3>
+     ${akey?'<p class="sub noruby">AIの○×の案が出ます。自分の字と赤い答えを見くらべて、○か×をじぶんで押そう。</p>':''}
      <p class="rvline">○ <b id="rvO"></b> こ　　× <b id="rvX"></b> こ　　まだ <b id="rvN"></b> こ</p>
      <p class="q">きょうの しゅくだいは、どうだった？</p>
      <div class="opts">${[['1','かんたん'],['2','ちょうどいい'],['3','むずかしい']].map(f=>`<button class="opt${v.feel===f[0]?' on':''}" data-feel="${f[0]}"><span>${f[1]}</span></button>`).join('')}</div>
@@ -812,7 +860,7 @@ function renderTask(){
     const blanks=countBlank(t);
     if(t.hw&&blanks){const see=await ask(`<b>まだ 書いていない もんだいが ${blanks} こ あります</b><p class="sub">さきに、のこりの もんだいを やろう。</p>`,'まだの もんだいを 見る','このまま 出す');
       if(see){const k=firstBlank(t),el=k&&(app.querySelector('[data-ink="'+k+'"]')||app.querySelector('[data-c="'+k+'"]'));const it=el&&(el.closest('.item')||el);if(it){it.scrollIntoView({block:'center',behavior:'smooth'});it.classList.remove('flash');void it.offsetWidth;it.classList.add('flash')}return}}
-    if((t.hw&&blanks)||await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}${t.hw?'出すと、こたえあわせに すすみます。':'出したあとは、なおせません。'}</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();aiGradeTask(t);
+    if((t.hw&&blanks)||await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}${t.hw?'出すと、こたえあわせに すすみます。':'出したあとは、なおせません。'}</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();aiGradeTask(t);aiCheckTask(t);
       const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>'+c.C.fin+'、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で'+c.C.fin+'です。':'5日そろいました。テストが'+c.C.fin+'です！'}</p><div class="tips">${tipsHTML(v.tip||0)}</div>`,'やった！')}
       if(t.hw){go('task',t.id)}else go('home')}};
   const ud=app.querySelector('#undoDone');if(ud)ud.onclick=async()=>{if(!await ask('<b>「出す」を とりけしますか？</b><p class="sub">もういちど 書けるように なります。書いたものと ○× は そのまま のこります。おわったら、もういちど「出す」を おして、ふりかえりを おわらせよう。</p>','とりけす','やめる'))return;
@@ -866,8 +914,8 @@ function renderParent(){
    s.items.forEach(it=>{if(!it.k)return;const lab=it.scratch?'':(/^問/.test(it.q||'')?'':(++n)+'. ');
     if(it.k==='fill'){const qt=(it.q?it.q+' ／ ':'')+it.tpl.replace(/\{\}/g,'□');
       rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(qt)}</div><div class="ga">
-        ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"></div><div class="model">${esc(unf(it.work.label))}：${esc(it.work.model)}</div>`:''}
-        ${it.b.map((b,i)=>{const k=it.id+'.'+i,o=g.o[k];return `<div class="row"><div class="inkbox" style="width:${bw(b)}px" data-ink="${k}" data-h="${bh(b)}"></div><span class="model">正答：${esc(b.a.join(' ／ '))}</span>
+        ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"></div><div class="model">${esc(unf(it.work.label))}：${esc(it.work.model)}</div>${aiNote(t,it.id+'.w')}`:''}
+        ${it.b.map((b,i)=>{const k=it.id+'.'+i,o=g.o[k];return `<div class="row"><div class="inkbox" style="width:${bw(b)}px" data-ink="${k}" data-h="${bh(b)}"></div><span class="model">正答：${esc(b.a.join(' ／ '))}</span>${aiNote(t,k)}
           <button class="mk o${o===true?' sel':''}" data-o="${k}" data-val="1" aria-label="正解">○</button><button class="mk x${o===false?' sel':''}" data-o="${k}" data-val="0" aria-label="不正解">×</button></div>`}).join('')}</div>
         <div class="gm">
         ${it.work?pts(g,it.id+'.w',it.work.pts,unf(it.work.label)):''}
@@ -879,7 +927,7 @@ function renderParent(){
         ${it.wq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.w" data-h="${bh({w:8})}"></div><span class="model">${esc(it.wq[0])}＝${esc(it.wq[1])}</span></div>`:''}</div><div class="gm"></div></div>`)}
     else if(it.k==='ink'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="inkbox ${it.cls==='s'?'s':''}" data-ink="${it.id}" data-h="${it.h}"></div>${it.model?`<div class="model">正答：${esc(it.model)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
     else if(it.k==='long'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${rich(it.q)}</div><div class="ga"><div class="inkbox" style="width:100%" data-ink="${it.id}" data-h="${lh(it)}"></div>
-       ${it.model?`<div class="model">解答例：${esc(it.model)}</div>`:''}${it.rubric?`<div class="model">採点の目安：${esc(it.rubric)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}${it.en?aiHTML(t,it,true)+(akey&&hasInk(t.id,it.id)?`<div class="row"><button class="btn ghost sm" data-ai="${it.id}">AIで採点する${(v.ai||{})[it.id]?'（やり直し）':''}</button></div>`:''):''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
+       ${it.model?`<div class="model">解答例：${esc(it.model)}</div>`:''}${it.rubric?`<div class="model">採点の目安：${esc(it.rubric)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}${it.en?'':aiNote(t,it.id)}${it.en?aiHTML(t,it,true)+(akey&&hasInk(t.id,it.id)?`<div class="row"><button class="btn ghost sm" data-ai="${it.id}">AIで採点する${(v.ai||{})[it.id]?'（やり直し）':''}</button></div>`:''):''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
    })});
   const pgroups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(x=>x.group))],PW=WEEKS.find(w=>w.label===t.group),PP=PW?weekPts(PW):null;
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">保護者用　採点・結果</span><span class="save" id="save"></span></div></div>
@@ -893,7 +941,7 @@ function renderParent(){
     ${w.log.length?`<div class="tblw"><table><tbody>${w.log.slice().reverse().map(e=>`<tr><td>${dstr(e.t)}</td><td>${esc(e.what||'')}</td><td class="num">${e.pts}</td><td><button class="btn ghost sm" data-del="${esc(e.id)}">取り消す</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="sub">まだ使った記録はありません。本人がホームの「ポイントをつかう」から入力します。</p>'}`})()}</section>
    <div class="tabs">${pgroups.map(x=>`<button class="tab${x===t.group?' on':''}" data-grp="${esc(x)}">${esc(x)}</button>`).join('')}</div>
    <div class="tabs">${TASKS.filter(x=>x.group===t.group).map(x=>`<button class="tab${x.id===t.id?' on':''}" data-tab="${x.id}">${esc(x.title)}</button>`).join('')}</div>
-   <div class="row"><button class="btn ghost sm" id="pview">「${esc(t.title)}」の問題用紙を見る</button></div>
+   <div class="row"><button class="btn ghost sm" id="pview">「${esc(t.title)}」の問題用紙を見る</button>${akey&&v.done?`<button class="btn ghost sm" id="paiAll">${v.aicq?'AIが読んでいます…':'この課題をAIで採点する（やり直し）'}</button>`:''}${v.aicErr?`<span class="sub">AIエラー：${esc(v.aicErr)}</span>`:''}</div>
    ${PW?`<section class="sec"><p class="ptline"><span>この週のポイント</span><b>${PP.sum}</b><span class="sub">/ 50</span></p><div class="tblw"><table><tbody>
      ${PW.days.map((d,i)=>`<tr><td>${i+1}日目の宿題</td><td class="num">${PP.rows[i]}</td></tr>`).join('')}
      <tr><td>5日そろったボーナス</td><td class="num">${PP.bonus}</td></tr><tr><td>テスト${PP.prov?'（採点がすむと確定）':''}</td><td class="num">${PP.test}</td></tr><tr><td>ていねいボーナス</td><td class="num">${PP.neat}</td></tr></tbody></table></div>
@@ -922,6 +970,7 @@ function renderParent(){
   app.querySelector('#back').onclick=()=>go('home');
   app.querySelectorAll('[data-grp]').forEach(b=>b.onclick=()=>{S.ptab=TASKS.find(x=>x.group===b.dataset.grp).id;inks.length=0;renderParent();status();window.scrollTo(0,0)});
   app.querySelector('#pview').onclick=()=>go('task',t.id,true);
+  const pa=app.querySelector('#paiAll');if(pa)pa.onclick=async()=>{pa.disabled=true;pa.textContent='AIが読んでいます…';const vv=V(t.id);vv.aic={};delete vv.aicErr;if(t.test){const g=G(t.id);aiKeys(t).forEach(x=>{if(x.o)delete g.o[x.key];if(x.m)delete g.m[x.key]})}await aiCheckTask(t,true);await aiGradeTask(t,true);render()};
   app.querySelector('#akeySave').onclick=async()=>{const k=app.querySelector('#akey').value.trim(),m=app.querySelector('#akeyMsg');if(!k){akey='';LS.set('gk1.akey','');m.textContent='未設定（消しました）';return}
     akey=k;m.textContent='確認中…';try{const r=await aiCall([{type:'text',text:'Reply with the single word OK.'}],20);LS.set('gk1.akey',k);m.textContent=/ok/i.test(r)?'設定ずみ（接続OK）':'設定ずみ'}catch(e){akey=LS.get('gk1.akey')||'';m.textContent='つながりません：'+String(e.message||e).slice(0,120)}};
   app.querySelectorAll('[data-ai]').forEach(b=>b.onclick=async()=>{const it=items(t).find(i=>i.id===b.dataset.ai);b.disabled=true;b.textContent='読んでいます…';const v=V(t.id);v.ai=v.ai||{};delete v.ai[it.id];const g=G(t.id);if(t.test)delete g.m[it.id];await aiGradeItem(t,it);touchGrades(t.id);render()});
@@ -952,7 +1001,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011153403';
+const BUILD='20261011155018';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
