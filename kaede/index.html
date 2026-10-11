@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ぴょんぴょん">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#fff1f5">
+<meta name="theme-color" content="#ffe3ee">
 <meta name="robots" content="noindex,nofollow">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -19,15 +19,11 @@
 <style>
 /* Layout: one answer sheet per screen, a single wide column sized for an iPad held upright; a slim sticky bar carries time and save state. */
 :root{
-  --paper:#fff1f5; --sheet:#ffffff; --ink:#4a2a3a; --soft:#8a6475; --line:#f3c9d7; --ai:#c9387a; --ai-bg:#ffe1ec; --shu:#d8442b; --ok:#2f8a5f; --warn:#a86a10; --hl:#fff0a6; --dot:#ffdbe7; --carrot:#f0862a; --leaf:#4fa35a; --gold:#f4b93a; --rb:#ffffff; --rb-line:#c79fb0; --rb-pink:#ff9fc0; --rb-eye:#3b2530;
+  --paper:#ffe3ee; --sheet:#ffffff; --ink:#4a2a3a; --soft:#8a6475; --line:#f9b8d0; --ai:#d9347f; --ai-bg:#ffd6e6; --shu:#d8442b; --ok:#2f8a5f; --warn:#a86a10; --hl:#fff0a6; --dot:#ffc9dd; --carrot:#f0862a; --leaf:#4fa35a; --gold:#f4b93a; --rb:#ffffff; --rb-line:#c79fb0; --rb-pink:#ff9fc0; --rb-eye:#3b2530;
   --f-q:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
   --f-ui:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
   --f-en:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --paper:#1f141a; --sheet:#2b1c24; --ink:#f7e7ed; --soft:#c59fae; --line:#553846; --ai:#ff8fb8; --ai-bg:#4a2437; --shu:#ff8a70; --ok:#6fd0a0; --warn:#e8b65e; --hl:#514a1c; --dot:#2a1b23; --carrot:#ff9a44; --leaf:#6cc27a; --gold:#f4b93a; --rb:#f8f1f4; --rb-line:#8a6677; --rb-pink:#ff9fc0; --rb-eye:#3b2530; color-scheme:dark } }
-:root[data-theme="dark"]{
-  --paper:#1f141a; --sheet:#2b1c24; --ink:#f7e7ed; --soft:#c59fae; --line:#553846; --ai:#ff8fb8; --ai-bg:#4a2437; --shu:#ff8a70; --ok:#6fd0a0; --warn:#e8b65e; --hl:#514a1c; --dot:#2a1b23; --carrot:#ff9a44; --leaf:#6cc27a; --gold:#f4b93a; --rb:#f8f1f4; --rb-line:#8a6677; --rb-pink:#ff9fc0; --rb-eye:#3b2530; color-scheme:dark }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%}
 button,input,textarea{font:inherit;color:inherit}
@@ -279,7 +275,7 @@ const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
 // She may run ahead: Monday to Friday of an open week are all open at once, handing in all five opens the Saturday test, and handing in the test opens the next week. Dates only open things that are still closed when the day arrives.
 const isDoneId=id=>!!(S.vals[id]||{}).done;
 function weekOpen(w,today){if(today>=w.id)return true;const pw=WEEKS[WEEKS.indexOf(w)+1];
-  if(pw)return pw._t?isDoneId(pw._t):pw._d.every(isDoneId);return TASKS.slice(0,BASE).every(t=>isDoneId(t.id))}
+  if(pw)return pw._t?isDoneId(pw._t):pw._d.every(isDoneId);return true}
 function lockInfo(t,today){if(!t.week)return null;const w=WEEKS.find(x=>x.id===t.week);if(!w)return null;
   if(!weekOpen(w,today))return 'まえの しゅうの テストを 出すと ひらきます';
   const all=w._d.every(isDoneId);
@@ -655,7 +651,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011071510';
+const BUILD='20261011113550';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
