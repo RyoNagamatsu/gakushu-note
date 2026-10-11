@@ -169,6 +169,8 @@ h1{color:var(--ai)}
 .meter{height:12px;border-radius:999px;background:var(--ai-bg);overflow:hidden}
 .meter i{display:block;height:100%;background:var(--ai);border-radius:999px}
 .track{display:flex;gap:6px;flex-wrap:wrap}
+.kn .kjm{width:104px;height:104px}.kn .kjf{font-size:70px}.kn .inkbox.sq{width:118px}.knr{font-family:var(--f-en);font-size:1.7rem;font-weight:700;color:var(--ai);line-height:1.2}
+.note{white-space:pre-line}
 .item.calcrow{flex-direction:row;flex-wrap:wrap;gap:10px 18px;align-items:flex-start}.cq{flex:1 1 250px;min-width:0;display:flex;flex-direction:column;gap:8px}
 .cbox{flex:1 1 250px;max-width:400px;min-width:0;display:flex;flex-direction:column;gap:2px}.cbox .inkbox{width:100%}.cbox .inkbox>.btn{align-self:flex-end;min-height:32px;padding:0 10px;font-size:.8rem}
 .tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.tips h2{grid-column:1/-1;font-size:1.1rem;color:var(--soft)}
@@ -571,7 +573,7 @@ function renderHome(){
   groups=[cur].concat(groups.filter(g=>g!==cur));
   const pct=nx?Math.round((n-STAGES[st][0])/(nx[0]-STAGES[st][0])*100):100;
   app.innerHTML=`<div class="wrap">
-   <div><h1>がくしゅうノート</h1><p class="sub">やる ものを えらんで、おしましょう。こたえあわせまで おわると、ぴょんぴょんが にんじんを 1本 たべられます。</p></div>
+   <div><h1>がくしゅうノート</h1><p class="sub">やる ものを えらんで、おしましょう。（Tap one to start.）こたえあわせまで おわると、ぴょんぴょんが にんじんを 1本 たべられます。</p></div>
    <section class="pyon${fed?' fed':''}">
     <div class="pyon-pic">${rabbit(st,!!fed)}</div>
     <div class="pyon-tx">
@@ -615,7 +617,11 @@ function itemHTML(t,it,n,ro){
   // Answer check: the red answer, ○ / × for her to press, and a box to write it again after a ×.
   const sf=V(tid).self||{},mark=ro&&t.hw&&V(tid).done;
   const R=(key,ans,h,w)=>!mark?A(ans):`<div class="rv" data-rv="${key}"><div class="rvh"><span class="ansline">こたえ：${esc(ans)}</span><span class="rvb"><button class="mk o${sf[key]===1?' sel':''}" data-sm="${key}" data-val="1" aria-label="あって いた">○</button><button class="mk x${sf[key]===0?' sel':''}" data-sm="${key}" data-val="0" aria-label="ちがって いた">×</button></span></div>
-    <div class="retry" data-rt="${key}" ${sf[key]===0?'':'hidden'}><span class="sub">もう いちど かこう</span><div class="inkbox" data-ink="${key}.r" data-h="${h}" data-rw="1" data-mini="1" style="${w?'width:'+w+'px':''}"></div></div></div>`;
+    <div class="retry" data-rt="${key}" ${sf[key]===0?'':'hidden'}><span class="sub">もう いちど かこう　Write it again</span><div class="inkbox" data-ink="${key}.r" data-h="${h}" data-rw="1" data-mini="1" style="${w?'width:'+w+'px':''}"></div></div></div>`;
+  if(it.k==='kana'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
+    return `<div class="item kj kn"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
+      <div class="kji"><div class="knr">${esc(it.ro||'')}</div>${it.ex?`<div>${esc(it.ex[0])}<span class="sub">　${esc(it.ex[1])}</span></div>`:''}<button class="btn ghost sm" data-play="1">かきじゅん</button></div></div>
+      <div class="kjb">${sq('t','なぞる Trace',1)}${sq('a','かく Write')}${it.n===3?sq('b','もう いちど'):''}</div></div>`}
   if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
     return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
       <div class="kji"><div><b>おん</b>${esc(it.on||'－')}　<b>くん</b>${esc(it.kun||'－')}　<b>かくすう</b>${esc(it.st||'')}画</div><div><b>ことば</b>${(it.ex||[]).map(e=>esc(e[0])+'（'+esc(e[1])+'）').join('　')}</div>
@@ -633,7 +639,7 @@ function itemHTML(t,it,n,ro){
       <p class="q">${it.q?'':num}${body}</p>${mark?(it.work?R(it.id+'.w',it.work.label+'：'+it.work.model,300,0):'')+it.b.map((b,j)=>R(it.id+'.'+j,b.a[0],bh(b),bw(b))).join(''):A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}${cb?`</div><div class="cbox"><span class="sub">けいさん</span><div class="inkbox" data-ink="${it.id}.c" data-h="400" data-mini="1"></div></div>`:''}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
-      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${!mark?A(it.a):v[it.id]===it.a?'<p class="ansline">○ せいかい！</p>':`<div class="rv"><p class="ansline">こたえ：${esc(it.a)}</p><div class="retry" data-rt="${it.id}"><span class="sub">もう いちど えらぼう</span><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="sub" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div></div>`}</div>`}
+      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${!mark?A(it.a):v[it.id]===it.a?'<p class="ansline">○ せいかい！</p>':`<div class="rv"><p class="ansline">こたえ：${esc(it.a)}</p><div class="retry" data-rt="${it.id}"><span class="sub">もう いちど えらぼう　Choose again</span><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="sub" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div></div>`}</div>`}
   if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${it.model&&!it.scratch?R(it.id,it.model,it.h,it.cls==='s'?300:0):''}</div>`;
   if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${it.model?R(it.id,it.model,lh(it),0):''}</div>`;
   return ''}
@@ -653,12 +659,12 @@ function renderTask(){
   const t=TASK[S.task],v=V(t.id),pv=S.preview,ro=v.done||pv;
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
   <div class="wrap${t.en?' en':''}">
-   ${pv?'<p class="banner">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?(v.rev?'こたえあわせも おわりました。おつかれさまでした。':'こたえあわせを しましょう。赤い こたえと くらべて、あって いたら ○、ちがって いたら ×を おします。×の もんだいは、もう いちど かきます。'):'この テストは 出しました。おつかれさまでした。'}</p>`:''}
+   ${pv?'<p class="banner">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?(v.rev?'こたえあわせも おわりました。おつかれさまでした。':'こたえあわせを しましょう。赤い こたえと くらべて、あって いたら ○、ちがって いたら ×を おします。×の もんだいは、もう いちど かきます。（Check your answers. Tap ○ if you were right and × if you were wrong. Write the × ones again.）'):'この テストは 出しました。おつかれさまでした。'}</p>`:''}
    <p class="banner red" id="timeup" hidden>じかんです。ここまでに して、下の「おわる」を おしましょう。</p>
    ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${esc(s.h)}</h3>${s.note?`<p class="note">${esc(s.note)}</p>`:''}
      ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`:''}
      <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro)).join('')}</div></section>`}).join('')}
-   ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
+   ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）　Done</button></div>'}
    ${ro&&!pv&&t.hw?'<section class="sec"><h3>こたえあわせ</h3><p class="q" id="rvMsg"></p><div class="row end"><button class="btn" id="rvDone"></button></div></section>':''}
   </div>`;
   app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink);const rw=!!box.dataset.rw&&!pv&&!v.rev,api=mkInk(sqHost(box),key,+box.dataset.h,ro&&!rw,!!box.dataset.ruled,rw);if(rw&&api.onchange)api.onchange(paintReview);
@@ -685,16 +691,16 @@ function reviewLeft(t){const v=V(t.id),sf=v.self||{},rc=v.rc||{},ks=markKeys(t);
   const n=ks.length-o-x,u=ks.filter(k=>sf[k]===0&&!hasInk(t.id,k+'.r')).length,c=items(t).filter(it=>it.k==='choice'&&v.v[it.id]!==it.a&&rc[it.id]!==it.a).length;
   return {o,x,n,u,c,left:n+u+c}}
 function paintReview(){const b=document.getElementById('rvDone');if(!b||S.screen!=='task')return;const t=TASK[S.task],v=V(t.id),c=reviewLeft(t);
-  b.textContent=v.rev?'ホームに もどる':c.left>0?'まだの もんだいへ すすむ（あと '+c.left+'こ）':'こたえあわせを おわる';
+  b.textContent=v.rev?'ホームに もどる':c.left>0?'まだの もんだいへ すすむ（あと '+c.left+'こ）　Next':'こたえあわせを おわる　Finish';
   const m=document.getElementById('rvMsg');if(m)m.textContent=v.rev?'':'○ '+c.o+'こ、× '+c.x+'こ。'+(c.left>0?'ぜんぶに ○か ×を つけて、×の もんだいを もう いちど かくと、おわれます。':'ぜんぶ できました。下の ボタンを おしましょう。')}
 function wc(ta){const el=app.querySelector(`[data-wcfor="${ta.dataset.k}"]`);if(el)el.textContent=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' words'}
 function countBlank(t){const v=V(t.id).v;let n=0;items(t).forEach(it=>{if(it.scratch)return;
   if(it.k==='fill')it.b.forEach((_,i)=>{if(!hasInk(t.id,it.id+'.'+i))n++});
-  else if(it.k==='choice'){if(!v[it.id])n++}else if(it.k==='kanji'){if(!hasInk(t.id,it.id+'.a'))n++}else{if(!hasInk(t.id,it.id))n++}});return n}
+  else if(it.k==='choice'){if(!v[it.id])n++}else if(it.k==='kanji'||it.k==='kana'){if(!hasInk(t.id,it.id+'.a'))n++}else{if(!hasInk(t.id,it.id))n++}});return n}
 async function gate(){const t=TASK[S.task],v=V(t.id);if(v.done||S.running)return;
   const ok=await ask(v.started?`<b>${esc(t.title)}</b><p class="sub">とちゅうで とまって います。${t.hw?'':'のこり じかん：'+mmss(t.min*60-v.el)}</p>`
    :`<b>${esc(t.title)}（${t.min}分${t.pts?'・'+t.pts+'点':''}）</b><ul><li>わからない もんだいは、あけた ままで だいじょうぶです。</li>${t.hw?'<li>てほんを よく 見て、ゆっくり ていねいに かきましょう。</li>':'<li>じしょや けいさんきは つかいません。</li>'}<li>こたえは、わくの 中に ペンか ゆびで かきます。</li><li>かいた ものは、じどうで のこります。</li></ul>`,
-   v.started?'つづける':'はじめる','もどる');
+   v.started?'つづける Continue':'はじめる Start','もどる Back');
   if(S.screen!=='task'||S.task!==t.id)return;if(ok)startClock();else go('home')}
 
 app.addEventListener('input',e=>{const el=e.target;if(S.screen!=='task'||!el.dataset||!el.dataset.k)return;V(S.task).v[el.dataset.k]=el.value;if(el.dataset.wc)wc(el);touchVals(S.task)});
@@ -723,6 +729,7 @@ function renderParent(){
         ${it.work?pts(g,it.id+'.w',it.work.pts,it.work.label):''}
         ${t.sansu&&it.work?`<label class="chk"><input type="checkbox" data-read="${it.id}" ${g.read[it.id]?'checked':''}>読み上げた</label>`:''}</div></div>`)}
     else if(it.k==='choice'){const ok=v.v[it.id]===it.a;rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="ans">${esc(v.v[it.id]||'（空らん）')} <span class="model">正答：${esc(it.a)}</span></div></div><div class="gm"><span class="mk ${ok?'o':'x'}" style="display:grid;place-items:center">${ok?'○':'×'}</span></div></div>`)}
+    else if(it.k==='kana'){rows.push(`<div class="g"><div class="gq">かな「${esc(it.ch)}」（${esc(it.ro||'')}）</div><div class="ga"><div class="row">${['t','a'].concat(it.n===3?['b']:[]).map(k=>`<div><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000"></div></div>`).join('')}</div></div><div class="gm"></div></div>`)}
     else if(it.k==='kanji'){const sc=k=>{const r=S.ink[ikey(t.id,it.id+'.'+k)];return r?r.s.length:0};
       rows.push(`<div class="g"><div class="gq">漢字「${esc(it.ch)}」（${esc(it.st||'')}画）</div><div class="ga"><div class="row">${['t','a','b'].map(k=>`<div><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000"></div>${k!=='t'?`<span class="sub">${sc(k)}画で書いた</span>`:''}</div>`).join('')}</div>
         ${it.rq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.y" data-h="${bh({w:8})}"></div><span class="model">${esc(it.rq[0])}＝${esc(it.rq[1])}</span></div>`:''}
@@ -783,6 +790,7 @@ function report(){const L=['【学習ノート 小2 結果】'];
    items(t).forEach(it=>{if(it.scratch)return;
     if(it.k==='fill'){L.push(`${it.id}: `+it.b.map((b,i)=>{const k=it.id+'.'+i,o=g.o[k];return o===true?'○':o===false?'×':hasInk(t.id,k)?'未採点':'空らん'}).join(' ')+(it.work?` ${it.work.label}=${typeof g.m[it.id+'.w']==='number'?g.m[it.id+'.w']+'点':hasInk(t.id,it.id+'.w')?'未採点':'なし'}`:'')+(g.read[it.id]?' 読み上げ':''))}
     else if(it.k==='choice')L.push(`${it.id}: ${v.v[it.id]||'-'} ${v.v[it.id]===it.a?'○':'×'}`);
+    else if(it.k==='kana')L.push(`${it.id}: かな「${it.ch}」 ${hasInk(t.id,it.id+'.a')?'書いた':'空らん'}`);
     else if(it.k==='kanji')L.push(`${it.id}: 漢字「${it.ch}」 ${hasInk(t.id,it.id+'.a')?'書いた':'空らん'}`);
     else if(it.k==='ink')L.push(`${it.id}: 手書き `+(it.pts?(typeof g.m[it.id]==='number'?g.m[it.id]+'点':hasInk(t.id,it.id)?'未採点':'空らん'):(hasInk(t.id,it.id)?'あり（写真で送付）':'空らん')));
     else if(it.k==='long')L.push(`${it.id}: 手書き `+(it.pts?(typeof g.m[it.id]==='number'?g.m[it.id]+'点':hasInk(t.id,it.id)?'未採点':'空らん'):(hasInk(t.id,it.id)?'あり（写真で送付）':'空らん')))})});
@@ -791,7 +799,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011120616';
+const BUILD='20261011121548';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}

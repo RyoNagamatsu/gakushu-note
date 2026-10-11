@@ -28,6 +28,7 @@ def check(name, part):
                     m = re.match(r'^\s*(\d+)\s*([＋－×÷])\s*(\d+)\s*＝\s*(\d+)$', it['work']['model'])
                     if not m or OPS[m.group(2)](int(m.group(1)), int(m.group(3))) != int(m.group(4)) or m.group(4) != it['b'][0]['a'][0]: err.append('%s %s: check work.model %s' % (name, it['id'], it['work']['model']))
             if it['k'] == 'choice' and (it.get('lab') or 'ABCD').find(it['a']) not in range(len(it['opts'])): err.append('%s %s: bad answer key' % (name, it['id']))
+            if it['k'] == 'kana' and strokes(it['ch']) is None: err.append('%s %s: no stroke data for %s' % (name, it['id'], it['ch']))
             if it['k'] == 'kanji':
                 st = strokes(it['ch'])
                 if st is None: err.append('%s %s: no stroke data for %s' % (name, it['id'], it['ch']))
