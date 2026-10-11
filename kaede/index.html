@@ -114,6 +114,7 @@ canvas.ink.ruled{background-image:repeating-linear-gradient(to bottom,transparen
 .ptline{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;margin:0}
 .ptline b{font-size:1.5rem;font-variant-numeric:tabular-nums}
 .card.lock{opacity:.55;border-style:dashed}
+.card.lock .st{border-radius:12px;line-height:1.5;padding:3px 10px}
 .card.today{border-color:var(--ai);box-shadow:inset 0 0 0 1.5px var(--ai)}
 .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
 .kgrid .item+.item{border-top:0;padding-top:0}
@@ -269,11 +270,25 @@ const TASKS=[
 const TASK={},WEEKS=[],BASE=TASKS.length;
 function setWeeks(list){TASKS.length=BASE;WEEKS.length=0;
   (list||[]).filter(w=>w&&w.id&&Array.isArray(w.days)).sort((a,b)=>a.id<b.id?1:-1).forEach(w=>{w=JSON.parse(JSON.stringify(w));WEEKS.push(w);w._d=[];
-    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:d.wd+'ようび',date:d.d,min:d.min||20,pts:0,hw:true,sections:d.sections||[]})});
-    if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,group:w.label,title:'どようテスト',date:w.test.d,min:w.test.min||20,pts:0,test:true,sections:w.test.sections||[]})}});
+    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,week:w.id,group:w.label,title:d.wd+'ようび',date:d.d,min:d.min||20,pts:0,hw:true,sections:d.sections||[]})});
+    if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,week:w.id,group:w.label,title:'どようテスト',date:w.test.d,min:w.test.min||20,pts:0,test:true,sections:w.test.sections||[]})}});
   for(const k in TASK)delete TASK[k];TASKS.forEach(t=>TASK[t.id]=t);
   TASKS.slice(BASE).forEach(t=>{if(t.test)t.pts=items(t).reduce((n,it)=>n+(it.k==='fill'?(it.each?it.pts*it.b.length:it.pts)+(it.work?it.work.pts:0):(it.pts||0)),0)})}
 const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
+/* ---------- what is open ---------- */
+// She may run ahead: handing in one homework opens the next, Friday's opens the Saturday test, and the test opens the next week. Dates only open things that are still closed when the day arrives.
+const isDoneId=id=>!!(S.vals[id]||{}).done;
+function weekOpen(w,today){if(today>=w.id)return true;const pw=WEEKS[WEEKS.indexOf(w)+1];
+  if(pw)return pw._t?isDoneId(pw._t):pw._d.every(isDoneId);return TASKS.slice(0,BASE).every(t=>isDoneId(t.id))}
+function lockInfo(t,today){if(!t.week)return null;const w=WEEKS.find(x=>x.id===t.week);if(!w)return null;
+  if(!weekOpen(w,today))return 'まえの しゅうの テストを 出すと ひらきます';
+  const all=w._d.every(isDoneId);
+  if(t.test)return (all||t.date<=today)?null:'きんようびまで ぜんぶ 出すと ひらきます';
+  // While the test is open and not handed in, finished homework (with its red answers) stays closed.
+  if(isDoneId(t.id))return (w._t&&!isDoneId(w._t)&&(all||w.test.d<=today))?'テストを 出すまで 見られません':null;
+  const i=w._d.indexOf(t.id);if(i>0&&!isDoneId(w._d[i-1])&&t.date>today)return 'まえの しゅくだいを 出すと ひらきます';
+  return null}
+function nextTask(today){for(let i=WEEKS.length-1;i>=0;i--){const w=WEEKS[i];for(const id of w._d.concat(w._t?[w._t]:[])){if(!isDoneId(id)&&TASK[id]&&!lockInfo(TASK[id],today))return TASK[id]}}return null}
 
 /* ---------- state ---------- */
 const S={vals:{},grades:{},ink:{},screen:'home',task:null,ptab:TASKS[0].id,running:false,parentOK:false};
@@ -339,7 +354,7 @@ async function pull(){let ch=await loadWeeks();if(!token)return ch;
         if(mergeRemote(path,x))ch=true}}
     LS.set('gk2.shas',shas);if(ch)saveLocal()}catch(e){}
   return ch}
-function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.find(x=>x.date===today&&!(S.vals[x.id]||{}).done);if(t){hashDone=true;go('task',t.id)}}
+function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const t=nextTask(ymd(Date.now()));if(t){hashDone=true;go('task',t.id)}}
 (async function connect(){const ch=await pull();if(ch&&!S.running)render();status();openToday();sync()})();
 async function setToken(v){token=v;LS.set('gk2.token',v);if(!v)return '未設定';
   try{const r=await fetch(REPO,{headers:hdr(),cache:'no-store'});if(!r.ok){saveErr=true;return 'つながりません。鍵を確認してください（'+r.status+'）'}}catch(e){saveErr=true;return 'つながりません。通信を確認してください'}
@@ -446,9 +461,10 @@ ${st>=4?'<path class="rb-c" d="M82 74l-4-23 12 10 10-16 10 16 12-10-4 23z"/>':''
 ${eat?'<g transform="translate(84 126) scale(1.35)"><g class="rb-crt">'+CPATH+'</g></g>':''}</svg>`}
 
 function renderHome(){
-  const groups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(t=>t.group))],today=ymd(Date.now());
+  const today=ymd(Date.now()),nxt=nextTask(today);let groups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(t=>t.group))];
   const isDone=t=>!!(S.vals[t.id]||{}).done,n=carrots(),st=stageOf(n),nx=STAGES[st+1],fed=S.fed;
-  const cur=groups.find(g=>TASKS.some(t=>t.group===g&&!isDone(t)))||groups[0],ct=TASKS.filter(t=>t.group===cur);
+  const cur=nxt?nxt.group:(groups.find(g=>TASKS.some(t=>t.group===g&&!isDone(t)))||groups[0]),ct=TASKS.filter(t=>t.group===cur);
+  groups=[cur].concat(groups.filter(g=>g!==cur));
   const pct=nx?Math.round((n-STAGES[st][0])/(nx[0]-STAGES[st][0])*100):100;
   app.innerHTML=`<div class="wrap">
    <div><h1>がくしゅうノート</h1><p class="sub">やる ものを えらんで、おしましょう。1つ おわると、ぴょんぴょんが にんじんを 1本 たべられます。</p></div>
@@ -466,12 +482,12 @@ function renderHome(){
    </section>
    ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
    ${groups.map(g=>`<div class="grp"><h2>${esc(g)}</h2>
-     ${TASKS.some(t=>t.group===g&&t.date&&t.date>today)?'<p class="sub">1日に 1つずつ ひらきます。保護者の方は、下の「保護者用」から1週間分の問題用紙を見られます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub">1つ 出すと、つぎが ひらきます。きんようびまで おわると テスト、テストを 出すと つぎの しゅうが ひらきます。</p>':''}
      ${TASKS.some(t=>t.group===g&&t.set)?'<p class="sub">きょう、3つ やりましょう。1つ 10分、ぜんぶで 30分です。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
-     if(t.date&&t.date>today)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.date)}に ひらきます</span></div>`;
+     const lk=lockInfo(t,today);if(lk)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${esc(lk)}</span></div>`;
      const sx=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
-     return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}"><span class="cc${v.done?' done':''}">${CARROT}</span><b>${esc(t.title)}</b><small>${t.day?t.day+'日め・':''}${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${sx[0]}">${sx[1]}</span></button>`}).join('')}</div></div>`).join('')}
+     return `<button class="card${nxt&&t.id===nxt.id?' today':''}" data-open="${t.id}"><span class="cc${v.done?' done':''}">${CARROT}</span><b>${esc(t.title)}</b><small>${t.day?t.day+'日め・':''}${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${sx[0]}">${sx[1]}</span></button>`}).join('')}</div></div>`).join('')}
    <div class="row"><button class="btn ghost sm" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
   </div>`;
@@ -521,6 +537,7 @@ function paintClock(){const el=document.getElementById('clock');if(!el)return;co
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.running){stopClock();flushAll();if(S.screen==='task')gate()}else if(document.hidden)flushAll()});
 
 function renderTask(){
+  if(!S.preview&&TASK[S.task]&&lockInfo(TASK[S.task],ymd(Date.now()))){S.screen='home';S.task=null;LS.set('gk2.route',{task:null});return renderHome()}
   const t=TASK[S.task],v=V(t.id),pv=S.preview,ro=v.done||pv;
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
   <div class="wrap${t.en?' en':''}">
@@ -639,7 +656,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011051717';
+const BUILD='20261011071228';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
