@@ -1,1 +1,2893 @@
-{"id":"2026-10-12","n":1,"label":"だい1しゅう（10/12〜10/17）","days":[{"wd":"げつ","d":"2026-10-12","min":20,"sections":[{"h":"一　かん字（2字）","note":"てほんを 見て、ゆっくり かきましょう。","items":[{"k":"kanji","id":"k1","ch":"手","on":"シュ","kun":"て","st":"4","ex":[["手","て"],["手がみ","てがみ"]],"tip":"さいごの たてぼうは、下で 左に はねます。","rq":["手がみ","てがみ"],"wq":["て","手"]},{"k":"kanji","id":"k2","ch":"目","on":"モク","kun":"め","st":"5","ex":[["目","め"],["目ぐすり","めぐすり"]],"tip":"よこの せんは ぜんぶで 4本。中の 2本を わすれずに。","rq":["目ぐすり","めぐすり"],"wq":["め","目"]}]},{"h":"二　さんすう：くり下がりの ひきざん","note":"ひけない ときは、十のくらいから 10を かります。れい：32－5 → 2から 5は ひけない。10を かりて 12－5＝7。十のくらいは 3から 1 へって 2。こたえは 27。","items":[{"k":"fill","id":"c1","tpl":"32 － 5 ＝ {}","b":[{"a":["27"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c2","tpl":"41 － 3 ＝ {}","b":[{"a":["38"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c3","tpl":"50 － 6 ＝ {}","b":[{"a":["44"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c4","tpl":"63 － 7 ＝ {}","b":[{"a":["56"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c5","tpl":"24 － 8 ＝ {}","b":[{"a":["16"],"t":"num","w":6}],"pts":1},{"sub":"5の だん：5×3は「5が 3つ」。5＋5＋5＝15 です。"},{"k":"fill","id":"c6","tpl":"5 × 1 ＝ {}","b":[{"a":["5"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c7","tpl":"5 × 2 ＝ {}","b":[{"a":["10"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c8","tpl":"5 × 3 ＝ {}","b":[{"a":["15"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c9","tpl":"5 × 4 ＝ {}","b":[{"a":["20"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c10","tpl":"5 × 5 ＝ {}","b":[{"a":["25"],"t":"num","w":6}],"pts":1}]},{"h":"三　ことば：カタカナ","note":"ひらがなを カタカナに なおして かきます。れい：ぱん → パン","items":[{"k":"ink","id":"t1","q":"みるく","h":330,"cls":"s","model":"ミルク","pts":1},{"k":"ink","id":"t2","q":"ばなな","h":330,"cls":"s","model":"バナナ","pts":1},{"k":"ink","id":"t3","q":"ぴあの","h":330,"cls":"s","model":"ピアノ","pts":1}]}]},{"wd":"か","d":"2026-10-13","min":20,"sections":[{"h":"一　ひらがな（10字） Hiragana","note":"かきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)","grid":true,"items":[{"k":"kana","id":"k1","ch":"あ","ro":"a","ex":["あり","ant"]},{"k":"kana","id":"k2","ch":"い","ro":"i","ex":["いぬ","dog"]},{"k":"kana","id":"k3","ch":"う","ro":"u","ex":["うみ","sea"]},{"k":"kana","id":"k4","ch":"え","ro":"e","ex":["えき","station"]},{"k":"kana","id":"k5","ch":"お","ro":"o","ex":["おかし","snack"]},{"k":"kana","id":"k6","ch":"か","ro":"ka","ex":["かさ","umbrella"]},{"k":"kana","id":"k7","ch":"き","ro":"ki","ex":["きつね","fox"]},{"k":"kana","id":"k8","ch":"く","ro":"ku","ex":["くつ","shoes"]},{"k":"kana","id":"k9","ch":"け","ro":"ke","ex":["けしごむ","eraser"]},{"k":"kana","id":"k10","ch":"こ","ro":"ko","ex":["こども","child"]}]},{"h":"二　よめるかな Reading","note":"ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)","items":[{"k":"choice","id":"y1","q":"【き】","opts":["ko","ki","u"],"a":"B","pts":1},{"k":"choice","id":"y2","q":"【く】","opts":["o","ku","ka"],"a":"B","pts":1},{"k":"choice","id":"y3","q":"【こ】","opts":["u","ko","e"],"a":"B","pts":1},{"k":"choice","id":"y4","q":"【あ】","opts":["a","ka","ku"],"a":"A","pts":1},{"k":"choice","id":"y5","q":"【お】","opts":["ka","o","ke"],"a":"B","pts":1}]},{"h":"三　かけるかな Writing","note":"おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)","items":[{"k":"fill","id":"w1","tpl":"ka → {}","b":[{"a":["か"],"w":4}],"pts":1},{"k":"fill","id":"w2","tpl":"ke → {}","b":[{"a":["け"],"w":4}],"pts":1},{"k":"fill","id":"w3","tpl":"e → {}","b":[{"a":["え"],"w":4}],"pts":1},{"k":"fill","id":"w4","tpl":"u → {}","b":[{"a":["う"],"w":4}],"pts":1},{"k":"fill","id":"w5","tpl":"i → {}","b":[{"a":["い"],"w":4}],"pts":1}]},{"h":"四　ことば Words","note":"ことばを よんで、いみを えらびます。さいごの 1つは、ひらがなで かきます。\n(Read the word and choose what it means. Write the last one in hiragana.)","items":[{"k":"choice","id":"t1","q":"【あか】","opts":["blue","big","red"],"a":"C","pts":1},{"k":"choice","id":"t2","q":"【かお】","opts":["hand","foot","face"],"a":"C","pts":1},{"k":"choice","id":"t3","q":"【えき】","opts":["park","school","station"],"a":"C","pts":1},{"k":"choice","id":"t4","q":"【いえ】","opts":["house","car","tree"],"a":"A","pts":1},{"k":"fill","id":"t9","tpl":"blue → {}","b":[{"a":["あお"],"w":3}],"pts":1}]},{"h":"五　さんすう Math","note":"ひけない ときは、十の くらいから 10を かります。5の だんは 5ずつ ふえます。\n(Subtract. Borrow 10 from the tens when you need to. Then the 5 times table: 5, 10, 15, 20 ...)","items":[{"k":"fill","id":"c1","tpl":"48 － 23 ＝ {}","b":[{"a":["25"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c2","tpl":"42 － 18 ＝ {}","b":[{"a":["24"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c3","tpl":"53 － 26 ＝ {}","b":[{"a":["27"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c4","tpl":"61 － 35 ＝ {}","b":[{"a":["26"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c5","tpl":"70 － 24 ＝ {}","b":[{"a":["46"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c6","tpl":"5 × 6 ＝ {}","b":[{"a":["30"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c7","tpl":"5 × 7 ＝ {}","b":[{"a":["35"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c8","tpl":"5 × 8 ＝ {}","b":[{"a":["40"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c9","tpl":"5 × 9 ＝ {}","b":[{"a":["45"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c10","tpl":"5 × 3 ＝ {}","b":[{"a":["15"],"t":"num","w":6}],"pts":1}]}]},{"wd":"すい","d":"2026-10-14","min":20,"sections":[{"h":"一　ひらがな（10字） Hiragana","note":"かきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)","grid":true,"items":[{"k":"kana","id":"k1","ch":"さ","ro":"sa","ex":["さかな","fish"]},{"k":"kana","id":"k2","ch":"し","ro":"shi","ex":["しか","deer"]},{"k":"kana","id":"k3","ch":"す","ro":"su","ex":["すいか","watermelon"]},{"k":"kana","id":"k4","ch":"せ","ro":"se","ex":["せみ","cicada"]},{"k":"kana","id":"k5","ch":"そ","ro":"so","ex":["そら","sky"]},{"k":"kana","id":"k6","ch":"た","ro":"ta","ex":["たまご","egg"]},{"k":"kana","id":"k7","ch":"ち","ro":"chi","ex":["ちず","map"]},{"k":"kana","id":"k8","ch":"つ","ro":"tsu","ex":["つき","moon"]},{"k":"kana","id":"k9","ch":"て","ro":"te","ex":["てがみ","letter"]},{"k":"kana","id":"k10","ch":"と","ro":"to","ex":["とり","bird"]}]},{"h":"二　ふくしゅう Review","note":"まえに ならった 字です。おなじ おとを えらびます。\n(Letters from before. Choose the sound.)","items":[{"k":"choice","id":"f1","q":"【あ】","opts":["a","su","to"],"a":"A","pts":1},{"k":"choice","id":"f2","q":"【い】","opts":["i","u","a"],"a":"A","pts":1},{"k":"choice","id":"f3","q":"【う】","opts":["u","ku","to"],"a":"A","pts":1},{"k":"choice","id":"f4","q":"【え】","opts":["i","tsu","e"],"a":"C","pts":1},{"k":"choice","id":"f5","q":"【き】","opts":["ki","shi","a"],"a":"A","pts":1},{"k":"choice","id":"f6","q":"【く】","opts":["chi","shi","ku"],"a":"C","pts":1}]},{"h":"三　よめるかな Reading","note":"ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)","items":[{"k":"choice","id":"y1","q":"【し】","opts":["ta","chi","shi"],"a":"C","pts":1},{"k":"choice","id":"y2","q":"【た】","opts":["tsu","te","ta"],"a":"C","pts":1},{"k":"choice","id":"y3","q":"【そ】","opts":["so","su","te"],"a":"A","pts":1},{"k":"choice","id":"y4","q":"【ち】","opts":["te","su","chi"],"a":"C","pts":1},{"k":"choice","id":"y5","q":"【つ】","opts":["sa","tsu","to"],"a":"B","pts":1}]},{"h":"四　かけるかな Writing","note":"おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)","items":[{"k":"fill","id":"w1","tpl":"su → {}","b":[{"a":["す"],"w":4}],"pts":1},{"k":"fill","id":"w2","tpl":"te → {}","b":[{"a":["て"],"w":4}],"pts":1},{"k":"fill","id":"w3","tpl":"sa → {}","b":[{"a":["さ"],"w":4}],"pts":1},{"k":"fill","id":"w4","tpl":"se → {}","b":[{"a":["せ"],"w":4}],"pts":1},{"k":"fill","id":"w5","tpl":"to → {}","b":[{"a":["と"],"w":4}],"pts":1}]},{"h":"五　ことば Words","note":"ことばを よんで、いみを えらびます。さいごの 1つは、ひらがなで かきます。\n(Read the word and choose what it means. Write the last one in hiragana.)","items":[{"k":"choice","id":"t1","q":"【いす】","opts":["chair","door","desk"],"a":"A","pts":1},{"k":"choice","id":"t2","q":"【つき】","opts":["star","moon","sun"],"a":"B","pts":1},{"k":"choice","id":"t3","q":"【くつ】","opts":["shoes","bag","hat"],"a":"A","pts":1},{"k":"choice","id":"t4","q":"【うし】","opts":["horse","cow","pig"],"a":"B","pts":1},{"k":"fill","id":"t9","tpl":"octopus → {}","b":[{"a":["たこ"],"w":3}],"pts":1}]},{"h":"六　さんすう Math","note":"くり下がりの ひきざんと、2の だん。2の だんは 2ずつ ふえます。\n(Subtract with borrowing. Then the 2 times table: 2, 4, 6, 8 ...)","items":[{"k":"fill","id":"c1","tpl":"52 － 27 ＝ {}","b":[{"a":["25"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c2","tpl":"72 － 28 ＝ {}","b":[{"a":["44"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c3","tpl":"81 － 46 ＝ {}","b":[{"a":["35"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c4","tpl":"60 － 32 ＝ {}","b":[{"a":["28"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c5","tpl":"95 － 58 ＝ {}","b":[{"a":["37"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c6","tpl":"2 × 1 ＝ {}","b":[{"a":["2"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c7","tpl":"2 × 2 ＝ {}","b":[{"a":["4"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c8","tpl":"2 × 3 ＝ {}","b":[{"a":["6"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c9","tpl":"2 × 4 ＝ {}","b":[{"a":["8"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c10","tpl":"2 × 5 ＝ {}","b":[{"a":["10"],"t":"num","w":6}],"pts":1}]}]},{"wd":"もく","d":"2026-10-15","min":20,"sections":[{"h":"一　ひらがな（10字） Hiragana","note":"かきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)","grid":true,"items":[{"k":"kana","id":"k1","ch":"な","ro":"na","ex":["なつ","summer"]},{"k":"kana","id":"k2","ch":"に","ro":"ni","ex":["にく","meat"]},{"k":"kana","id":"k3","ch":"ぬ","ro":"nu","ex":["ぬの","cloth"]},{"k":"kana","id":"k4","ch":"ね","ro":"ne","ex":["ねこ","cat"]},{"k":"kana","id":"k5","ch":"の","ro":"no","ex":["のり","glue"]},{"k":"kana","id":"k6","ch":"は","ro":"ha","ex":["はな","flower"]},{"k":"kana","id":"k7","ch":"ひ","ro":"hi","ex":["ひと","person"]},{"k":"kana","id":"k8","ch":"ふ","ro":"fu","ex":["ふね","ship"]},{"k":"kana","id":"k9","ch":"へ","ro":"he","ex":["へや","room"]},{"k":"kana","id":"k10","ch":"ほ","ro":"ho","ex":["ほし","star"]}]},{"h":"二　ふくしゅう Review","note":"まえに ならった 字です。おなじ おとを えらびます。\n(Letters from before. Choose the sound.)","items":[{"k":"choice","id":"f1","q":"【さ】","opts":["sa","ho","no"],"a":"A","pts":1},{"k":"choice","id":"f2","q":"【し】","opts":["nu","shi","he"],"a":"B","pts":1},{"k":"choice","id":"f3","q":"【す】","opts":["su","ne","shi"],"a":"A","pts":1},{"k":"choice","id":"f4","q":"【ち】","opts":["chi","na","su"],"a":"A","pts":1},{"k":"choice","id":"f5","q":"【つ】","opts":["tsu","ni","he"],"a":"A","pts":1},{"k":"choice","id":"f6","q":"【て】","opts":["he","no","te"],"a":"C","pts":1}]},{"h":"三　よめるかな Reading","note":"ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)","items":[{"k":"choice","id":"y1","q":"【な】","opts":["ha","fu","na"],"a":"C","pts":1},{"k":"choice","id":"y2","q":"【ほ】","opts":["ho","ne","na"],"a":"A","pts":1},{"k":"choice","id":"y3","q":"【の】","opts":["no","ne","he"],"a":"A","pts":1},{"k":"choice","id":"y4","q":"【ね】","opts":["ha","ne","fu"],"a":"B","pts":1},{"k":"choice","id":"y5","q":"【へ】","opts":["no","ha","he"],"a":"C","pts":1}]},{"h":"四　かけるかな Writing","note":"おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)","items":[{"k":"fill","id":"w1","tpl":"ni → {}","b":[{"a":["に"],"w":4}],"pts":1},{"k":"fill","id":"w2","tpl":"nu → {}","b":[{"a":["ぬ"],"w":4}],"pts":1},{"k":"fill","id":"w3","tpl":"fu → {}","b":[{"a":["ふ"],"w":4}],"pts":1},{"k":"fill","id":"w4","tpl":"hi → {}","b":[{"a":["ひ"],"w":4}],"pts":1},{"k":"fill","id":"w5","tpl":"ha → {}","b":[{"a":["は"],"w":4}],"pts":1}]},{"h":"五　ことば Words","note":"ことばを よんで、いみを えらびます。さいごの 1つは、ひらがなで かきます。\n(Read the word and choose what it means. Write the last one in hiragana.)","items":[{"k":"choice","id":"t1","q":"【ねこ】","opts":["fish","bird","cat"],"a":"C","pts":1},{"k":"choice","id":"t2","q":"【はな】","opts":["grass","tree","flower"],"a":"C","pts":1},{"k":"choice","id":"t3","q":"【ほし】","opts":["moon","star","cloud"],"a":"B","pts":1},{"k":"choice","id":"t4","q":"【さかな】","opts":["egg","meat","fish"],"a":"C","pts":1},{"k":"fill","id":"t9","tpl":"dog → {}","b":[{"a":["いぬ"],"w":3}],"pts":1}]},{"h":"六　さんすう Math","note":"2の だんの つづきと、ふくしゅう。\n(More of the 2 times table, and some review.)","items":[{"k":"fill","id":"c1","tpl":"2 × 6 ＝ {}","b":[{"a":["12"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c2","tpl":"2 × 7 ＝ {}","b":[{"a":["14"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c3","tpl":"2 × 8 ＝ {}","b":[{"a":["16"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c4","tpl":"2 × 9 ＝ {}","b":[{"a":["18"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c5","tpl":"5 × 4 ＝ {}","b":[{"a":["20"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c6","tpl":"43 － 17 ＝ {}","b":[{"a":["26"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c7","tpl":"62 － 25 ＝ {}","b":[{"a":["37"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c8","tpl":"74 － 36 ＝ {}","b":[{"a":["38"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c9","tpl":"2 × 5 ＝ {}","b":[{"a":["10"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c10","tpl":"5 × 9 ＝ {}","b":[{"a":["45"],"t":"num","w":6}],"pts":1}]}]},{"wd":"きん","d":"2026-10-16","min":20,"sections":[{"h":"一　ひらがな（8字） Hiragana","note":"かきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)","grid":true,"items":[{"k":"kana","id":"k1","ch":"ま","ro":"ma","ex":["まど","window"]},{"k":"kana","id":"k2","ch":"み","ro":"mi","ex":["みみ","ear"]},{"k":"kana","id":"k3","ch":"む","ro":"mu","ex":["むし","bug"]},{"k":"kana","id":"k4","ch":"め","ro":"me","ex":["めがね","glasses"]},{"k":"kana","id":"k5","ch":"も","ro":"mo","ex":["もも","peach"]},{"k":"kana","id":"k6","ch":"や","ro":"ya","ex":["やま","mountain"]},{"k":"kana","id":"k7","ch":"ゆ","ro":"yu","ex":["ゆき","snow"]},{"k":"kana","id":"k8","ch":"よ","ro":"yo","ex":["よる","night"]}]},{"h":"二　ふくしゅう Review","note":"まえに ならった 字です。おなじ おとを えらびます。\n(Letters from before. Choose the sound.)","items":[{"k":"choice","id":"f1","q":"【な】","opts":["me","hi","na"],"a":"C","pts":1},{"k":"choice","id":"f2","q":"【に】","opts":["nu","ni","ma"],"a":"B","pts":1},{"k":"choice","id":"f3","q":"【ぬ】","opts":["na","nu","ni"],"a":"B","pts":1},{"k":"choice","id":"f4","q":"【は】","opts":["na","ha","ya"],"a":"B","pts":1},{"k":"choice","id":"f5","q":"【ひ】","opts":["nu","hi","mi"],"a":"B","pts":1},{"k":"choice","id":"f6","q":"【ふ】","opts":["yo","mi","fu"],"a":"C","pts":1}]},{"h":"三　よめるかな Reading","note":"ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)","items":[{"k":"choice","id":"y1","q":"【む】","opts":["mu","ya","me"],"a":"A","pts":1},{"k":"choice","id":"y2","q":"【よ】","opts":["yo","mo","ma"],"a":"A","pts":1},{"k":"choice","id":"y3","q":"【め】","opts":["ya","me","mo"],"a":"B","pts":1},{"k":"choice","id":"y4","q":"【や】","opts":["me","mi","ya"],"a":"C","pts":1},{"k":"choice","id":"y5","q":"【も】","opts":["ya","mo","me"],"a":"B","pts":1}]},{"h":"四　かけるかな Writing","note":"おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)","items":[{"k":"fill","id":"w1","tpl":"mi → {}","b":[{"a":["み"],"w":4}],"pts":1},{"k":"fill","id":"w2","tpl":"ma → {}","b":[{"a":["ま"],"w":4}],"pts":1},{"k":"fill","id":"w3","tpl":"yu → {}","b":[{"a":["ゆ"],"w":4}],"pts":1},{"k":"fill","id":"w4","tpl":"mu → {}","b":[{"a":["む"],"w":4}],"pts":1},{"k":"fill","id":"w5","tpl":"yo → {}","b":[{"a":["よ"],"w":4}],"pts":1}]},{"h":"五　ことば Words","note":"ことばを よんで、いみを えらびます。さいごの 1つは、ひらがなで かきます。\n(Read the word and choose what it means. Write the last one in hiragana.)","items":[{"k":"choice","id":"t1","q":"【やま】","opts":["river","sea","mountain"],"a":"C","pts":1},{"k":"choice","id":"t2","q":"【ゆき】","opts":["wind","rain","snow"],"a":"C","pts":1},{"k":"choice","id":"t3","q":"【みみ】","opts":["nose","eye","ear"],"a":"C","pts":1},{"k":"choice","id":"t4","q":"【あめ】","opts":["rain","sun","snow"],"a":"A","pts":1},{"k":"fill","id":"t9","tpl":"peach → {}","b":[{"a":["もも"],"w":3}],"pts":1}]},{"h":"六　さんすう Math","note":"なん十の けいさんは、10の まとまりで かんがえます。30＋40 は、10が 7こで 70。\n(Tens: 30 + 40 is 7 tens, so 70. Then review.)","items":[{"k":"fill","id":"c1","tpl":"30 ＋ 40 ＝ {}","b":[{"a":["70"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c2","tpl":"20 ＋ 50 ＝ {}","b":[{"a":["70"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c3","tpl":"80 － 30 ＝ {}","b":[{"a":["50"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c4","tpl":"64 － 29 ＝ {}","b":[{"a":["35"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c5","tpl":"71 － 46 ＝ {}","b":[{"a":["25"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c6","tpl":"5 × 7 ＝ {}","b":[{"a":["35"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c7","tpl":"2 × 9 ＝ {}","b":[{"a":["18"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c8","tpl":"5 × 6 ＝ {}","b":[{"a":["30"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c9","tpl":"2 × 7 ＝ {}","b":[{"a":["14"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c10","tpl":"40 ＋ 50 ＝ {}","b":[{"a":["90"],"t":"num","w":6}],"pts":1}]}]}],"test":{"d":"2026-10-17","min":20,"sections":[{"h":"一　よめるかな Reading（1もん1点）","note":"ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)","items":[{"k":"choice","id":"y1","q":"【と】","opts":["to","i","yu"],"a":"A","pts":1},{"k":"choice","id":"y2","q":"【お】","opts":["tsu","o","ki"],"a":"B","pts":1},{"k":"choice","id":"y3","q":"【ほ】","opts":["ho","fu","ke"],"a":"A","pts":1},{"k":"choice","id":"y4","q":"【よ】","opts":["me","yo","a"],"a":"B","pts":1},{"k":"choice","id":"y5","q":"【み】","opts":["to","mi","mu"],"a":"B","pts":1},{"k":"choice","id":"y6","q":"【も】","opts":["ke","u","mo"],"a":"C","pts":1},{"k":"choice","id":"y7","q":"【ふ】","opts":["e","fu","nu"],"a":"B","pts":1},{"k":"choice","id":"y8","q":"【め】","opts":["o","me","tsu"],"a":"B","pts":1},{"k":"choice","id":"y9","q":"【せ】","opts":["se","yu","nu"],"a":"A","pts":1},{"k":"choice","id":"y10","q":"【の】","opts":["sa","no","ni"],"a":"B","pts":1}]},{"h":"二　かけるかな Writing（1もん1点）","note":"おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)","items":[{"k":"fill","id":"w1","tpl":"ni → {}","b":[{"a":["に"],"w":4}],"pts":1},{"k":"fill","id":"w2","tpl":"ma → {}","b":[{"a":["ま"],"w":4}],"pts":1},{"k":"fill","id":"w3","tpl":"ki → {}","b":[{"a":["き"],"w":4}],"pts":1},{"k":"fill","id":"w4","tpl":"ne → {}","b":[{"a":["ね"],"w":4}],"pts":1},{"k":"fill","id":"w5","tpl":"su → {}","b":[{"a":["す"],"w":4}],"pts":1},{"k":"fill","id":"w6","tpl":"chi → {}","b":[{"a":["ち"],"w":4}],"pts":1},{"k":"fill","id":"w7","tpl":"te → {}","b":[{"a":["て"],"w":4}],"pts":1},{"k":"fill","id":"w8","tpl":"shi → {}","b":[{"a":["し"],"w":4}],"pts":1},{"k":"fill","id":"w9","tpl":"tsu → {}","b":[{"a":["つ"],"w":4}],"pts":1},{"k":"fill","id":"w10","tpl":"ha → {}","b":[{"a":["は"],"w":4}],"pts":1}]},{"h":"三　ことば Words（1もん1点）","note":"ことばを よんで、いみを えらびます。\n(Read the word and choose what it means.)","items":[{"k":"choice","id":"t1","q":"【いぬ】","opts":["cow","dog","cat"],"a":"B","pts":1},{"k":"choice","id":"t2","q":"【かさ】","opts":["hat","shoes","umbrella"],"a":"C","pts":1},{"k":"choice","id":"t3","q":"【そと】","opts":["inside","under","outside"],"a":"C","pts":1},{"k":"choice","id":"t4","q":"【ふね】","opts":["train","car","ship"],"a":"C","pts":1},{"k":"choice","id":"t5","q":"【よる】","opts":["noon","morning","night"],"a":"C","pts":1}]},{"h":"四　けいさん Math（1もん1点）","note":"けいさんを しましょう。\n(Work out the answers.)","items":[{"k":"fill","id":"c1","tpl":"32 － 5 ＝ {}","b":[{"a":["27"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c2","tpl":"53 － 26 ＝ {}","b":[{"a":["27"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c3","tpl":"72 － 28 ＝ {}","b":[{"a":["44"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c4","tpl":"60 － 32 ＝ {}","b":[{"a":["28"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c5","tpl":"30 ＋ 40 ＝ {}","b":[{"a":["70"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c6","tpl":"5 × 4 ＝ {}","b":[{"a":["20"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c7","tpl":"5 × 8 ＝ {}","b":[{"a":["40"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c8","tpl":"2 × 6 ＝ {}","b":[{"a":["12"],"t":"num","w":6}],"pts":1},{"k":"fill","id":"c9","tpl":"2 × 9 ＝ {}","b":[{"a":["18"],"t":"num","w":6}],"pts":1},{"k":"ink","id":"sc","q":"けいさんスペース（ひっさんを かいて よい）","h":420,"pts":0,"scratch":true}]}]}}
+{
+"id": "2026-10-12",
+"n": 1,
+"label": "1w",
+"days": [
+{
+"wd": "げつ",
+"d": "2026-10-12",
+"min": 20,
+"sections": [
+{
+"h": "一　かん字（2字）",
+"note": "てほんを 見て、ゆっくり かきましょう。",
+"items": [
+{
+"k": "kanji",
+"id": "k1",
+"ch": "手",
+"on": "シュ",
+"kun": "て",
+"st": "4",
+"ex": [
+[
+"手",
+"て"
+],
+[
+"手がみ",
+"てがみ"
+]
+],
+"tip": "さいごの たてぼうは、下で 左に はねます。",
+"rq": [
+"手がみ",
+"てがみ"
+],
+"wq": [
+"て",
+"手"
+]
+},
+{
+"k": "kanji",
+"id": "k2",
+"ch": "目",
+"on": "モク",
+"kun": "め",
+"st": "5",
+"ex": [
+[
+"目",
+"め"
+],
+[
+"目ぐすり",
+"めぐすり"
+]
+],
+"tip": "よこの せんは ぜんぶで 4本。中の 2本を わすれずに。",
+"rq": [
+"目ぐすり",
+"めぐすり"
+],
+"wq": [
+"め",
+"目"
+]
+}
+]
+},
+{
+"h": "二　さんすう：くり下がりの ひきざん",
+"note": "ひけない ときは、十のくらいから 10を かります。れい：32－5 → 2から 5は ひけない。10を かりて 12－5＝7。十のくらいは 3から 1 へって 2。こたえは 27。",
+"items": [
+{
+"k": "fill",
+"id": "c1",
+"tpl": "32 － 5 ＝ {}",
+"b": [
+{
+"a": [
+"27"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c2",
+"tpl": "41 － 3 ＝ {}",
+"b": [
+{
+"a": [
+"38"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c3",
+"tpl": "50 － 6 ＝ {}",
+"b": [
+{
+"a": [
+"44"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c4",
+"tpl": "63 － 7 ＝ {}",
+"b": [
+{
+"a": [
+"56"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c5",
+"tpl": "24 － 8 ＝ {}",
+"b": [
+{
+"a": [
+"16"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"sub": "5の だん：5×3は「5が 3つ」。5＋5＋5＝15 です。"
+},
+{
+"k": "fill",
+"id": "c6",
+"tpl": "5 × 1 ＝ {}",
+"b": [
+{
+"a": [
+"5"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c7",
+"tpl": "5 × 2 ＝ {}",
+"b": [
+{
+"a": [
+"10"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c8",
+"tpl": "5 × 3 ＝ {}",
+"b": [
+{
+"a": [
+"15"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c9",
+"tpl": "5 × 4 ＝ {}",
+"b": [
+{
+"a": [
+"20"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c10",
+"tpl": "5 × 5 ＝ {}",
+"b": [
+{
+"a": [
+"25"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "三　ことば：カタカナ",
+"note": "ひらがなを カタカナに なおして かきます。れい：ぱん → パン",
+"items": [
+{
+"k": "ink",
+"id": "t1",
+"q": "みるく",
+"h": 330,
+"cls": "s",
+"model": "ミルク",
+"pts": 1
+},
+{
+"k": "ink",
+"id": "t2",
+"q": "ばなな",
+"h": 330,
+"cls": "s",
+"model": "バナナ",
+"pts": 1
+},
+{
+"k": "ink",
+"id": "t3",
+"q": "ぴあの",
+"h": 330,
+"cls": "s",
+"model": "ピアノ",
+"pts": 1
+}
+]
+}
+]
+},
+{
+"wd": "か",
+"d": "2026-10-13",
+"min": 20,
+"sections": [
+{
+"h": "一　ひらがな（10字） Hiragana",
+"note": "かきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+"grid": true,
+"items": [
+{
+"k": "kana",
+"id": "k1",
+"ch": "あ",
+"ro": "a",
+"ex": [
+"あり",
+"ant"
+]
+},
+{
+"k": "kana",
+"id": "k2",
+"ch": "い",
+"ro": "i",
+"ex": [
+"いぬ",
+"dog"
+]
+},
+{
+"k": "kana",
+"id": "k3",
+"ch": "う",
+"ro": "u",
+"ex": [
+"うみ",
+"sea"
+]
+},
+{
+"k": "kana",
+"id": "k4",
+"ch": "え",
+"ro": "e",
+"ex": [
+"えき",
+"station"
+]
+},
+{
+"k": "kana",
+"id": "k5",
+"ch": "お",
+"ro": "o",
+"ex": [
+"おかし",
+"snack"
+]
+},
+{
+"k": "kana",
+"id": "k6",
+"ch": "か",
+"ro": "ka",
+"ex": [
+"かさ",
+"umbrella"
+]
+},
+{
+"k": "kana",
+"id": "k7",
+"ch": "き",
+"ro": "ki",
+"ex": [
+"きつね",
+"fox"
+]
+},
+{
+"k": "kana",
+"id": "k8",
+"ch": "く",
+"ro": "ku",
+"ex": [
+"くつ",
+"shoes"
+]
+},
+{
+"k": "kana",
+"id": "k9",
+"ch": "け",
+"ro": "ke",
+"ex": [
+"けしごむ",
+"eraser"
+]
+},
+{
+"k": "kana",
+"id": "k10",
+"ch": "こ",
+"ro": "ko",
+"ex": [
+"こども",
+"child"
+]
+}
+]
+},
+{
+"h": "二　よめるかな Reading",
+"note": "ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)",
+"items": [
+{
+"k": "choice",
+"id": "y1",
+"q": "【き】",
+"opts": [
+"ko",
+"ki",
+"u"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y2",
+"q": "【く】",
+"opts": [
+"o",
+"ku",
+"ka"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y3",
+"q": "【こ】",
+"opts": [
+"u",
+"ko",
+"e"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y4",
+"q": "【あ】",
+"opts": [
+"a",
+"ka",
+"ku"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y5",
+"q": "【お】",
+"opts": [
+"ka",
+"o",
+"ke"
+],
+"a": "B",
+"pts": 1
+}
+]
+},
+{
+"h": "三　かけるかな Writing",
+"note": "おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)",
+"items": [
+{
+"k": "fill",
+"id": "w1",
+"tpl": "ka → {}",
+"b": [
+{
+"a": [
+"か"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w2",
+"tpl": "ke → {}",
+"b": [
+{
+"a": [
+"け"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w3",
+"tpl": "e → {}",
+"b": [
+{
+"a": [
+"え"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w4",
+"tpl": "u → {}",
+"b": [
+{
+"a": [
+"う"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w5",
+"tpl": "i → {}",
+"b": [
+{
+"a": [
+"い"
+],
+"w": 4
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "四　ことば Words",
+"note": "ことばを よんで、いみを えらびます。さいごの 1つは、ひらがなで かきます。\n(Read the word and choose what it means. Write the last one in hiragana.)",
+"items": [
+{
+"k": "choice",
+"id": "t1",
+"q": "【あか】",
+"opts": [
+"blue",
+"big",
+"red"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t2",
+"q": "【かお】",
+"opts": [
+"hand",
+"foot",
+"face"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t3",
+"q": "【えき】",
+"opts": [
+"park",
+"school",
+"station"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t4",
+"q": "【いえ】",
+"opts": [
+"house",
+"car",
+"tree"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "fill",
+"id": "t9",
+"tpl": "blue → {}",
+"b": [
+{
+"a": [
+"あお"
+],
+"w": 3
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "五　さんすう Math",
+"note": "ひけない ときは、十の くらいから 10を かります。5の だんは 5ずつ ふえます。\n(Subtract. Borrow 10 from the tens when you need to. Then the 5 times table: 5, 10, 15, 20 ...)",
+"items": [
+{
+"k": "fill",
+"id": "c1",
+"tpl": "48 － 23 ＝ {}",
+"b": [
+{
+"a": [
+"25"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c2",
+"tpl": "42 － 18 ＝ {}",
+"b": [
+{
+"a": [
+"24"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c3",
+"tpl": "53 － 26 ＝ {}",
+"b": [
+{
+"a": [
+"27"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c4",
+"tpl": "61 － 35 ＝ {}",
+"b": [
+{
+"a": [
+"26"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c5",
+"tpl": "70 － 24 ＝ {}",
+"b": [
+{
+"a": [
+"46"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c6",
+"tpl": "5 × 6 ＝ {}",
+"b": [
+{
+"a": [
+"30"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c7",
+"tpl": "5 × 7 ＝ {}",
+"b": [
+{
+"a": [
+"35"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c8",
+"tpl": "5 × 8 ＝ {}",
+"b": [
+{
+"a": [
+"40"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c9",
+"tpl": "5 × 9 ＝ {}",
+"b": [
+{
+"a": [
+"45"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c10",
+"tpl": "5 × 3 ＝ {}",
+"b": [
+{
+"a": [
+"15"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+}
+]
+}
+]
+},
+{
+"wd": "すい",
+"d": "2026-10-14",
+"min": 20,
+"sections": [
+{
+"h": "一　ひらがな（10字） Hiragana",
+"note": "かきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+"grid": true,
+"items": [
+{
+"k": "kana",
+"id": "k1",
+"ch": "さ",
+"ro": "sa",
+"ex": [
+"さかな",
+"fish"
+]
+},
+{
+"k": "kana",
+"id": "k2",
+"ch": "し",
+"ro": "shi",
+"ex": [
+"しか",
+"deer"
+]
+},
+{
+"k": "kana",
+"id": "k3",
+"ch": "す",
+"ro": "su",
+"ex": [
+"すいか",
+"watermelon"
+]
+},
+{
+"k": "kana",
+"id": "k4",
+"ch": "せ",
+"ro": "se",
+"ex": [
+"せみ",
+"cicada"
+]
+},
+{
+"k": "kana",
+"id": "k5",
+"ch": "そ",
+"ro": "so",
+"ex": [
+"そら",
+"sky"
+]
+},
+{
+"k": "kana",
+"id": "k6",
+"ch": "た",
+"ro": "ta",
+"ex": [
+"たまご",
+"egg"
+]
+},
+{
+"k": "kana",
+"id": "k7",
+"ch": "ち",
+"ro": "chi",
+"ex": [
+"ちず",
+"map"
+]
+},
+{
+"k": "kana",
+"id": "k8",
+"ch": "つ",
+"ro": "tsu",
+"ex": [
+"つき",
+"moon"
+]
+},
+{
+"k": "kana",
+"id": "k9",
+"ch": "て",
+"ro": "te",
+"ex": [
+"てがみ",
+"letter"
+]
+},
+{
+"k": "kana",
+"id": "k10",
+"ch": "と",
+"ro": "to",
+"ex": [
+"とり",
+"bird"
+]
+}
+]
+},
+{
+"h": "二　ふくしゅう Review",
+"note": "まえに ならった 字です。おなじ おとを えらびます。\n(Letters from before. Choose the sound.)",
+"items": [
+{
+"k": "choice",
+"id": "f1",
+"q": "【あ】",
+"opts": [
+"a",
+"su",
+"to"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f2",
+"q": "【い】",
+"opts": [
+"i",
+"u",
+"a"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f3",
+"q": "【う】",
+"opts": [
+"u",
+"ku",
+"to"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f4",
+"q": "【え】",
+"opts": [
+"i",
+"tsu",
+"e"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f5",
+"q": "【き】",
+"opts": [
+"ki",
+"shi",
+"a"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f6",
+"q": "【く】",
+"opts": [
+"chi",
+"shi",
+"ku"
+],
+"a": "C",
+"pts": 1
+}
+]
+},
+{
+"h": "三　よめるかな Reading",
+"note": "ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)",
+"items": [
+{
+"k": "choice",
+"id": "y1",
+"q": "【し】",
+"opts": [
+"ta",
+"chi",
+"shi"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y2",
+"q": "【た】",
+"opts": [
+"tsu",
+"te",
+"ta"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y3",
+"q": "【そ】",
+"opts": [
+"so",
+"su",
+"te"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y4",
+"q": "【ち】",
+"opts": [
+"te",
+"su",
+"chi"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y5",
+"q": "【つ】",
+"opts": [
+"sa",
+"tsu",
+"to"
+],
+"a": "B",
+"pts": 1
+}
+]
+},
+{
+"h": "四　かけるかな Writing",
+"note": "おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)",
+"items": [
+{
+"k": "fill",
+"id": "w1",
+"tpl": "su → {}",
+"b": [
+{
+"a": [
+"す"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w2",
+"tpl": "te → {}",
+"b": [
+{
+"a": [
+"て"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w3",
+"tpl": "sa → {}",
+"b": [
+{
+"a": [
+"さ"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w4",
+"tpl": "se → {}",
+"b": [
+{
+"a": [
+"せ"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w5",
+"tpl": "to → {}",
+"b": [
+{
+"a": [
+"と"
+],
+"w": 4
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "五　ことば Words",
+"note": "ことばを よんで、いみを えらびます。さいごの 1つは、ひらがなで かきます。\n(Read the word and choose what it means. Write the last one in hiragana.)",
+"items": [
+{
+"k": "choice",
+"id": "t1",
+"q": "【いす】",
+"opts": [
+"chair",
+"door",
+"desk"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t2",
+"q": "【つき】",
+"opts": [
+"star",
+"moon",
+"sun"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t3",
+"q": "【くつ】",
+"opts": [
+"shoes",
+"bag",
+"hat"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t4",
+"q": "【うし】",
+"opts": [
+"horse",
+"cow",
+"pig"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "fill",
+"id": "t9",
+"tpl": "octopus → {}",
+"b": [
+{
+"a": [
+"たこ"
+],
+"w": 3
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "六　さんすう Math",
+"note": "くり下がりの ひきざんと、2の だん。2の だんは 2ずつ ふえます。\n(Subtract with borrowing. Then the 2 times table: 2, 4, 6, 8 ...)",
+"items": [
+{
+"k": "fill",
+"id": "c1",
+"tpl": "52 － 27 ＝ {}",
+"b": [
+{
+"a": [
+"25"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c2",
+"tpl": "72 － 28 ＝ {}",
+"b": [
+{
+"a": [
+"44"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c3",
+"tpl": "81 － 46 ＝ {}",
+"b": [
+{
+"a": [
+"35"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c4",
+"tpl": "60 － 32 ＝ {}",
+"b": [
+{
+"a": [
+"28"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c5",
+"tpl": "95 － 58 ＝ {}",
+"b": [
+{
+"a": [
+"37"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c6",
+"tpl": "2 × 1 ＝ {}",
+"b": [
+{
+"a": [
+"2"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c7",
+"tpl": "2 × 2 ＝ {}",
+"b": [
+{
+"a": [
+"4"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c8",
+"tpl": "2 × 3 ＝ {}",
+"b": [
+{
+"a": [
+"6"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c9",
+"tpl": "2 × 4 ＝ {}",
+"b": [
+{
+"a": [
+"8"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c10",
+"tpl": "2 × 5 ＝ {}",
+"b": [
+{
+"a": [
+"10"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+}
+]
+}
+]
+},
+{
+"wd": "もく",
+"d": "2026-10-15",
+"min": 20,
+"sections": [
+{
+"h": "一　ひらがな（10字） Hiragana",
+"note": "かきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+"grid": true,
+"items": [
+{
+"k": "kana",
+"id": "k1",
+"ch": "な",
+"ro": "na",
+"ex": [
+"なつ",
+"summer"
+]
+},
+{
+"k": "kana",
+"id": "k2",
+"ch": "に",
+"ro": "ni",
+"ex": [
+"にく",
+"meat"
+]
+},
+{
+"k": "kana",
+"id": "k3",
+"ch": "ぬ",
+"ro": "nu",
+"ex": [
+"ぬの",
+"cloth"
+]
+},
+{
+"k": "kana",
+"id": "k4",
+"ch": "ね",
+"ro": "ne",
+"ex": [
+"ねこ",
+"cat"
+]
+},
+{
+"k": "kana",
+"id": "k5",
+"ch": "の",
+"ro": "no",
+"ex": [
+"のり",
+"glue"
+]
+},
+{
+"k": "kana",
+"id": "k6",
+"ch": "は",
+"ro": "ha",
+"ex": [
+"はな",
+"flower"
+]
+},
+{
+"k": "kana",
+"id": "k7",
+"ch": "ひ",
+"ro": "hi",
+"ex": [
+"ひと",
+"person"
+]
+},
+{
+"k": "kana",
+"id": "k8",
+"ch": "ふ",
+"ro": "fu",
+"ex": [
+"ふね",
+"ship"
+]
+},
+{
+"k": "kana",
+"id": "k9",
+"ch": "へ",
+"ro": "he",
+"ex": [
+"へや",
+"room"
+]
+},
+{
+"k": "kana",
+"id": "k10",
+"ch": "ほ",
+"ro": "ho",
+"ex": [
+"ほし",
+"star"
+]
+}
+]
+},
+{
+"h": "二　ふくしゅう Review",
+"note": "まえに ならった 字です。おなじ おとを えらびます。\n(Letters from before. Choose the sound.)",
+"items": [
+{
+"k": "choice",
+"id": "f1",
+"q": "【さ】",
+"opts": [
+"sa",
+"ho",
+"no"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f2",
+"q": "【し】",
+"opts": [
+"nu",
+"shi",
+"he"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f3",
+"q": "【す】",
+"opts": [
+"su",
+"ne",
+"shi"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f4",
+"q": "【ち】",
+"opts": [
+"chi",
+"na",
+"su"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f5",
+"q": "【つ】",
+"opts": [
+"tsu",
+"ni",
+"he"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f6",
+"q": "【て】",
+"opts": [
+"he",
+"no",
+"te"
+],
+"a": "C",
+"pts": 1
+}
+]
+},
+{
+"h": "三　よめるかな Reading",
+"note": "ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)",
+"items": [
+{
+"k": "choice",
+"id": "y1",
+"q": "【な】",
+"opts": [
+"ha",
+"fu",
+"na"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y2",
+"q": "【ほ】",
+"opts": [
+"ho",
+"ne",
+"na"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y3",
+"q": "【の】",
+"opts": [
+"no",
+"ne",
+"he"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y4",
+"q": "【ね】",
+"opts": [
+"ha",
+"ne",
+"fu"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y5",
+"q": "【へ】",
+"opts": [
+"no",
+"ha",
+"he"
+],
+"a": "C",
+"pts": 1
+}
+]
+},
+{
+"h": "四　かけるかな Writing",
+"note": "おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)",
+"items": [
+{
+"k": "fill",
+"id": "w1",
+"tpl": "ni → {}",
+"b": [
+{
+"a": [
+"に"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w2",
+"tpl": "nu → {}",
+"b": [
+{
+"a": [
+"ぬ"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w3",
+"tpl": "fu → {}",
+"b": [
+{
+"a": [
+"ふ"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w4",
+"tpl": "hi → {}",
+"b": [
+{
+"a": [
+"ひ"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w5",
+"tpl": "ha → {}",
+"b": [
+{
+"a": [
+"は"
+],
+"w": 4
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "五　ことば Words",
+"note": "ことばを よんで、いみを えらびます。さいごの 1つは、ひらがなで かきます。\n(Read the word and choose what it means. Write the last one in hiragana.)",
+"items": [
+{
+"k": "choice",
+"id": "t1",
+"q": "【ねこ】",
+"opts": [
+"fish",
+"bird",
+"cat"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t2",
+"q": "【はな】",
+"opts": [
+"grass",
+"tree",
+"flower"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t3",
+"q": "【ほし】",
+"opts": [
+"moon",
+"star",
+"cloud"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t4",
+"q": "【さかな】",
+"opts": [
+"egg",
+"meat",
+"fish"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "fill",
+"id": "t9",
+"tpl": "dog → {}",
+"b": [
+{
+"a": [
+"いぬ"
+],
+"w": 3
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "六　さんすう Math",
+"note": "2の だんの つづきと、ふくしゅう。\n(More of the 2 times table, and some review.)",
+"items": [
+{
+"k": "fill",
+"id": "c1",
+"tpl": "2 × 6 ＝ {}",
+"b": [
+{
+"a": [
+"12"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c2",
+"tpl": "2 × 7 ＝ {}",
+"b": [
+{
+"a": [
+"14"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c3",
+"tpl": "2 × 8 ＝ {}",
+"b": [
+{
+"a": [
+"16"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c4",
+"tpl": "2 × 9 ＝ {}",
+"b": [
+{
+"a": [
+"18"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c5",
+"tpl": "5 × 4 ＝ {}",
+"b": [
+{
+"a": [
+"20"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c6",
+"tpl": "43 － 17 ＝ {}",
+"b": [
+{
+"a": [
+"26"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c7",
+"tpl": "62 － 25 ＝ {}",
+"b": [
+{
+"a": [
+"37"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c8",
+"tpl": "74 － 36 ＝ {}",
+"b": [
+{
+"a": [
+"38"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c9",
+"tpl": "2 × 5 ＝ {}",
+"b": [
+{
+"a": [
+"10"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c10",
+"tpl": "5 × 9 ＝ {}",
+"b": [
+{
+"a": [
+"45"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+}
+]
+}
+]
+},
+{
+"wd": "きん",
+"d": "2026-10-16",
+"min": 20,
+"sections": [
+{
+"h": "一　ひらがな（8字） Hiragana",
+"note": "かきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+"grid": true,
+"items": [
+{
+"k": "kana",
+"id": "k1",
+"ch": "ま",
+"ro": "ma",
+"ex": [
+"まど",
+"window"
+]
+},
+{
+"k": "kana",
+"id": "k2",
+"ch": "み",
+"ro": "mi",
+"ex": [
+"みみ",
+"ear"
+]
+},
+{
+"k": "kana",
+"id": "k3",
+"ch": "む",
+"ro": "mu",
+"ex": [
+"むし",
+"bug"
+]
+},
+{
+"k": "kana",
+"id": "k4",
+"ch": "め",
+"ro": "me",
+"ex": [
+"めがね",
+"glasses"
+]
+},
+{
+"k": "kana",
+"id": "k5",
+"ch": "も",
+"ro": "mo",
+"ex": [
+"もも",
+"peach"
+]
+},
+{
+"k": "kana",
+"id": "k6",
+"ch": "や",
+"ro": "ya",
+"ex": [
+"やま",
+"mountain"
+]
+},
+{
+"k": "kana",
+"id": "k7",
+"ch": "ゆ",
+"ro": "yu",
+"ex": [
+"ゆき",
+"snow"
+]
+},
+{
+"k": "kana",
+"id": "k8",
+"ch": "よ",
+"ro": "yo",
+"ex": [
+"よる",
+"night"
+]
+}
+]
+},
+{
+"h": "二　ふくしゅう Review",
+"note": "まえに ならった 字です。おなじ おとを えらびます。\n(Letters from before. Choose the sound.)",
+"items": [
+{
+"k": "choice",
+"id": "f1",
+"q": "【な】",
+"opts": [
+"me",
+"hi",
+"na"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f2",
+"q": "【に】",
+"opts": [
+"nu",
+"ni",
+"ma"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f3",
+"q": "【ぬ】",
+"opts": [
+"na",
+"nu",
+"ni"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f4",
+"q": "【は】",
+"opts": [
+"na",
+"ha",
+"ya"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f5",
+"q": "【ひ】",
+"opts": [
+"nu",
+"hi",
+"mi"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "f6",
+"q": "【ふ】",
+"opts": [
+"yo",
+"mi",
+"fu"
+],
+"a": "C",
+"pts": 1
+}
+]
+},
+{
+"h": "三　よめるかな Reading",
+"note": "ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)",
+"items": [
+{
+"k": "choice",
+"id": "y1",
+"q": "【む】",
+"opts": [
+"mu",
+"ya",
+"me"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y2",
+"q": "【よ】",
+"opts": [
+"yo",
+"mo",
+"ma"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y3",
+"q": "【め】",
+"opts": [
+"ya",
+"me",
+"mo"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y4",
+"q": "【や】",
+"opts": [
+"me",
+"mi",
+"ya"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y5",
+"q": "【も】",
+"opts": [
+"ya",
+"mo",
+"me"
+],
+"a": "B",
+"pts": 1
+}
+]
+},
+{
+"h": "四　かけるかな Writing",
+"note": "おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)",
+"items": [
+{
+"k": "fill",
+"id": "w1",
+"tpl": "mi → {}",
+"b": [
+{
+"a": [
+"み"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w2",
+"tpl": "ma → {}",
+"b": [
+{
+"a": [
+"ま"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w3",
+"tpl": "yu → {}",
+"b": [
+{
+"a": [
+"ゆ"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w4",
+"tpl": "mu → {}",
+"b": [
+{
+"a": [
+"む"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w5",
+"tpl": "yo → {}",
+"b": [
+{
+"a": [
+"よ"
+],
+"w": 4
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "五　ことば Words",
+"note": "ことばを よんで、いみを えらびます。さいごの 1つは、ひらがなで かきます。\n(Read the word and choose what it means. Write the last one in hiragana.)",
+"items": [
+{
+"k": "choice",
+"id": "t1",
+"q": "【やま】",
+"opts": [
+"river",
+"sea",
+"mountain"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t2",
+"q": "【ゆき】",
+"opts": [
+"wind",
+"rain",
+"snow"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t3",
+"q": "【みみ】",
+"opts": [
+"nose",
+"eye",
+"ear"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t4",
+"q": "【あめ】",
+"opts": [
+"rain",
+"sun",
+"snow"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "fill",
+"id": "t9",
+"tpl": "peach → {}",
+"b": [
+{
+"a": [
+"もも"
+],
+"w": 3
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "六　さんすう Math",
+"note": "なん十の けいさんは、10の まとまりで かんがえます。30＋40 は、10が 7こで 70。\n(Tens: 30 + 40 is 7 tens, so 70. Then review.)",
+"items": [
+{
+"k": "fill",
+"id": "c1",
+"tpl": "30 ＋ 40 ＝ {}",
+"b": [
+{
+"a": [
+"70"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c2",
+"tpl": "20 ＋ 50 ＝ {}",
+"b": [
+{
+"a": [
+"70"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c3",
+"tpl": "80 － 30 ＝ {}",
+"b": [
+{
+"a": [
+"50"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c4",
+"tpl": "64 － 29 ＝ {}",
+"b": [
+{
+"a": [
+"35"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c5",
+"tpl": "71 － 46 ＝ {}",
+"b": [
+{
+"a": [
+"25"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c6",
+"tpl": "5 × 7 ＝ {}",
+"b": [
+{
+"a": [
+"35"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c7",
+"tpl": "2 × 9 ＝ {}",
+"b": [
+{
+"a": [
+"18"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c8",
+"tpl": "5 × 6 ＝ {}",
+"b": [
+{
+"a": [
+"30"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c9",
+"tpl": "2 × 7 ＝ {}",
+"b": [
+{
+"a": [
+"14"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c10",
+"tpl": "40 ＋ 50 ＝ {}",
+"b": [
+{
+"a": [
+"90"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+}
+]
+}
+]
+}
+],
+"test": {
+"d": "2026-10-17",
+"min": 20,
+"sections": [
+{
+"h": "一　よめるかな Reading（1もん1点）",
+"note": "ひらがなを 見て、おなじ おとを えらびます。\n(Look at the hiragana and choose its sound.)",
+"items": [
+{
+"k": "choice",
+"id": "y1",
+"q": "【と】",
+"opts": [
+"to",
+"i",
+"yu"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y2",
+"q": "【お】",
+"opts": [
+"tsu",
+"o",
+"ki"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y3",
+"q": "【ほ】",
+"opts": [
+"ho",
+"fu",
+"ke"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y4",
+"q": "【よ】",
+"opts": [
+"me",
+"yo",
+"a"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y5",
+"q": "【み】",
+"opts": [
+"to",
+"mi",
+"mu"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y6",
+"q": "【も】",
+"opts": [
+"ke",
+"u",
+"mo"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y7",
+"q": "【ふ】",
+"opts": [
+"e",
+"fu",
+"nu"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y8",
+"q": "【め】",
+"opts": [
+"o",
+"me",
+"tsu"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y9",
+"q": "【せ】",
+"opts": [
+"se",
+"yu",
+"nu"
+],
+"a": "A",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "y10",
+"q": "【の】",
+"opts": [
+"sa",
+"no",
+"ni"
+],
+"a": "B",
+"pts": 1
+}
+]
+},
+{
+"h": "二　かけるかな Writing（1もん1点）",
+"note": "おとを 見て、ひらがなで かきます。\n(Read the sound and write it in hiragana.)",
+"items": [
+{
+"k": "fill",
+"id": "w1",
+"tpl": "ni → {}",
+"b": [
+{
+"a": [
+"に"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w2",
+"tpl": "ma → {}",
+"b": [
+{
+"a": [
+"ま"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w3",
+"tpl": "ki → {}",
+"b": [
+{
+"a": [
+"き"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w4",
+"tpl": "ne → {}",
+"b": [
+{
+"a": [
+"ね"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w5",
+"tpl": "su → {}",
+"b": [
+{
+"a": [
+"す"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w6",
+"tpl": "chi → {}",
+"b": [
+{
+"a": [
+"ち"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w7",
+"tpl": "te → {}",
+"b": [
+{
+"a": [
+"て"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w8",
+"tpl": "shi → {}",
+"b": [
+{
+"a": [
+"し"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w9",
+"tpl": "tsu → {}",
+"b": [
+{
+"a": [
+"つ"
+],
+"w": 4
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "w10",
+"tpl": "ha → {}",
+"b": [
+{
+"a": [
+"は"
+],
+"w": 4
+}
+],
+"pts": 1
+}
+]
+},
+{
+"h": "三　ことば Words（1もん1点）",
+"note": "ことばを よんで、いみを えらびます。\n(Read the word and choose what it means.)",
+"items": [
+{
+"k": "choice",
+"id": "t1",
+"q": "【いぬ】",
+"opts": [
+"cow",
+"dog",
+"cat"
+],
+"a": "B",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t2",
+"q": "【かさ】",
+"opts": [
+"hat",
+"shoes",
+"umbrella"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t3",
+"q": "【そと】",
+"opts": [
+"inside",
+"under",
+"outside"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t4",
+"q": "【ふね】",
+"opts": [
+"train",
+"car",
+"ship"
+],
+"a": "C",
+"pts": 1
+},
+{
+"k": "choice",
+"id": "t5",
+"q": "【よる】",
+"opts": [
+"noon",
+"morning",
+"night"
+],
+"a": "C",
+"pts": 1
+}
+]
+},
+{
+"h": "四　けいさん Math（1もん1点）",
+"note": "けいさんを しましょう。\n(Work out the answers.)",
+"items": [
+{
+"k": "fill",
+"id": "c1",
+"tpl": "32 － 5 ＝ {}",
+"b": [
+{
+"a": [
+"27"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c2",
+"tpl": "53 － 26 ＝ {}",
+"b": [
+{
+"a": [
+"27"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c3",
+"tpl": "72 － 28 ＝ {}",
+"b": [
+{
+"a": [
+"44"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c4",
+"tpl": "60 － 32 ＝ {}",
+"b": [
+{
+"a": [
+"28"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c5",
+"tpl": "30 ＋ 40 ＝ {}",
+"b": [
+{
+"a": [
+"70"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c6",
+"tpl": "5 × 4 ＝ {}",
+"b": [
+{
+"a": [
+"20"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c7",
+"tpl": "5 × 8 ＝ {}",
+"b": [
+{
+"a": [
+"40"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c8",
+"tpl": "2 × 6 ＝ {}",
+"b": [
+{
+"a": [
+"12"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "fill",
+"id": "c9",
+"tpl": "2 × 9 ＝ {}",
+"b": [
+{
+"a": [
+"18"
+],
+"t": "num",
+"w": 6
+}
+],
+"pts": 1
+},
+{
+"k": "ink",
+"id": "sc",
+"q": "けいさんスペース（ひっさんを かいて よい）",
+"h": 420,
+"pts": 0,
+"scratch": true
+}
+]
+}
+]
+}
+}
