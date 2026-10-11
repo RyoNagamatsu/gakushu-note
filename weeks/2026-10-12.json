@@ -1919,6 +1919,48 @@
      ]
     },
     {
+     "h": "｜国語《こくご》　｜漢字《かんじ》のふくしゅう（｜月曜《げつよう》・｜火曜《かよう》の字）",
+     "grid": true,
+     "items": [
+      {
+       "k": "ink",
+       "id": "ks1",
+       "q": "【ひと】つ。",
+       "h": 460,
+       "cls": "s",
+       "model": "一",
+       "pts": 0
+      },
+      {
+       "k": "ink",
+       "id": "ks2",
+       "q": "【ふた】つ。",
+       "h": 460,
+       "cls": "s",
+       "model": "二",
+       "pts": 0
+      },
+      {
+       "k": "ink",
+       "id": "ks3",
+       "q": "【みっ】つ。",
+       "h": 460,
+       "cls": "s",
+       "model": "三",
+       "pts": 0
+      },
+      {
+       "k": "ink",
+       "id": "ks4",
+       "q": "【よっ】つ。",
+       "h": 460,
+       "cls": "s",
+       "model": "四",
+       "pts": 0
+      }
+     ]
+    },
+    {
      "h": "｜国語《こくご》　カタカナ（マ｜行《ぎょう》・ヤ｜行《ぎょう》・ラ｜行《ぎょう》）",
      "note": "ひらがなの右にあるカタカナを見て、｜同《おな》じ｜形《かたち》になるように｜書《か》きます。",
      "items": [
@@ -2281,6 +2323,56 @@
      ]
     },
     {
+     "h": "｜国語《こくご》　文のしくみ（ふくしゅう）",
+     "note": "文のおわりのことばが｜述語《じゅつご》です。｜述語《じゅつご》に「だれが？」と｜聞《き》いて、｜答《こた》えになることばが｜主語《しゅご》です。",
+     "items": [
+      {
+       "k": "fill",
+       "id": "s1",
+       "tpl": "「小さい　｜弟《おとうと》が　大きな　こえで　わらう。」\n｜主語《しゅご》{}　｜述語《じゅつご》{}",
+       "b": [
+        {
+         "a": [
+          "弟が",
+          "おとうとが"
+         ],
+         "w": 8
+        },
+        {
+         "a": [
+          "わらう"
+         ],
+         "w": 8
+        }
+       ],
+       "pts": 0,
+       "why": "おわりの「わらう」が｜述語《じゅつご》。だれがわらう？＝「｜弟《おとうと》が」が｜主語《しゅご》です。「小さい」は｜弟《おとうと》のようすを｜言《い》うことばです。"
+      },
+      {
+       "k": "fill",
+       "id": "s2",
+       "tpl": "「きのう　わたしは　本を　｜三《さん》さつ　｜読《よ》んだ。」\n｜主語《しゅご》{}　｜述語《じゅつご》{}",
+       "b": [
+        {
+         "a": [
+          "わたしは"
+         ],
+         "w": 8
+        },
+        {
+         "a": [
+          "読んだ",
+          "よんだ"
+         ],
+         "w": 8
+        }
+       ],
+       "pts": 0,
+       "why": "おわりの「｜読《よ》んだ」が｜述語《じゅつご》。だれが｜読《よ》んだ？＝「わたしは」が｜主語《しゅご》です。「本を」は｜主語《しゅご》ではありません。"
+      }
+     ]
+    },
+    {
      "h": "｜算数《さんすう》　｜分数《ぶんすう》のたし｜算《ざん》・ひき｜算《ざん》",
      "note": "｜分母《ぶんぼ》が｜同《おな》じ｜分数《ぶんすう》は、｜分母《ぶんぼ》はそのままで、｜分子《ぶんし》だけをたしたりひいたりします。｜答《こた》えは｜小数《しょうすう》に｜直《なお》さず、｜分数《ぶんすう》で｜書《か》きます。｜例《れい》：1/5 ＋ 2/5 ＝ 3/5",
      "items": [
@@ -2493,6 +2585,56 @@
      ]
     },
     {
+     "h": "｜算数《さんすう》　｜文章題《ぶんしょうだい》（1つの｜式《しき》に｜書《か》く）",
+     "note": "お｜話《はなし》を1つの｜式《しき》に｜書《か》いてから｜計算《けいさん》します。かけ｜算《ざん》は、たし｜算《ざん》・ひき｜算《ざん》より先に｜計算《けいさん》します。",
+     "items": [
+      {
+       "k": "fill",
+       "id": "n1",
+       "tpl": "｜答《こた》え {} こ",
+       "b": [
+        {
+         "a": [
+          "29"
+         ],
+         "w": 6,
+         "t": "num"
+        }
+       ],
+       "pts": 0,
+       "why": "ドーナツは 6 × 4 ＝ 24 こ。24 ＋ 5 ＝ 29",
+       "q": "1はこに6こ入りのドーナツを4はこと、ばらで5こ｜買《か》いました。ドーナツは、ぜんぶで｜何《なに》こですか。",
+       "work": {
+        "label": "｜式《しき》",
+        "model": "6 × 4 ＋ 5 ＝ 29",
+        "pts": 0
+       }
+      },
+      {
+       "k": "fill",
+       "id": "n2",
+       "tpl": "｜答《こた》え {} 円",
+       "b": [
+        {
+         "a": [
+          "250"
+         ],
+         "w": 6,
+         "t": "num"
+        }
+       ],
+       "pts": 0,
+       "why": "ノートは 250 × 3 ＝ 750 円。1000 － 750 ＝ 250",
+       "q": "1000円をもって、1さつ250円のノートを3さつ｜買《か》いました。おつりは｜何円《なんえん》ですか。",
+       "work": {
+        "label": "｜式《しき》",
+        "model": "1000 － 250 × 3 ＝ 250",
+        "pts": 0
+       }
+      }
+     ]
+    },
+    {
      "h": "｜算数《さんすう》　きのうのふくしゅう（｜計算《けいさん》の｜順序《じゅんじょ》）",
      "items": [
       {
@@ -2614,6 +2756,39 @@
        "a": "C",
        "pts": 0,
        "why": "\"resilient\" = recovers quickly. They lost a set but came back."
+      }
+     ]
+    },
+    {
+     "h": "English　Reading",
+     "en": true,
+     "passage": [
+      "Some people think talent decides who becomes a great athlete. However, one swimming coach noticed something different. The swimmers who improved the most were not the fastest at age ten. They were the ones who asked for feedback and practiced their weak points again and again."
+     ],
+     "items": [
+      {
+       "k": "choice",
+       "id": "r1",
+       "q": "What is the main idea of this passage?",
+       "opts": [
+        "Fast ten-year-olds always become champions.",
+        "Improvement comes from asking for feedback and working on weak points, not only from talent.",
+        "Swimming is harder than other sports.",
+        "Coaches should choose only talented children."
+       ],
+       "a": "B",
+       "pts": 0,
+       "why": "The passage says the most improved swimmers were not the fastest. They asked for feedback and practiced weak points. B says this."
+      },
+      {
+       "k": "long",
+       "id": "r2",
+       "q": "Which swimmers improved the most? Answer in one sentence.",
+       "rows": 3,
+       "pts": 0,
+       "en": true,
+       "model": "The swimmers who asked for feedback and practiced their weak points.",
+       "why": "Look at the last sentence: \"They were the ones who asked for feedback and practiced their weak points...\""
       }
      ]
     }
@@ -3069,6 +3244,142 @@
      ]
     },
     {
+     "h": "｜国語《こくご》　｜今週《こんしゅう》のふくしゅう（｜反対《はんたい》のことば・｜数《かぞ》え｜方《かた》）",
+     "items": [
+      {
+       "sub": "｜反対《はんたい》のいみのことばを｜書《か》きましょう。"
+      },
+      {
+       "k": "fill",
+       "id": "h1",
+       "tpl": "｜高《たか》い　山。　⇔　{}　山。",
+       "b": [
+        {
+         "a": [
+          "ひくい",
+          "低い"
+         ],
+         "w": 8
+        }
+       ],
+       "pts": 0,
+       "why": "「｜高《たか》い」の｜反対《はんたい》は「ひくい」です。"
+      },
+      {
+       "k": "fill",
+       "id": "h2",
+       "tpl": "大きい　はこ。　⇔　{}　はこ。",
+       "b": [
+        {
+         "a": [
+          "小さい",
+          "ちいさい"
+         ],
+         "w": 8
+        }
+       ],
+       "pts": 0,
+       "why": "「大きい」の｜反対《はんたい》は「小さい」です。"
+      },
+      {
+       "k": "fill",
+       "id": "h3",
+       "tpl": "学校が　｜始《はじ》まる。　⇔　学校が　{}。",
+       "b": [
+        {
+         "a": [
+          "おわる",
+          "終わる"
+         ],
+         "w": 8
+        }
+       ],
+       "pts": 0,
+       "why": "「｜始《はじ》まる」の｜反対《はんたい》は「おわる」です。"
+      },
+      {
+       "k": "fill",
+       "id": "h4",
+       "tpl": "｜新《あたら》しい　ボール。　⇔　{}　ボール。",
+       "b": [
+        {
+         "a": [
+          "ふるい",
+          "古い"
+         ],
+         "w": 8
+        }
+       ],
+       "pts": 0,
+       "why": "「｜新《あたら》しい」の｜反対《はんたい》は「ふるい」です。"
+      },
+      {
+       "sub": "｜数《かぞ》え｜方《かた》のことばを｜書《か》きましょう。"
+      },
+      {
+       "k": "fill",
+       "id": "h5",
+       "tpl": "｜魚《さかな》が　｜三《さん》{}",
+       "b": [
+        {
+         "a": [
+          "びき",
+          "ひき"
+         ],
+         "w": 5
+        }
+       ],
+       "pts": 0,
+       "why": "｜魚《さかな》は「ひき」。三は「さんびき」と｜読《よ》みます。"
+      },
+      {
+       "k": "fill",
+       "id": "h6",
+       "tpl": "ノートが　｜五《ご》{}",
+       "b": [
+        {
+         "a": [
+          "さつ"
+         ],
+         "w": 5
+        }
+       ],
+       "pts": 0,
+       "why": "ノートは「さつ」で｜数《かぞ》えます。"
+      },
+      {
+       "k": "fill",
+       "id": "h7",
+       "tpl": "｜鳥《とり》が　｜一《いち》{}",
+       "b": [
+        {
+         "a": [
+          "わ"
+         ],
+         "w": 5
+        }
+       ],
+       "pts": 0,
+       "why": "｜鳥《とり》は「わ」で｜数《かぞ》えます。"
+      },
+      {
+       "k": "fill",
+       "id": "h8",
+       "tpl": "かさが　｜二《に》{}",
+       "b": [
+        {
+         "a": [
+          "ほん"
+         ],
+         "w": 5
+        }
+       ],
+       "pts": 0,
+       "why": "かさは｜細長《ほそなが》いので「ほん」。二は「にほん」です。"
+      }
+     ]
+    },
+    {
      "h": "｜算数《さんすう》　｜帯分数《たいぶんすう》",
      "note": "｜帯分数《たいぶんすう》は、｜整数《せいすう》と｜分数《ぶんすう》を｜合《あ》わせた｜数《かず》です。1と2/5 は 7/5 と｜同《おな》じ。ひけないときは、｜仮分数《かぶんすう》に｜直《なお》してからひきます。｜例《れい》：1と1/5 － 3/5 ＝ 6/5 － 3/5 ＝ 3/5",
      "items": [
@@ -3342,6 +3653,55 @@
      ]
     },
     {
+     "h": "｜算数《さんすう》　｜文章題《ぶんしょうだい》（｜今週《こんしゅう》のふくしゅう）",
+     "note": "｜式《しき》を｜書《か》いてから｜答《こた》えを｜書《か》きます。｜答《こた》えには、｜問題文《もんだいぶん》の｜単位《たんい》（m や円）をつけます。",
+     "items": [
+      {
+       "k": "fill",
+       "id": "n1",
+       "tpl": "｜答《こた》え {} m",
+       "b": [
+        {
+         "a": [
+          "3/5"
+         ],
+         "w": 6
+        }
+       ],
+       "pts": 0,
+       "why": "1と2/5 ＝ 7/5 に｜直《なお》します。7/5 － 4/5 ＝ 3/5",
+       "q": "テープが 1と2/5 m あります。4/5 m つかうと、のこりは｜何《なに》 m ですか。",
+       "work": {
+        "label": "｜式《しき》",
+        "model": "1と2/5 － 4/5 ＝ 3/5",
+        "pts": 0
+       }
+      },
+      {
+       "k": "fill",
+       "id": "n2",
+       "tpl": "｜答《こた》え {} 円",
+       "b": [
+        {
+         "a": [
+          "390"
+         ],
+         "w": 6,
+         "t": "num"
+        }
+       ],
+       "pts": 0,
+       "why": "パンは 90 × 4 ＝ 360 円。360 ＋ 30 ＝ 390",
+       "q": "1こ90円のパンを4こ｜買《か》って、30円のふくろに入れてもらいました。ぜんぶで｜何円《なんえん》ですか。",
+       "work": {
+        "label": "｜式《しき》",
+        "model": "90 × 4 ＋ 30 ＝ 390",
+        "pts": 0
+       }
+      }
+     ]
+    },
+    {
      "h": "English　Words",
      "en": true,
      "note": "reluctant = not wanting to do something ／ inevitable = certain to happen ／ abundant = more than enough",
@@ -3429,6 +3789,64 @@
        "model": "Meeting neighbors who can teach them how to use the tools.",
        "why": "Look at the last sentence: \"the best part is not the tools but meeting neighbors...\"",
        "en": true
+      }
+     ]
+    },
+    {
+     "h": "English　Words Review",
+     "en": true,
+     "note": "These are words from this week. Try to remember the meanings before you choose.",
+     "items": [
+      {
+       "k": "choice",
+       "id": "x1",
+       "q": "Even when the puzzle seemed impossible, she ______ until every piece fit.",
+       "opts": [
+        "persevered",
+        "diminished",
+        "scrutinized",
+        "vanished"
+       ],
+       "a": "A",
+       "pts": 0,
+       "why": "\"persevere\" = keep trying even when it is hard."
+      },
+      {
+       "k": "choice",
+       "id": "x2",
+       "q": "The rules of the new game were ______; nobody was sure who had won.",
+       "opts": [
+        "lucid",
+        "ambiguous",
+        "abundant",
+        "resilient"
+       ],
+       "a": "B",
+       "pts": 0,
+       "why": "\"ambiguous\" = not clear. Nobody was sure, so the rules were not clear."
+      },
+      {
+       "k": "choice",
+       "id": "x3",
+       "q": "Whether students should wear uniforms is a ______ topic at our school.",
+       "opts": [
+        "meticulous",
+        "plausible",
+        "controversial",
+        "reluctant"
+       ],
+       "a": "C",
+       "pts": 0,
+       "why": "\"controversial\" = people disagree strongly about it."
+      },
+      {
+       "k": "long",
+       "id": "x4",
+       "q": "Write 2 sentences about a time you were resilient.",
+       "rows": 4,
+       "pts": 0,
+       "en": true,
+       "sample": "I lost my first three matches at the tournament. I was resilient, so I kept practicing and won the next one."
       }
      ]
     }
