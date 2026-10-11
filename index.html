@@ -719,7 +719,7 @@ function renderTask(){
      <div class="opts">${[['1','かんたん'],['2','ちょうどいい'],['3','むずかしい']].map(f=>`<button class="opt${v.feel===f[0]?' on':''}" data-feel="${f[0]}"><span>${f[1]}</span></button>`).join('')}</div>
      <p class="note">× だった もんだいは、赤い字のこたえと「ポイント」を 読んでから、もういちど 正しいこたえを かこう。ぜんぶ やりなおすと、のこりの 2ポイントが もらえます。</p>
      <p class="banner red" id="rvMsg" hidden></p>
-     <div class="row end">${v.rev?'':'<button class="btn ghost" id="undoDone">やっていない もんだいが あった（「出す」を とりけす）</button>'}<button class="btn" id="rvDone">${v.rev?'ホームに もどる':'ふりかえりを おわる'}</button></div></section>`:''}
+     <div class="row end"><button class="btn ghost" id="undoDone">やっていない もんだいが あった（「出す」を とりけす）</button><button class="btn" id="rvDone">${v.rev?'ホームに もどる':'ふりかえりを おわる'}</button></div></section>`:''}
    ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
   </div>`;
   app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink),free=!!box.closest('.retry')||(!!box.dataset.free&&!!t.hw),bro=free?pv:ro,kch=box.dataset.kch;const api=mkInk(sqHost(box),key,+box.dataset.h,bro,!!box.dataset.ruled,free,kch&&!bro?(cleared=>judgeBox(t.id,box.dataset.ink,kch,cleared)):null);if(kch)judgeBox(t.id,box.dataset.ink,kch,false,true);
@@ -738,8 +738,8 @@ function renderTask(){
     if((t.hw&&blanks)||await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}${t.hw?'出すと、こたえあわせに すすみます。':'出したあとは、なおせません。'}</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();
       const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);await ask(t.test?'<b>決勝、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で決勝です。':'5日そろいました。土曜テストが決勝です！'}</p><div class="tips">${tipsHTML(v.tip||0)}</div>`,'やった！')}
       if(t.hw){go('task',t.id)}else go('home')}};
-  const ud=app.querySelector('#undoDone');if(ud)ud.onclick=async()=>{if(!await ask('<b>「出す」を とりけしますか？</b><p class="sub">もういちど 書けるように なります。書いたものは そのまま のこります。おわったら、もういちど「出す」を おそう。</p>','とりけす','やめる'))return;
-    v.done=false;v.unlockedAt=Date.now();delete v.self;delete v.rc;delete v.feel;touchVals(t.id);flushAll();go('task',t.id)};
+  const ud=app.querySelector('#undoDone');if(ud)ud.onclick=async()=>{if(!await ask('<b>「出す」を とりけしますか？</b><p class="sub">もういちど 書けるように なります。書いたものと ○× は そのまま のこります。おわったら、もういちど「出す」を おして、ふりかえりを おわらせよう。</p>','とりけす','やめる'))return;
+    v.done=false;v.unlockedAt=Date.now();delete v.rev;touchVals(t.id);flushAll();go('task',t.id)};
   paintReview();const rd=app.querySelector('#rvDone');if(rd)rd.onclick=()=>{if(!v.rev){const c=reviewCount(t);if(c.n+c.u>0){const sf=v.self||{},rc=v.rc||{};let el=document.querySelector('.ansline.todo');
       if(!el)el=[...document.querySelectorAll('.retry[data-rt]')].find(r=>{const k=r.dataset.rt;return r.querySelector('[data-rc]')?rc[k]!==(items(t).find(i=>i.id===k)||{}).a:(sf[k]===0&&!hasInk(t.id,k+'.r'))});
       if(el){el.scrollIntoView({block:'center',behavior:'smooth'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}return}
@@ -865,7 +865,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011021019';
+const BUILD='20261011021554';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
