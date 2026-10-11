@@ -166,6 +166,11 @@ h1{color:var(--ai)}
 .meter{height:12px;border-radius:999px;background:var(--ai-bg);overflow:hidden}
 .meter i{display:block;height:100%;background:var(--ai);border-radius:999px}
 .track{display:flex;gap:6px;flex-wrap:wrap}
+.rv{display:flex;flex-direction:column;gap:8px;background:var(--ai-bg);border-radius:14px;padding:8px 12px;margin-top:4px}
+.rvh{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.rvb{display:flex;gap:8px;flex:none}.rv .mk{background:var(--sheet)}.rv .mk.o.sel{background:var(--shu)}.rv .mk.x.sel{background:var(--soft)}
+.rv .ansline{margin:0}.retry{display:flex;flex-direction:column;gap:4px;align-items:flex-start;max-width:100%}.retry>.inkbox{width:100%}
+.retry .inkbox canvas.ink{background:var(--sheet);border:2px solid var(--ai)}.retry>.inkbox>.btn{align-self:flex-end;min-height:32px;padding:0 10px;font-size:.8rem}
 .note{color:var(--ink);font-family:var(--f-q);font-size:1.05rem;line-height:1.8;background:var(--ai-bg);border-radius:14px;padding:8px 14px}
 .rb{display:block;height:auto;flex:none;max-width:100%}
 .rb-w *{fill:var(--rb);stroke:var(--rb-line);stroke-width:2.5}
@@ -274,16 +279,18 @@ const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
 /* ---------- what is open ---------- */
 // She may run ahead: Monday to Friday of an open week are all open at once, handing in all five opens the Saturday test, and handing in the test opens the next week. Dates only open things that are still closed when the day arrives.
 const isDoneId=id=>!!(S.vals[id]||{}).done;
+// Homework counts as finished once the answer check is done too; tests have no answer check.
+const isFinId=id=>{const v=S.vals[id]||{},t=TASK[id];return !!(v.done&&(v.rev||!(t&&t.hw)))};
 function weekOpen(w,today){if(today>=w.id)return true;const pw=WEEKS[WEEKS.indexOf(w)+1];
-  if(pw)return pw._t?isDoneId(pw._t):pw._d.every(isDoneId);return true}
+  if(pw)return pw._t?isDoneId(pw._t):pw._d.every(isFinId);return true}
 function lockInfo(t,today){if(!t.week)return null;const w=WEEKS.find(x=>x.id===t.week);if(!w)return null;
   if(!weekOpen(w,today))return 'まえの しゅうの テストを 出すと ひらきます';
-  const all=w._d.every(isDoneId);
-  if(t.test)return (all||t.date<=today)?null:'きんようびまで ぜんぶ 出すと ひらきます';
+  const all=w._d.every(isFinId);
+  if(t.test)return (all||t.date<=today)?null:'きんようびまで こたえあわせも おわると ひらきます';
   // While the test is open and not handed in, finished homework (with its red answers) stays closed.
-  if(isDoneId(t.id))return (w._t&&!isDoneId(w._t)&&(all||w.test.d<=today))?'テストを 出すまで 見られません':null;
+  if(isFinId(t.id))return (w._t&&!isDoneId(w._t)&&(all||w.test.d<=today))?'テストを 出すまで 見られません':null;
   return null}
-function nextTask(today){for(let i=WEEKS.length-1;i>=0;i--){const w=WEEKS[i];for(const id of w._d.concat(w._t?[w._t]:[])){if(!isDoneId(id)&&TASK[id]&&!lockInfo(TASK[id],today))return TASK[id]}}return null}
+function nextTask(today){for(let i=WEEKS.length-1;i>=0;i--){const w=WEEKS[i];for(const id of w._d.concat(w._t?[w._t]:[])){if(!isFinId(id)&&TASK[id]&&!lockInfo(TASK[id],today))return TASK[id]}}return null}
 
 /* ---------- state ---------- */
 const S={vals:{},grades:{},ink:{},screen:'home',task:null,ptab:TASKS[0].id,running:false,parentOK:false};
@@ -393,7 +400,7 @@ function ask(html,yes,no){return new Promise(res=>{
 
 /* ---------- handwriting ---------- */
 let penSeen=false;const inks=[];
-function mkInk(host,key,lh,ro,ruled){
+function mkInk(host,key,lh,ro,ruled,rw){
   const c=document.createElement('canvas');c.className='ink'+(ruled?' ruled':'')+(ro?' ro':'');c.style.aspectRatio='1000/'+lh;c.setAttribute('aria-label','手書きのわく');host.appendChild(c);
   const strokes=()=>((S.ink[key]||{}).s||[]);
   let cur=null,drawer=null;
@@ -406,16 +413,16 @@ function mkInk(host,key,lh,ro,ruled){
       x.beginPath();x.moveTo(p[0]*k,p[1]*k);for(let i=2;i<p.length;i+=2)x.lineTo(p[i]*k,p[i+1]*k);x.stroke()})}
   const pt=e=>{const r=c.getBoundingClientRect();return [Math.round((e.clientX-r.left)/r.width*1000),Math.round((e.clientY-r.top)/r.width*1000)]};
   if(!ro){
-    c.addEventListener('pointerdown',e=>{if(V(S.task).done)return;if(e.pointerType==='pen')penSeen=true;if(penSeen&&e.pointerType==='touch')return;
+    c.addEventListener('pointerdown',e=>{if(V(S.task).done&&!rw)return;if(e.pointerType==='pen')penSeen=true;if(penSeen&&e.pointerType==='touch')return;
       e.preventDefault();try{c.setPointerCapture(e.pointerId)}catch(_){}drawer=e.pointerId;cur=pt(e);draw()});
     c.addEventListener('pointermove',e=>{if(!cur||e.pointerId!==drawer)return;e.preventDefault();
       const evs=(e.getCoalescedEvents&&e.getCoalescedEvents().length)?e.getCoalescedEvents():[e];
       evs.forEach(ev=>{const p=pt(ev),n=cur.length;if(Math.abs(p[0]-cur[n-2])+Math.abs(p[1]-cur[n-1])>=3)cur.push(p[0],p[1])});draw()});
-    const end=e=>{if(!cur||e.pointerId!==drawer)return;const r=S.ink[key]||(S.ink[key]={s:[],t:0});r.s.push(cur.join(','));cur=null;drawer=null;touchInk(key);draw()};
+    const end=e=>{if(!cur||e.pointerId!==drawer)return;const r=S.ink[key]||(S.ink[key]={s:[],t:0});r.s.push(cur.join(','));cur=null;drawer=null;touchInk(key);draw();if(onch)onch()};
     c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
   }
   if(window.ResizeObserver)new ResizeObserver(draw).observe(c);requestAnimationFrame(draw);
-  const api={draw,undo(){const r=S.ink[key];if(r&&r.s.length){r.s.pop();touchInk(key);draw()}},clear(){const r=S.ink[key];if(r&&r.s.length){r.s=[];touchInk(key);draw()}}};
+  let onch=null;const api={onchange(f){onch=f},draw,undo(){const r=S.ink[key];if(r&&r.s.length){r.s.pop();touchInk(key);draw()}},clear(){const r=S.ink[key];if(r&&r.s.length){r.s=[];touchInk(key);draw();if(onch)onch()}}};
   inks.push(api);return api}
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>inks.forEach(i=>i.draw()))}catch(e){}
 
@@ -437,7 +444,7 @@ function go(screen,task,pv){if(S.running)stopClock();if(screen!=='home')S.fed=nu
 function render(){inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();status()}
 
 const STAGES=[[0,'あかちゃん うさぎ'],[3,'こうさぎ'],[7,'げんきな うさぎ'],[15,'おねえさん うさぎ'],[30,'うさぎの プリンセス']];
-function carrots(){let n=TASKS.filter(t=>(S.vals[t.id]||{}).done).length;WEEKS.forEach(w=>{if(weekPts(w).bonus)n+=2});return n}
+function carrots(){let n=TASKS.filter(t=>isFinId(t.id)).length;WEEKS.forEach(w=>{if(weekPts(w).bonus)n+=2});return n}
 function stageOf(n){let s=0;STAGES.forEach((x,i)=>{if(n>=x[0])s=i});return s}
 const CPATH='<path class="lf" d="M12 11C10 6 7 4 5 4M12 11C12 6 12 3 12 1M12 11C14 6 17 4 19 4"/><path class="bd" d="M12 33C7 25 5 17 6 13a6 4.5 0 0 1 12 0C19 17 17 25 12 33z"/>';
 const CARROT='<svg viewBox="0 0 24 34" class="crt" aria-hidden="true">'+CPATH+'</svg>';
@@ -457,12 +464,12 @@ ${eat?'<g transform="translate(84 126) scale(1.35)"><g class="rb-crt">'+CPATH+'<
 
 function renderHome(){
   const today=ymd(Date.now()),nxt=nextTask(today);let groups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(t=>t.group))];
-  const isDone=t=>!!(S.vals[t.id]||{}).done,n=carrots(),st=stageOf(n),nx=STAGES[st+1],fed=S.fed;
+  const isDone=t=>isFinId(t.id),n=carrots(),st=stageOf(n),nx=STAGES[st+1],fed=S.fed;
   const cur=nxt?nxt.group:(groups.find(g=>TASKS.some(t=>t.group===g&&!isDone(t)))||groups[0]),ct=TASKS.filter(t=>t.group===cur);
   groups=[cur].concat(groups.filter(g=>g!==cur));
   const pct=nx?Math.round((n-STAGES[st][0])/(nx[0]-STAGES[st][0])*100):100;
   app.innerHTML=`<div class="wrap">
-   <div><h1>がくしゅうノート</h1><p class="sub">やる ものを えらんで、おしましょう。1つ おわると、ぴょんぴょんが にんじんを 1本 たべられます。</p></div>
+   <div><h1>がくしゅうノート</h1><p class="sub">やる ものを えらんで、おしましょう。こたえあわせまで おわると、ぴょんぴょんが にんじんを 1本 たべられます。</p></div>
    <section class="pyon${fed?' fed':''}">
     <div class="pyon-pic">${rabbit(st,!!fed)}</div>
     <div class="pyon-tx">
@@ -477,12 +484,12 @@ function renderHome(){
    </section>
    ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
    ${groups.map(g=>`<div class="grp"><h2>${esc(g)}</h2>
-     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub">げつようびから きんようびまで、すきな ときに できます。5つ ぜんぶ 出すと テスト、テストを 出すと つぎの しゅうが ひらきます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&lockInfo(t,today))?'<p class="sub">げつようびから きんようびまで、すきな ときに できます。5つ ぜんぶ こたえあわせまで おわると テスト、テストを 出すと つぎの しゅうが ひらきます。</p>':''}
      ${TASKS.some(t=>t.group===g&&t.set)?'<p class="sub">きょう、3つ やりましょう。1つ 10分、ぜんぶで 30分です。</p>':''}
      <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
      const lk=lockInfo(t,today);if(lk)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${esc(lk)}</span></div>`;
-     const sx=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
-     return `<button class="card${nxt&&t.id===nxt.id?' today':''}" data-open="${t.id}"><span class="cc${v.done?' done':''}">${CARROT}</span><b>${esc(t.title)}</b><small>${t.day?t.day+'日め・':''}${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${sx[0]}">${sx[1]}</span></button>`}).join('')}</div></div>`).join('')}
+     const sx=v.done?((t.hw&&!v.rev)?['go','こたえあわせ']:['done','おわり']):v.started?['go','とちゅう']:['','まだ'];
+     return `<button class="card${nxt&&t.id===nxt.id?' today':''}" data-open="${t.id}"><span class="cc${isFinId(t.id)?' done':''}">${CARROT}</span><b>${esc(t.title)}</b><small>${t.day?t.day+'日め・':''}${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${sx[0]}">${sx[1]}</span></button>`}).join('')}</div></div>`).join('')}
    <div class="row"><button class="btn ghost sm" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
    <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
   </div>`;
@@ -501,24 +508,28 @@ function itemHTML(t,it,n,ro){
   if(it.sub)return `<p class="q" style="font-weight:600">${rich(it.sub)}</p>`;
   const num=n?`<span class="n">${n}</span>`:'';
   const A=(ro&&t.hw)?x=>x?`<p class="ansline">こたえ：${esc(x)}</p>`:'':()=>'';
+  // Answer check: the red answer, ○ / × for her to press, and a box to write it again after a ×.
+  const sf=V(tid).self||{},mark=ro&&t.hw&&V(tid).done;
+  const R=(key,ans,h,w)=>!mark?A(ans):`<div class="rv" data-rv="${key}"><div class="rvh"><span class="ansline">こたえ：${esc(ans)}</span><span class="rvb"><button class="mk o${sf[key]===1?' sel':''}" data-sm="${key}" data-val="1" aria-label="あって いた">○</button><button class="mk x${sf[key]===0?' sel':''}" data-sm="${key}" data-val="0" aria-label="ちがって いた">×</button></span></div>
+    <div class="retry" data-rt="${key}" ${sf[key]===0?'':'hidden'}><span class="sub">もう いちど かこう</span><div class="inkbox" data-ink="${key}.r" data-h="${h}" data-rw="1" data-mini="1" style="${w?'width:'+w+'px':''}"></div></div></div>`;
   if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
     return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
       <div class="kji"><div><b>おん</b>${esc(it.on||'－')}　<b>くん</b>${esc(it.kun||'－')}　<b>かくすう</b>${esc(it.st||'')}画</div><div><b>ことば</b>${(it.ex||[]).map(e=>esc(e[0])+'（'+esc(e[1])+'）').join('　')}</div>
       ${it.tip?`<div class="ansline" style="font-size:.95rem">${esc(it.tip)}</div>`:''}<button class="btn ghost sm" data-play="1">かきじゅんを 見る</button></div></div>
       <div class="kjb">${sq('t','なぞる',1)}${sq('a','見て かく')}${sq('b','もう いちど')}</div>
-      ${it.rq?`<p class="q">よみを ひらがなで かく：<span class="tg">${esc(it.rq[0])}</span><span class="ib" data-ink="${it.id}.y" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.rq[1])}`:''}
-      ${it.wq?`<p class="q">かん字で かく：<span class="tg">${esc(it.wq[0])}</span><span class="ib" data-ink="${it.id}.w" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.wq[1])}`:''}</div>`}
+      ${it.rq?`<p class="q">よみを ひらがなで かく：<span class="tg">${esc(it.rq[0])}</span><span class="ib" data-ink="${it.id}.y" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${R(it.id+'.y',it.rq[1],bh({w:8}),bw({w:8}))}`:''}
+      ${it.wq?`<p class="q">かん字で かく：<span class="tg">${esc(it.wq[0])}</span><span class="ib" data-ink="${it.id}.w" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${R(it.id+'.w',it.wq[1],bh({w:8}),bw({w:8}))}`:''}</div>`}
   if(it.k==='fill'){let i=0;
     const body=rich(it.tpl).split('{}').map((seg,j,arr)=>{if(j===arr.length-1)return seg;const b=it.b[i],k=it.id+'.'+i;i++;
       return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
     return `<div class="item">${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
       ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${esc(it.work.label)}</span></div>`:''}
-      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}</div>`}
+      <p class="q">${it.q?'':num}${body}</p>${mark?(it.work?R(it.id+'.w',it.work.label+'：'+it.work.model,300,0):'')+it.b.map((b,j)=>R(it.id+'.'+j,b.a[0],bh(b),bw(b))).join(''):A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
-      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${A(it.a)}</div>`}
-  if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model)}</div>`;
-  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model)}</div>`;
+      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${!mark?A(it.a):v[it.id]===it.a?'<p class="ansline">○ せいかい！</p>':`<div class="rv"><p class="ansline">こたえ：${esc(it.a)}</p><div class="retry" data-rt="${it.id}"><span class="sub">もう いちど えらぼう</span><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="sub" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div></div>`}</div>`}
+  if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${it.model&&!it.scratch?R(it.id,it.model,it.h,it.cls==='s'?300:0):''}</div>`;
+  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${it.model?R(it.id,it.model,lh(it),0):''}</div>`;
   return ''}
 
 let clockTm=null,lastLocal=0;
@@ -536,23 +547,40 @@ function renderTask(){
   const t=TASK[S.task],v=V(t.id),pv=S.preview,ro=v.done||pv;
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
   <div class="wrap${t.en?' en':''}">
-   ${pv?'<p class="banner">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?'きょうの ぶんは おわりです。おつかれさまでした。赤い 字の こたえと くらべて みましょう。':'この テストは 出しました。おつかれさまでした。'}</p>`:''}
+   ${pv?'<p class="banner">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?(v.rev?'こたえあわせも おわりました。おつかれさまでした。':'こたえあわせを しましょう。赤い こたえと くらべて、あって いたら ○、ちがって いたら ×を おします。×の もんだいは、もう いちど かきます。'):'この テストは 出しました。おつかれさまでした。'}</p>`:''}
    <p class="banner red" id="timeup" hidden>じかんです。ここまでに して、下の「おわる」を おしましょう。</p>
    ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${esc(s.h)}</h3>${s.note?`<p class="note">${esc(s.note)}</p>`:''}
      ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`:''}
      <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro)).join('')}</div></section>`}).join('')}
    ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
+   ${ro&&!pv&&t.hw?'<section class="sec"><h3>こたえあわせ</h3><p class="q" id="rvMsg"></p><div class="row end"><button class="btn" id="rvDone"></button></div></section>':''}
   </div>`;
-  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink);const api=mkInk(sqHost(box),key,+box.dataset.h,ro,!!box.dataset.ruled);
-    if(!ro){const tools=document.createElement('div');tools.className='inktools';if(box.dataset.mini){const x=document.createElement('button');x.className='btn ghost';x.textContent='けす';x.onclick=()=>api.clear();box.appendChild(x);return}
+  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink);const rw=!!box.dataset.rw&&!pv&&!v.rev,api=mkInk(sqHost(box),key,+box.dataset.h,ro&&!rw,!!box.dataset.ruled,rw);if(rw&&api.onchange)api.onchange(paintReview);
+    if(!ro||rw){const tools=document.createElement('div');tools.className='inktools';if(box.dataset.mini){const x=document.createElement('button');x.className='btn ghost';x.textContent='けす';x.onclick=()=>api.clear();box.appendChild(x);return}
       tools.innerHTML='<button class="btn ghost sm" data-u>1つもどす</button><button class="btn ghost sm" data-x>ぜんぶけす</button>';box.appendChild(tools);
       tools.querySelector('[data-u]').onclick=()=>api.undo();const x=tools.querySelector('[data-x]');let armed=0;
       x.onclick=()=>{if(armed){api.clear();armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')}else{armed=1;x.textContent='ほんとうにけす';x.classList.add('red');setTimeout(()=>{armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')},3000)}}}});
   mountModels();app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const m=b.closest('.kjh').querySelector('.kjm');play(m)});
   app.querySelector('#back').onclick=()=>go(pv?'parent':'home');
   const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
-    if(await ask(`<b>${esc(t.title)}を 出しますか？</b><p class="sub">${blanks?`まだ かいて いない もんだいが ${blanks}こ あります。`:''}出した あとは、なおせません。出すと、ぴょんぴょんが にんじんを たべられます。</p>`,'出す','もどる')){const b0=stageOf(carrots());stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();S.fed={grew:stageOf(carrots())>b0};go('home')}};
+    if(await ask(`<b>${esc(t.title)}を 出しますか？</b><p class="sub">${blanks?`まだ かいて いない もんだいが ${blanks}こ あります。`:''}出した あとは、なおせません。${t.hw?'出したら、こたえあわせを します。おわると、ぴょんぴょんが にんじんを たべられます。':'出すと、ぴょんぴょんが にんじんを たべられます。'}</p>`,'出す','もどる')){const b0=stageOf(carrots());stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();if(t.hw)return go('task',t.id);S.fed={grew:stageOf(carrots())>b0};go('home')}};
+  const rd=app.querySelector('#rvDone');if(rd){paintReview();rd.onclick=()=>{if(v.rev)return go('home');const c=reviewLeft(t);
+    if(c.left>0){const sf=v.self||{},rc=v.rc||{};let el=[...app.querySelectorAll('[data-rv]')].find(r=>typeof sf[r.dataset.rv]!=='number');
+      if(!el)el=[...app.querySelectorAll('.retry[data-rt]')].find(r=>{const k=r.dataset.rt;return r.querySelector('[data-rc]')?rc[k]!==(items(t).find(i=>i.id===k)||{}).a:(sf[k]===0&&!hasInk(t.id,k+'.r'))});
+      if(el)el.scrollIntoView({block:'center',behavior:'smooth'});return}
+    const b0=stageOf(carrots());v.rev=true;touchVals(t.id);flushAll();S.fed={grew:stageOf(carrots())>b0};go('home')}}
   paintClock();if(!ro)gate()}
+// Keys she marks herself, and what is still left: unmarked answers, × answers not written again, wrong choices not picked again.
+function markKeys(t){const ks=[];items(t).forEach(it=>{if(it.scratch)return;
+  if(it.k==='fill'){it.b.forEach((_,i)=>ks.push(it.id+'.'+i));if(it.work)ks.push(it.id+'.w')}
+  else if(it.k==='kanji'){if(it.rq)ks.push(it.id+'.y');if(it.wq)ks.push(it.id+'.w')}
+  else if((it.k==='ink'||it.k==='long')&&it.model)ks.push(it.id)});return ks}
+function reviewLeft(t){const v=V(t.id),sf=v.self||{},rc=v.rc||{},ks=markKeys(t);let o=0,x=0;ks.forEach(k=>{if(sf[k]===1)o++;else if(sf[k]===0)x++});
+  const n=ks.length-o-x,u=ks.filter(k=>sf[k]===0&&!hasInk(t.id,k+'.r')).length,c=items(t).filter(it=>it.k==='choice'&&v.v[it.id]!==it.a&&rc[it.id]!==it.a).length;
+  return {o,x,n,u,c,left:n+u+c}}
+function paintReview(){const b=document.getElementById('rvDone');if(!b||S.screen!=='task')return;const t=TASK[S.task],v=V(t.id),c=reviewLeft(t);
+  b.textContent=v.rev?'ホームに もどる':c.left>0?'まだの もんだいへ すすむ（あと '+c.left+'こ）':'こたえあわせを おわる';
+  const m=document.getElementById('rvMsg');if(m)m.textContent=v.rev?'':'○ '+c.o+'こ、× '+c.x+'こ。'+(c.left>0?'ぜんぶに ○か ×を つけて、×の もんだいを もう いちど かくと、おわれます。':'ぜんぶ できました。下の ボタンを おしましょう。')}
 function wc(ta){const el=app.querySelector(`[data-wcfor="${ta.dataset.k}"]`);if(el)el.textContent=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' words'}
 function countBlank(t){const v=V(t.id).v;let n=0;items(t).forEach(it=>{if(it.scratch)return;
   if(it.k==='fill')it.b.forEach((_,i)=>{if(!hasInk(t.id,it.id+'.'+i))n++});
@@ -564,6 +592,12 @@ async function gate(){const t=TASK[S.task],v=V(t.id);if(v.done||S.running)return
   if(S.screen!=='task'||S.task!==t.id)return;if(ok)startClock();else go('home')}
 
 app.addEventListener('input',e=>{const el=e.target;if(S.screen!=='task'||!el.dataset||!el.dataset.k)return;V(S.task).v[el.dataset.k]=el.value;if(el.dataset.wc)wc(el);touchVals(S.task)});
+app.addEventListener('click',e=>{if(S.screen!=='task'||S.preview||!e.target.closest)return;const m=e.target.closest('[data-sm]'),rcb=e.target.closest('[data-rc]');if(!m&&!rcb)return;const v=V(S.task),t=TASK[S.task];if(v.rev)return;
+  if(m){v.self=v.self||{};const k=m.dataset.sm,val=+m.dataset.val;if(v.self[k]===val)delete v.self[k];else v.self[k]=val;
+    m.parentNode.querySelectorAll('.mk').forEach(x=>x.classList.toggle('sel',v.self[k]===+x.dataset.val));const rb=app.querySelector('[data-rt="'+k+'"]');if(rb){rb.hidden=v.self[k]!==0;if(!rb.hidden)inks.forEach(i=>i.draw())}}
+  if(rcb){const k=rcb.dataset.rc,it=items(t).find(x=>x.id===k);v.rc=v.rc||{};v.rc[k]=rcb.dataset.v;rcb.parentNode.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x===rcb));
+    const rs=app.querySelector('[data-rcres="'+k+'"]');if(rs)rs.textContent=it&&v.rc[k]===it.a?'○ せいかい！':'もう いちど かんがえよう'}
+  touchVals(S.task);paintReview()});
 app.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-c]');if(!b||S.screen!=='task'||b.disabled)return;const v=V(S.task).v,k=b.dataset.c;
   v[k]=v[k]===b.dataset.v?'':b.dataset.v;b.parentNode.querySelectorAll('.opt').forEach(o=>{const on=v[k]===o.dataset.v;o.classList.toggle('on',on);o.setAttribute('aria-checked',on)});touchVals(S.task)});
 
@@ -606,7 +640,7 @@ function renderParent(){
      ${t.test?`<label class="chk"><input type="checkbox" id="neat" ${g.neat===true?'checked':''}>ていねいボーナスをつける（空らんがなく、字が読みやすい）</label>`:''}</section>`:''}
    <section class="sec">
     <div class="row"><div>${t.pts?`<div class="big">${T.got}<span style="font-size:1rem"> / ${T.max}点</span></div>`:'<b>点数はつけません</b>'}
-     <p class="sub">${v.done?'提出ずみ':v.started?'とちゅう':'まだ始めていません'}・使った時間 ${mmss(v.el||0)}（${t.hw?'めやす':'制限'} ${t.min}分）${T.pend?`・<span style="color:var(--shu)">未採点 ${T.pend}問</span>`:''}</p></div></div>
+     <p class="sub">${v.done?'提出ずみ':v.started?'とちゅう':'まだ始めていません'}・使った時間 ${mmss(v.el||0)}（${t.hw?'めやす':'制限'} ${t.min}分）${T.pend?`・<span style="color:var(--shu)">未採点 ${T.pend}問</span>`:''}${t.hw&&v.done?(()=>{const c=reviewLeft(t);return '・本人の答え合わせ ○'+c.o+' ×'+c.x+(v.rev?'（終了）':'（とちゅう）')})():''}</p></div></div>
     ${t.levels?`<div class="tblw"><table><thead><tr><th>レベル</th><th class="num">得点</th><th class="num">満点</th><th>判定</th></tr></thead><tbody>${t.levels.map(([k,name])=>{const L=T.lv[k]||{got:0,max:0},vd=verdict(L.got,L.max);
        return `<tr><td>${esc(name)}</td><td class="num">${L.got}</td><td class="num">${L.max}</td><td>${!v.started?'－':T.pend?'採点がすむと出ます':`<span class="v ${vd[0]}">${vd[1]}</span>`}</td></tr>`}).join('')}</tbody></table></div>
      <p class="sub">満点の8割以上で定着、5〜8割で復習が必要、5割未満はその学年の内容から学び直しです。${T.pend?'未採点の問題を採点すると判定が確定します。':''}</p>`:''}
@@ -651,7 +685,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011113924';
+const BUILD='20261011115103';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
