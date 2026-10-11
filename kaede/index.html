@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ぴょんぴょん">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fff1f5">
+<meta name="robots" content="noindex,nofollow">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>ぴょんぴょんノート</title>
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one answer sheet per screen, a single wide column sized for an iPad held upright; a slim sticky bar carries time and save state. */
+:root{
+  --paper:#fff1f5; --sheet:#ffffff; --ink:#4a2a3a; --soft:#8a6475; --line:#f3c9d7; --ai:#c9387a; --ai-bg:#ffe1ec; --shu:#d8442b; --ok:#2f8a5f; --warn:#a86a10; --hl:#fff0a6; --dot:#ffdbe7; --carrot:#f0862a; --leaf:#4fa35a; --gold:#f4b93a; --rb:#ffffff; --rb-line:#c79fb0; --rb-pink:#ff9fc0; --rb-eye:#3b2530;
+  --f-q:"Klee One","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-ui:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-en:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#1f141a; --sheet:#2b1c24; --ink:#f7e7ed; --soft:#c59fae; --line:#553846; --ai:#ff8fb8; --ai-bg:#4a2437; --shu:#ff8a70; --ok:#6fd0a0; --warn:#e8b65e; --hl:#514a1c; --dot:#2a1b23; --carrot:#ff9a44; --leaf:#6cc27a; --gold:#f4b93a; --rb:#f8f1f4; --rb-line:#8a6677; --rb-pink:#ff9fc0; --rb-eye:#3b2530; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --paper:#1f141a; --sheet:#2b1c24; --ink:#f7e7ed; --soft:#c59fae; --line:#553846; --ai:#ff8fb8; --ai-bg:#4a2437; --shu:#ff8a70; --ok:#6fd0a0; --warn:#e8b65e; --hl:#514a1c; --dot:#2a1b23; --carrot:#ff9a44; --leaf:#6cc27a; --gold:#f4b93a; --rb:#f8f1f4; --rb-line:#8a6677; --rb-pink:#ff9fc0; --rb-eye:#3b2530; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:18px;line-height:1.7;-webkit-text-size-adjust:100%}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--ai);outline-offset:2px}
+.wrap{max-width:860px;margin:0 auto;padding-inline:20px;padding-block:20px 80px;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.35}
+h1{font-size:1.7rem}
+.sub{color:var(--soft);font-size:.95rem;margin:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:1px solid var(--line)}
+.bar-in{max-width:860px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.bar-t{font-weight:700;flex:1;min-width:0}
+.clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:1.25rem;padding:2px 12px;border:2px solid var(--ink);border-radius:999px}
+.clock.over{color:var(--shu);border-color:var(--shu)}
+.save{font-size:.8rem;color:var(--soft)}
+.save.bad{color:var(--warn)}
+.btn{border:2px solid var(--ai);background:var(--ai);color:var(--sheet);border-radius:12px;padding:10px 20px;font-weight:700;min-height:48px}
+.btn.ghost{background:transparent;color:var(--ai)}
+.btn.sm{padding:4px 12px;min-height:38px;font-size:.9rem;border-radius:10px}
+.btn.red{border-color:var(--shu);background:transparent;color:var(--shu)}
+.grp{display:flex;flex-direction:column;gap:12px}
+.grp h2{font-size:1.1rem;color:var(--soft)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:120px}
+.card b{font-size:1.35rem}
+.card small{color:var(--soft)}
+.st{align-self:flex-start;margin-top:auto;font-size:.85rem;font-weight:700;border-radius:999px;padding:1px 12px;border:1.5px solid var(--line);color:var(--soft)}
+.st.go{border-color:var(--ai);color:var(--ai)}
+.st.done{border-color:var(--ok);color:var(--ok)}
+.sec{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.sec>h3{font-size:1.15rem;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.note{margin:0;color:var(--soft);font-size:.95rem}
+.passage{font-family:var(--f-q);font-size:1.15rem;line-height:2;border-left:4px solid var(--line);padding-left:14px;display:flex;flex-direction:column;gap:.6em}
+.passage p{margin:0}
+.en .passage,.en .q,.en .opt{font-family:var(--f-en)}
+.en .passage{line-height:1.75;font-size:1.1rem}
+.item{display:flex;flex-direction:column;gap:8px}
+.item+.item{border-top:1px dashed var(--line);padding-top:16px}
+.q{font-family:var(--f-q);font-size:1.25rem;line-height:2;margin:0}
+.q .n{font-family:var(--f-ui);font-weight:700;color:var(--ai);margin-right:.5em;font-size:1rem}
+.tg{background:var(--hl);padding:0 .15em;border-bottom:2px solid var(--ink);font-weight:600}
+.blank{font-family:var(--f-q);font-size:1.2rem;border:0;border-bottom:2px solid var(--ink);background:var(--ai-bg);border-radius:6px 6px 0 0;padding:2px 8px;margin:0 4px;min-height:44px;text-align:center;max-width:100%}
+.blank:disabled,.long:disabled{opacity:1;background:transparent;-webkit-text-fill-color:var(--ink)}
+.long{font-family:var(--f-q);font-size:1.15rem;line-height:1.9;width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--sheet);padding:10px 12px;resize:vertical}
+.en .long{font-family:var(--f-en)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.opts.wide{grid-template-columns:1fr}
+.opt{font-family:var(--f-q);text-align:left;border:1.5px solid var(--line);background:var(--sheet);border-radius:10px;padding:8px 12px;min-height:48px;display:flex;gap:10px;align-items:baseline}
+.opt i{font-style:normal;font-family:var(--f-ui);font-weight:700;color:var(--soft)}
+.opt.on{border-color:var(--ai);background:var(--ai-bg);box-shadow:inset 0 0 0 1px var(--ai)}
+.opt.on i{color:var(--ai)}
+.opt:disabled{cursor:default}
+.inkbox{display:flex;flex-direction:column;gap:4px;max-width:100%}
+.inkbox.s{width:300px}
+.item>.inkbox:not(.s){margin-right:48px}
+canvas.ink.ro{touch-action:auto}
+canvas.ink{display:block;width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--sheet);touch-action:none;user-select:none;-webkit-user-select:none}
+canvas.ink.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0 63px,var(--line) 63px 64px)}
+.inktools{display:flex;gap:8px;justify-content:flex-end}
+.ib{display:inline-flex;flex-direction:column;gap:2px;vertical-align:middle;margin:4px 6px;max-width:100%}
+.ib canvas.ink{border-color:var(--ink);border-width:0 0 2px;border-radius:6px 6px 0 0;background:var(--ai-bg)}
+.ib .btn{align-self:flex-end;min-height:32px;padding:0 10px;font-size:.8rem;border-width:1.5px}
+.mk.o.sel{background:var(--shu);color:var(--sheet)}
+.mk.x.sel{background:var(--soft);border-color:var(--soft);color:var(--sheet)}
+.kj{gap:12px}
+.kjh{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.kjm{width:140px;height:140px;border:2px solid var(--ink);border-radius:10px;position:relative;display:grid;place-items:center;flex:none;background:var(--sheet)}
+.kjf{font-family:var(--f-q);font-size:96px;line-height:1}
+.kji{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 220px;font-family:var(--f-q);font-size:1.1rem}
+.kji b{font-family:var(--f-ui);font-size:.8rem;color:var(--sheet);background:var(--soft);border-radius:4px;padding:0 6px;margin-right:4px}
+.kji .btn{align-self:flex-start}
+.kjb{display:flex;gap:14px;flex-wrap:wrap}
+.inkbox.sq{width:150px}
+.g .inkbox.sq{width:96px}
+.inkbox.sq>.btn{align-self:flex-end;min-height:32px;padding:0 10px;font-size:.8rem;border-width:1.5px}
+.sqw{position:relative;width:100%;aspect-ratio:1;border:1.5px solid var(--line);border-radius:10px;background:var(--sheet);overflow:hidden}
+.sqw canvas.ink{position:relative;border:0;background:transparent;height:100%}
+.kv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.kv path{fill:none;stroke:var(--ink);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.kv.bg path{stroke:var(--line);stroke-width:5.5}
+.kv line{stroke:var(--line);stroke-width:.6;stroke-dasharray:2 2}
+.kv text{font-size:7.5px;fill:var(--shu);font-family:var(--f-ui);font-weight:700}
+.ansline{color:var(--shu);font-family:var(--f-q);margin:0}
+.ptline{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;margin:0}
+.ptline b{font-size:1.5rem;font-variant-numeric:tabular-nums}
+.card.lock{opacity:.55;border-style:dashed}
+.card.today{border-color:var(--ai);box-shadow:inset 0 0 0 1.5px var(--ai)}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.kgrid .item+.item{border-top:0;padding-top:0}
+.wc{font-size:.85rem;color:var(--soft);text-align:right}
+.banner{background:var(--ai-bg);border-radius:12px;padding:12px 16px;margin:0}
+.banner.red{background:transparent;border:2px solid var(--shu);color:var(--shu);font-weight:700}
+.ov{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);display:flex;align-items:center;justify-content:center;padding:20px}
+.dlg{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:480px;width:100%;display:flex;flex-direction:column;gap:14px}
+.dlg ul{margin:0;padding-left:1.2em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.end{justify-content:flex-end}
+/* parent */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:1.5px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 18px;font-weight:700;min-height:44px}
+.tab.on{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.tblw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.big{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.v{font-weight:700}.v.a{color:var(--ok)}.v.b{color:var(--warn)}.v.c{color:var(--shu)}
+.g{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;padding:12px 0;border-top:1px solid var(--line)}
+.g .gq{font-family:var(--f-q);grid-column:1/-1;color:var(--soft);font-size:.95rem}
+.g .ga{min-width:0;display:flex;flex-direction:column;gap:4px}
+.g .ans{font-family:var(--f-q);font-size:1.1rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.g .model{color:var(--shu);font-family:var(--f-q);font-size:.95rem}
+.g .gm{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+.mk{font-weight:700;font-size:1.3rem;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:transparent;line-height:1}
+.mk.o{color:var(--shu);border-color:var(--shu)}
+.mk.x{color:var(--soft)}
+.pt{min-width:44px;height:44px;border-radius:10px;border:1.5px solid var(--line);background:transparent;font-weight:700}
+.pt.on{background:var(--shu);border-color:var(--shu);color:var(--sheet)}
+.g .inkbox{width:min(100%,420px)}
+.g .inkbox.s{width:220px}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:.9rem;color:var(--soft)}
+.chk input{width:22px;height:22px}
+
+/* cute layer: rounder shapes, dotted paper, rabbit and carrots */
+body{background-image:radial-gradient(var(--dot) 2.2px,transparent 2.8px);background-size:30px 30px}
+h1{color:var(--ai)}
+.card,.sec{border-radius:22px}.card{position:relative;border-width:2px;padding-right:44px}
+.btn,.btn.sm{border-radius:999px}
+.cc{position:absolute;top:12px;right:14px}
+.crt{width:22px;height:31px;flex:none;display:block}
+.bd{fill:var(--carrot)}.lf{fill:none;stroke:var(--leaf);stroke-width:2.4;stroke-linecap:round}
+.done>.crt .bd{opacity:.16}.done>.crt .lf{opacity:.45}
+.pyon{background:var(--sheet);border:2px solid var(--line);border-radius:28px;padding:18px;display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap}
+.pyon-pic{flex:0 0 190px;max-width:100%;aspect-ratio:1;border-radius:50%;background:var(--ai-bg);display:flex;align-items:flex-end;justify-content:center;padding:16px 16px 12px;overflow:hidden}
+.pyon-tx{flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.pyon-name{margin:0;font-size:1.5rem;font-weight:700;display:flex;gap:10px;align-items:center;flex-wrap:wrap;line-height:1.3}
+.pyon-name .st{margin:0;align-self:center}
+.pyon-say{margin:0;background:var(--ai-bg);border-radius:16px;padding:8px 14px;font-weight:700;color:var(--ai)}
+.meter{height:12px;border-radius:999px;background:var(--ai-bg);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ai);border-radius:999px}
+.track{display:flex;gap:6px;flex-wrap:wrap}
+.note{color:var(--ink);font-family:var(--f-q);font-size:1.05rem;line-height:1.8;background:var(--ai-bg);border-radius:14px;padding:8px 14px}
+.rb{display:block;height:auto;flex:none;max-width:100%}
+.rb-w *{fill:var(--rb);stroke:var(--rb-line);stroke-width:2.5}
+.rb-p *{fill:var(--rb-pink)}.rb-e *{fill:var(--rb-eye)}.rb-h{fill:var(--rb)}
+.rb-m{fill:none;stroke:var(--rb-eye);stroke-width:2.2;stroke-linecap:round}
+.rb-r *{fill:var(--ai)}.rb-f circle{fill:var(--gold)}.rb-f .ct{fill:var(--carrot)}
+.rb-c{fill:var(--gold);stroke:var(--rb-line);stroke-width:2;stroke-linejoin:round}
+@media (prefers-reduced-motion:no-preference){
+ .fed .rb{animation:hop .6s ease-in-out 3}.fed .rb-crt{animation:nib .3s linear 8}
+ @keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+ @keyframes nib{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}} }
+@media print{.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
+@media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
+@media (prefers-reduced-motion:no-preference){ .opt,.btn,.tab{transition:background .12s,border-color .12s} }
+</style>
+
+<div id="app"></div>
+<div id="modal"></div>
+
+<script>
+"use strict";
+/* ---------- content ---------- */
+const yomi=(n,t,a,lv)=>({k:'fill',id:'y'+n,tpl:t+'　{}',b:[{a:[a],w:8}],pts:1,lv});
+const kaki=(n,t,m,lv)=>({k:'ink',id:'w'+n,q:t,h:460,cls:'s',model:m,pts:1,lv});
+const calc=(n,t,a,lv)=>({k:'fill',id:'c'+n,tpl:t+' {}',b:[{a:[a],t:'num',w:6}],pts:1,lv});
+const mc=(id,q,opts,a,pts,lv)=>({k:'choice',id,q,opts,a,pts,lv});
+const SCR=(id)=>({k:'ink',id,q:'計算スペース（とちゅうの式や筆算を書いてよい）',h:480,pts:0,scratch:true});
+
+const TASKS=[
+{id:'t1',group:'実力テスト',set:1,title:'こくご',min:10,pts:20,
+ levels:[['L1','小1'],['L2','小2']],
+ sections:[
+ {h:'一　いろの ついた かん字の よみを、ひらがなで かきましょう。（1もん1点）',items:[
+  yomi(1,'【山】に のぼる。','やま','L1'),yomi(2,'【先生】と はなす。','せんせい','L1'),yomi(3,'【朝】ごはんを たべる。','あさ','L2'),
+  yomi(4,'【公園】で あそぶ。','こうえん','L2'),yomi(5,'【歌】を うたう。','うた','L2'),yomi(6,'【友】だちと あそぶ。','とも','L2')]},
+ {h:'二　いろの ついた ひらがなを、かん字で かきましょう。（1もん1点）',note:'わくの 中に、ペンか ゆびで かきます。',grid:true,items:[
+  kaki(1,'【て】を あらう。','手','L1'),kaki(2,'【がっこう】へ いく。','学校','L1'),kaki(3,'【かお】を あらう。','顔','L2'),
+  kaki(4,'【とり】が なく。','鳥','L2'),kaki(5,'【ふゆ】は さむい。','冬','L2'),kaki(6,'本を 【よ】む。','読','L2')]},
+ {h:'三　ことばの もんだい（1つ1点）',items:[
+  {sub:'問1　□に あう ひらがなを 1字ずつ かきましょう。'},
+  {k:'fill',id:'p1',tpl:'わたし{}まいあさ、がっこう{}いきます。',b:[{a:['は'],w:2},{a:['へ','に'],w:2}],pts:1,each:true,lv:'L1'},
+  {sub:'問2　カタカナに なおして、わくの 中に かきましょう。'},
+  {k:'ink',id:'p2',q:'じゅーす',h:330,cls:'s',model:'ジュース',pts:1,lv:'L1'},
+  {sub:'問3　はんたいの いみの ことばを かきましょう。'},
+  {k:'fill',id:'p3',tpl:'あつい　⇔　{}',b:[{a:['さむい','つめたい','うすい'],w:8}],pts:1,lv:'L2'}]},
+ {h:'四　つぎの おはなしを よんで、こたえましょう。（1もん2点）',passage:[
+  'あきの 日、りすの ミミは、森で どんぐりを あつめて いました。ふゆの あいだは、たべる ものが なくなるからです。',
+  'ミミは、ひろった どんぐりを、木の ねもとの あなに かくしました。ところが、つぎの 日、あなを 見ると、どんぐりが 三つ へって いました。',
+  '「だれが とったのかな。」ミミが かなしく なって いると、木の うしろから 小さな ねずみが 出て きました。「ごめんなさい。おなかが すいて、たべて しまったの。」',
+  'ミミは すこし かんがえてから、にっこり わらって いいました。「じゃあ、あしたから いっしょに あつめよう。ふたりなら、たくさん あつまるよ。」'],
+  items:[
+  {k:'long',id:'r1',q:'問1　ミミが どんぐりを あつめるのは、なぜですか。',rows:2,model:'ふゆの あいだは、たべる ものが なくなるから。',rubric:'「ふゆ」「たべものがなくなる」の両方で2点、片方で1点。文末が「〜から」でなくても減点しない',pts:2,lv:'L2'},
+  {k:'choice',id:'r2',q:'問2　さいごに、ミミは どう おもいましたか。',opts:['ねずみに おこって いる','どんぐりが へって かなしい','ねずみと なかよく しよう'],lab:'アイウ',a:'ウ',pts:2,lv:'L2'}]}
+ ]},
+{id:'t2',group:'実力テスト',set:1,title:'さんすう',min:10,pts:20,sansu:true,
+ levels:[['L1','小1'],['L2','小2']],
+ sections:[
+ {h:'一　けいさんを しましょう。（1もん1点）',items:[
+  calc(1,'7 ＋ 8 ＝','15','L1'),calc(2,'13 － 6 ＝','7','L1'),calc(3,'30 ＋ 40 ＝','70','L1'),
+  calc(4,'38 ＋ 45 ＝','83','L2'),calc(5,'72 － 28 ＝','44','L2'),calc(6,'6 × 7 ＝','42','L2'),
+  calc(7,'8 × 9 ＝','72','L2'),calc(8,'132 － 58 ＝','74','L2'),
+  {k:'ink',id:'sc1',q:'けいさんスペース（ひっさんを かいて よい）',h:420,pts:0,scratch:true}]},
+ {h:'二　□に あてはまる かずを かきましょう。（1もん2点）',items:[
+  {k:'fill',id:'u1',tpl:'100が 3こ、10が 5こ、1が 2こで{}',b:[{a:['352'],t:'num',w:6}],pts:2,lv:'L2'},
+  {k:'fill',id:'u2',tpl:'1 m 20 cm ＝{}cm',b:[{a:['120'],t:'num',w:6}],pts:2,lv:'L2'},
+  {k:'fill',id:'u3',tpl:'ごぜん 8時30分の 40分あとは、ごぜん{}時{}分',b:[{a:['9'],t:'num',w:3},{a:['10'],t:'num',w:3}],pts:2,lv:'L2'}]},
+ {h:'三　文しょうだい。しきも かきましょう。（1もん3点：しき1点、こたえ2点）',items:[
+  {k:'fill',id:'m1',q:'いろがみが 52まい あります。27まい つかいました。のこりは なんまいですか。',tpl:'こたえ{}まい',b:[{a:['25'],t:'num',w:6}],pts:2,work:{label:'しき',model:'52 － 27 ＝ 25',pts:1},lv:'L2'},
+  {k:'fill',id:'m2',q:'みかんが、1さらに 4こずつ のって います。6さらでは、みかんは ぜんぶで なんこですか。',tpl:'こたえ{}こ',b:[{a:['24'],t:'num',w:6}],pts:2,work:{label:'しき',model:'4 × 6 ＝ 24',pts:1},lv:'L2'}]}
+ ]},
+{id:'t3',group:'実力テスト',set:1,title:'えいご English',min:10,pts:20,en:true,
+ levels:[['E1','英検4級の目安'],['E2','英検3級の目安']],
+ sections:[
+ {h:'Part 1　Vocabulary (1 point each)',note:'Choose the best word to complete each sentence.',items:[
+  mc('v1','It is very cold today. Please ______ the window.',['open','close','draw','break'],'B',1,'E1'),
+  mc('v2','My father ______ breakfast for us every Sunday.',['plays','rides','makes','reads'],'C',1,'E1'),
+  mc('v3','We went to the ______ to borrow some books.',['hospital','station','bakery','library'],'D',1,'E1'),
+  mc('v4','Hurry up! We will be ______ for school.',['late','early','ready','busy'],'A',1,'E1'),
+  mc('v5','My uncle is a ______ singer. Many people know his songs.',['careful','famous','quiet','hungry'],'B',1,'E2'),
+  mc('v6','Kate ______ all her friends to her birthday party.',['invited','borrowed','climbed','guessed'],'A',1,'E2')]},
+ {h:'Part 2　Grammar (1 point each)',note:'Choose the best answer.',items:[
+  mc('g1','Look! My sister ______ TV now.',['watch','watched','is watching','watches'],'C',1,'E1'),
+  mc('g2','We ______ to the beach last summer.',['go','goes','going','went'],'D',1,'E1'),
+  mc('g3','This bag is ______ than mine.',['big','bigger','biggest','more big'],'B',1,'E1'),
+  mc('g4','I want ______ a doctor in the future.',['to be','be','being','am'],'A',1,'E1'),
+  mc('g5','I have ______ this movie three times.',['see','saw','seen','seeing'],'C',1,'E2'),
+  mc('g6','This temple ______ about 500 years ago.',['built','was built','is building','has built'],'B',1,'E2')]},
+ {h:'Part 3　Reading (2 points each)',passage:[
+  "Last Saturday, Emma went to the zoo with her grandfather. Emma wanted to see the pandas first, but many people were waiting. So they went to see the penguins. A zookeeper was giving them fish, and Emma helped him.",
+  'After lunch, they went back to the pandas. They waited for only ten minutes. Emma took a lot of pictures.',
+  'Before they went home, her grandfather bought a panda notebook for her. Emma was very happy.'],items:[
+  mc('a1','Who went to the zoo with Emma?',['Her grandfather','Her teacher','A zookeeper','Her best friend'],'A',2,'E1'),
+  mc('a2','Why did they see the penguins first?',['Emma likes penguins best.','Many people were waiting to see the pandas.','The pandas were sleeping.','The penguins were near the gate.'],'B',2,'E1'),
+  mc('a3','What did Emma do with the zookeeper?',['She took pictures.','She ate lunch.','She washed the penguins.','She gave fish to the penguins.'],'D',2,'E1'),
+  mc('a4','What did her grandfather buy for Emma?',['A panda toy','Some fish','A notebook','A picture book'],'C',2,'E1')]}
+ ]}
+];
+const TASK={},WEEKS=[],BASE=TASKS.length;
+function setWeeks(list){TASKS.length=BASE;WEEKS.length=0;
+  (list||[]).filter(w=>w&&w.id&&Array.isArray(w.days)).sort((a,b)=>a.id<b.id?1:-1).forEach(w=>{w=JSON.parse(JSON.stringify(w));WEEKS.push(w);w._d=[];
+    w.days.forEach((d,i)=>{const id='w'+w.id+'-'+(i+1);w._d.push(id);TASKS.push({id,group:w.label,title:d.wd+'ようび',date:d.d,min:d.min||20,pts:0,hw:true,sections:d.sections||[]})});
+    if(w.test){w._t='w'+w.id+'-t';TASKS.push({id:w._t,group:w.label,title:'どようテスト',date:w.test.d,min:w.test.min||20,pts:0,test:true,sections:w.test.sections||[]})}});
+  for(const k in TASK)delete TASK[k];TASKS.forEach(t=>TASK[t.id]=t);
+  TASKS.slice(BASE).forEach(t=>{if(t.test)t.pts=items(t).reduce((n,it)=>n+(it.k==='fill'?(it.each?it.pts*it.b.length:it.pts)+(it.work?it.work.pts:0):(it.pts||0)),0)})}
+const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
+
+/* ---------- state ---------- */
+const S={vals:{},grades:{},ink:{},screen:'home',task:null,ptab:TASKS[0].id,running:false,parentOK:false};
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+(function loadLocal(){
+  setWeeks(LS.get('gk2.weeks'));
+  const d=LS.get('gk2');if(d){S.vals=d.vals||{};S.grades=d.grades||{}}
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('gk2.ink.')){const v=LS.get(k);if(v)S.ink[k.slice(8)]=v}}}catch(e){}
+  const r=LS.get('gk2.route');if(r&&r.task&&TASK[r.task]){S.screen='task';S.task=r.task}
+})();
+const V=t=>S.vals[t]||(S.vals[t]={v:{},el:0,started:false,done:false,t:0});
+const G=t=>S.grades[t]||(S.grades[t]={m:{},o:{},read:{},t:0});
+const ikey=(t,id)=>t+'__'+id;
+const saveLocal=()=>LS.set('gk2',{vals:S.vals,grades:S.grades});
+
+/* ---------- sync (private GitHub repository) ---------- */
+const REPO='https://api.github.com/repos/RyoNagamatsu/gakushu-data',GH=REPO+'/contents/kaede/';
+let token=LS.get('gk2.token')||LS.get('gk1.token')||'',saveErr=false,syncing=false,syncTm=null,hashDone=false;
+const dirty=LS.get('gk2.dirty')||{},shas=LS.get('gk2.shas')||{};
+const hdr=x=>Object.assign({Authorization:'Bearer '+token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},x||{});
+const b64=s=>{const u=new TextEncoder().encode(s);let o='';for(let i=0;i<u.length;i+=0x8000)o+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(o)};
+function mark(path,now){dirty[path]=1;LS.set('gk2.dirty',dirty);clearTimeout(syncTm);syncTm=setTimeout(sync,now?200:6000);status()}
+function bodyFor(path){const p=path.split('/'),tid=p[1].replace(/\.json$/,'');
+  if(p[0]==='grades')return S.grades[tid]||null;
+  const v=S.vals[tid];if(!v)return null;const ink={};let t=v.t||0;
+  Object.keys(S.ink).forEach(k=>{if(k.startsWith(tid+'__')){ink[k]=S.ink[k];t=Math.max(t,S.ink[k].t||0)}});return {t,vals:v,ink}}
+// Merge one remote file into local state. Nothing is ever dropped: ink is merged box by box, and a finished task is not replaced by an unfinished copy unless a parent reopened it.
+function newerVals(a,b){if(!b)return false;if(!a)return true;if(!!a.done!==!!b.done){const d=a.done?a:b,u=a.done?b:a;return ((u.unlockedAt||0)>(d.doneAt||0))?u===b:d===b}return (b.t||0)>(a.t||0)}
+function mergeRemote(path,x){const p=path.split('/'),tid=p[1].replace(/\.json$/,'');let ch=false;if(!x)return ch;
+  if(p[0]==='grades'){if((x.t||0)>((S.grades[tid]||{}).t||0)){x.m=x.m||{};x.o=x.o||{};x.read=x.read||{};S.grades[tid]=x;ch=true}return ch}
+  if(x.vals&&newerVals(S.vals[tid],x.vals)){x.vals.v=x.vals.v||{};S.vals[tid]=x.vals;ch=true}
+  Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]={s:i.s,t:i.t};LS.set('gk2.ink.'+k,S.ink[k]);ch=true}});
+  if(ch)saveLocal();return ch}
+async function getRemote(path){const g=await fetch(GH+path+'?t='+Date.now(),{headers:hdr(),cache:'no-store'});if(g.status===404)return null;if(!g.ok)throw new Error('get '+g.status);const j=await g.json();shas[path]=j.sha;
+  let txt=j.content?new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\s/g,'')),c=>c.charCodeAt(0))):null;
+  if(txt===null){const r=await fetch(GH+path,{headers:hdr({Accept:'application/vnd.github.raw+json'}),cache:'no-store'});if(!r.ok)throw new Error('raw '+r.status);txt=await r.text()}
+  return JSON.parse(txt)}
+async function put(path){try{mergeRemote(path,await getRemote(path))}catch(e){return false}
+  const data=bodyFor(path);if(!data)return true;
+  const send=()=>fetch(GH+path,{method:'PUT',headers:hdr(),body:JSON.stringify({message:'save kaede/'+path,content:b64(JSON.stringify(data)),sha:shas[path]||undefined})});
+  let r=await send();
+  if(r.status===409||r.status===422){const g=await fetch(GH+path,{headers:hdr(),cache:'no-store'});if(g.ok){shas[path]=(await g.json()).sha;r=await send()}}
+  if(!r.ok)return false;shas[path]=(await r.json()).content.sha;LS.set('gk2.shas',shas);return true}
+async function sync(){if(!token||syncing)return;syncing=true;status();
+  try{for(const path of Object.keys(dirty)){delete dirty[path];let ok=false;try{ok=await put(path)}catch(e){}if(!ok){dirty[path]=1;saveErr=true;break}saveErr=false}}
+  finally{syncing=false;LS.set('gk2.dirty',dirty);status()}
+  if(Object.keys(dirty).length){clearTimeout(syncTm);syncTm=setTimeout(sync,saveErr?30000:500)}}
+function flushAll(){clearTimeout(syncTm);sync()}
+function touchVals(t){const v=V(t);v.t=Date.now();saveLocal();mark('data/'+t+'.json')}
+function touchGrades(t){const g=G(t);g.t=Date.now();saveLocal();mark('grades/'+t+'.json')}
+function touchInk(key){const r=S.ink[key];r.t=Date.now();LS.set('gk2.ink.'+key,r);mark('data/'+key.split('__')[0]+'.json')}
+function status(){const el=document.getElementById('save');if(!el)return;
+  el.className='save'+(token&&saveErr?' bad':'');
+  el.textContent=!token?'このiPadに保存ずみ':saveErr?'送信できていません':(syncing||Object.keys(dirty).length)?'保存中…':'保存ずみ'}
+async function loadWeeks(){try{const r=await fetch('weeks/index.json',{cache:'no-store'});if(!r.ok)return false;const ids=(await r.json()).slice(-8);
+    const list=(await Promise.all(ids.map(id=>fetch('weeks/'+id+'.json',{cache:'no-store'}).then(x=>x.ok?x.json():null).catch(()=>null)))).filter(Boolean);
+    if(list.length&&JSON.stringify(list)!==JSON.stringify(LS.get('gk2.weeks')||[])){LS.set('gk2.weeks',list);if(!S.running){setWeeks(list);return true}}}catch(e){}
+  return false}
+async function pull(){let ch=await loadWeeks();if(!token)return ch;
+  try{for(const dir of ['data','grades']){const r=await fetch(GH+dir,{headers:hdr(),cache:'no-store'});if(r.status===404)continue;if(!r.ok){saveErr=true;continue}
+      for(const f of await r.json()){const path=dir+'/'+f.name,tid=f.name.replace(/\.json$/,'');if(shas[path]===f.sha)continue;
+        const g=await fetch(GH+path,{headers:hdr({Accept:'application/vnd.github.raw+json'}),cache:'no-store'});if(!g.ok)continue;const x=await g.json();shas[path]=f.sha;
+        if(mergeRemote(path,x))ch=true}}
+    LS.set('gk2.shas',shas);if(ch)saveLocal()}catch(e){}
+  return ch}
+function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.find(x=>x.date===today&&!(S.vals[x.id]||{}).done);if(t){hashDone=true;go('task',t.id)}}
+(async function connect(){const ch=await pull();if(ch&&!S.running)render();status();openToday();sync()})();
+async function setToken(v){token=v;LS.set('gk2.token',v);if(!v)return '未設定';
+  try{const r=await fetch(REPO,{headers:hdr(),cache:'no-store'});if(!r.ok){saveErr=true;return 'つながりません。鍵を確認してください（'+r.status+'）'}}catch(e){saveErr=true;return 'つながりません。通信を確認してください'}
+  saveErr=false;await pull();Object.keys(S.vals).forEach(t=>{if(S.vals[t].t&&!shas['data/'+t+'.json'])mark('data/'+t+'.json',true)});Object.keys(S.grades).forEach(t=>{if(S.grades[t].t&&!shas['grades/'+t+'.json'])mark('grades/'+t+'.json',true)});return 'つながりました'}
+
+/* ---------- grading ---------- */
+function norm(s,t){s=String(s==null?'':s).normalize('NFKC').replace(/\s/g,'');
+  if(t==='num'){s=s.replace(/(\d+)分の(\d+)/,'$2/$1').replace(/[^0-9./]/g,'');if(/^(\d+\.?\d*|\.\d+)$/.test(s))s=String(parseFloat(s));return s}
+  return s.replace(/[。、．，.,・「」]/g,'').toLowerCase()}
+function blankOK(t,it,i){return G(t).o[it.id+'.'+i]===true}
+const bw=b=>Math.max(64,(b.w||6)*26),bh=b=>Math.round(72000/bw(b)),lh=it=>(it.rows||3)*90+30;
+const hasInk=(t,id)=>!!(S.ink[ikey(t,id)]&&S.ink[ikey(t,id)].s.length);
+function score(t,it){const g=G(t),v=V(t).v;let got=0,max=0,pend=0;
+  const man=(key,pts,empty)=>{max+=pts;if(typeof g.m[key]==='number')got+=g.m[key];else if(!empty&&pts>0)pend++};
+  if(it.k==='fill'){const oks=it.b.map((_,i)=>blankOK(t,it,i));
+    if(it.each){max+=it.pts*it.b.length;got+=it.pts*oks.filter(Boolean).length}else{max+=it.pts;if(oks.every(Boolean))got+=it.pts}
+    it.b.forEach((_,i)=>{const k=it.id+'.'+i;if(hasInk(t,k)&&typeof g.o[k]!=='boolean')pend++});
+    if(it.work)man(it.id+'.w',it.work.pts,!hasInk(t,it.id+'.w'))}
+  else if(it.k==='choice'){max+=it.pts;if(v[it.id]===it.a)got+=it.pts}
+  else if(it.k==='ink')man(it.id,it.pts,!hasInk(t,it.id));
+  else if(it.k==='long')man(it.id,it.pts,!hasInk(t,it.id));
+  return {got,max,pend}}
+const ymd=ms=>{const d=new Date(ms);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const md=s=>{const a=String(s||'').split('-');return a.length===3?(+a[1])+'/'+(+a[2]):''};
+function weekPts(w){let hw=0,full=0;const rows=[];w._d.forEach((id,i)=>{const v=S.vals[id]||{};let p=0;if(v.done)p=(v.doneAt&&ymd(v.doneAt)<=w.days[i].d)?10:5;if(p===10)full++;hw+=p;rows.push(p)});
+  const bonus=full===w._d.length&&full>0?10:0;let test=0,neat=0,prov=false;
+  if(w._t){const v=S.vals[w._t]||{};if(v.done){const T=total(w._t);if(T.pend||!T.max){test=10;prov=T.pend>0}else{const r=T.got/T.max;test=r>=0.8?30:r>=0.6?20:10}if((S.grades[w._t]||{}).neat===true)neat=10}}
+  return {rows,hw,bonus,test,neat,prov,sum:hw+bonus+test+neat}}
+function total(t){const r={got:0,max:0,pend:0,lv:{}};items(TASK[t]).forEach(it=>{const s=score(t,it);r.got+=s.got;r.max+=s.max;r.pend+=s.pend;
+  if(it.lv){const L=r.lv[it.lv]||(r.lv[it.lv]={got:0,max:0});L.got+=s.got;L.max+=s.max}});return r}
+
+/* ---------- helpers ---------- */
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rich=s=>esc(s).replace(/【(.+?)】/g,'<span class="tg">$1</span>').replace(/\n/g,'<br>');
+const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const app=document.getElementById('app'),modal=document.getElementById('modal');
+function ask(html,yes,no){return new Promise(res=>{
+  modal.innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true">${html}<div class="row end">${no?`<button class="btn ghost" id="mno">${esc(no)}</button>`:''}<button class="btn" id="myes">${esc(yes)}</button></div></div></div>`;
+  const done=v=>{modal.innerHTML='';res(v)};
+  modal.querySelector('#myes').onclick=()=>done(true);const n=modal.querySelector('#mno');if(n)n.onclick=()=>done(false)})}
+
+/* ---------- handwriting ---------- */
+let penSeen=false;const inks=[];
+function mkInk(host,key,lh,ro,ruled){
+  const c=document.createElement('canvas');c.className='ink'+(ruled?' ruled':'')+(ro?' ro':'');c.style.aspectRatio='1000/'+lh;c.setAttribute('aria-label','手書きのわく');host.appendChild(c);
+  const strokes=()=>((S.ink[key]||{}).s||[]);
+  let cur=null,drawer=null;
+  function draw(){const w=c.clientWidth;if(!w)return;const dpr=window.devicePixelRatio||1;const W=Math.round(w*dpr),H=Math.round(w*lh/1000*dpr);
+    if(c.width!==W||c.height!==H){c.width=W;c.height=H}
+    const x=c.getContext('2d'),k=W/1000;x.clearRect(0,0,W,H);x.lineCap='round';x.lineJoin='round';x.lineWidth=Math.max(1.6,2.4*dpr*(ro?0.8:1));
+    const col=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#1b2742';x.strokeStyle=col;x.fillStyle=col;
+    const all=strokes().map(s=>s.split(',').map(Number));if(cur)all.push(cur);
+    all.forEach(p=>{if(p.length<4){x.beginPath();x.arc(p[0]*k,p[1]*k,x.lineWidth*0.7,0,7);x.fill();return}
+      x.beginPath();x.moveTo(p[0]*k,p[1]*k);for(let i=2;i<p.length;i+=2)x.lineTo(p[i]*k,p[i+1]*k);x.stroke()})}
+  const pt=e=>{const r=c.getBoundingClientRect();return [Math.round((e.clientX-r.left)/r.width*1000),Math.round((e.clientY-r.top)/r.width*1000)]};
+  if(!ro){
+    c.addEventListener('pointerdown',e=>{if(V(S.task).done)return;if(e.pointerType==='pen')penSeen=true;if(penSeen&&e.pointerType==='touch')return;
+      e.preventDefault();try{c.setPointerCapture(e.pointerId)}catch(_){}drawer=e.pointerId;cur=pt(e);draw()});
+    c.addEventListener('pointermove',e=>{if(!cur||e.pointerId!==drawer)return;e.preventDefault();
+      const evs=(e.getCoalescedEvents&&e.getCoalescedEvents().length)?e.getCoalescedEvents():[e];
+      evs.forEach(ev=>{const p=pt(ev),n=cur.length;if(Math.abs(p[0]-cur[n-2])+Math.abs(p[1]-cur[n-1])>=3)cur.push(p[0],p[1])});draw()});
+    const end=e=>{if(!cur||e.pointerId!==drawer)return;const r=S.ink[key]||(S.ink[key]={s:[],t:0});r.s.push(cur.join(','));cur=null;drawer=null;touchInk(key);draw()};
+    c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
+  }
+  if(window.ResizeObserver)new ResizeObserver(draw).observe(c);requestAnimationFrame(draw);
+  const api={draw,undo(){const r=S.ink[key];if(r&&r.s.length){r.s.pop();touchInk(key);draw()}},clear(){const r=S.ink[key];if(r&&r.s.length){r.s=[];touchInk(key);draw()}}};
+  inks.push(api);return api}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>inks.forEach(i=>i.draw()))}catch(e){}
+
+/* ---------- stroke order (KanjiVG) ---------- */
+const KVP={};
+function kv(ch){const k=(ch.codePointAt(0)>>8).toString(16).padStart(2,'0');if(!KVP[k])KVP[k]=fetch('../kv/'+k+'.json').then(r=>r.ok?r.json():{}).catch(()=>({}));return KVP[k].then(m=>m[ch]||null)}
+const GUIDE='<line x1="54.5" y1="0" x2="54.5" y2="109"/><line x1="0" y1="54.5" x2="109" y2="54.5"/>';
+function kvSvg(d,mode){return `<svg viewBox="0 0 109 109" class="kv ${mode}" aria-hidden="true">${GUIDE}${d?d.p.map(p=>`<path d="${p}"/>`).join(''):''}${d&&mode==='model'?d.n.map((n,i)=>`<text x="${n[0]}" y="${n[1]}">${i+1}</text>`).join(''):''}</svg>`}
+function sqHost(box){if(!box.classList.contains('sq'))return box;const w=document.createElement('div');w.className='sqw';w.innerHTML=kvSvg(null,'bg');box.appendChild(w);
+  if(box.dataset.kvbg)kv(box.dataset.kvbg).then(d=>{if(d&&w.isConnected){const c=w.querySelector('canvas');w.querySelector('svg').remove();w.insertAdjacentHTML('afterbegin',kvSvg(d,'bg'));if(c)w.appendChild(c)}});return w}
+function mountModels(){app.querySelectorAll('.kjm[data-kv]').forEach(m=>kv(m.dataset.kv).then(d=>{if(d&&m.isConnected)m.innerHTML=kvSvg(d,'model')}))}
+function play(box){const ps=[...box.querySelectorAll('path')];if(!ps.length)return;const tk=box._tk=(box._tk||0)+1;
+  ps.forEach(p=>{const L=p.getTotalLength();p.style.transition='none';p.style.strokeDasharray=L;p.style.strokeDashoffset=L});let i=0;
+  (function next(){if(box._tk!==tk||i>=ps.length)return;const p=ps[i++],ms=Math.max(350,p.getTotalLength()*9);p.getBoundingClientRect();p.style.transition='stroke-dashoffset '+ms+'ms linear';p.style.strokeDashoffset=0;setTimeout(next,ms+250)})()}
+
+/* ---------- screens ---------- */
+function go(screen,task,pv){if(S.running)stopClock();if(screen!=='home')S.fed=null;S.screen=screen;S.task=task||null;S.preview=!!pv;LS.set('gk2.route',{task:screen==='task'&&!pv?task:null});render();window.scrollTo(0,0);
+  if(screen!=='task')pull().then(ch=>{if(ch&&S.screen===screen)render()})}
+function render(){inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();status()}
+
+const STAGES=[[0,'あかちゃん うさぎ'],[3,'こうさぎ'],[7,'げんきな うさぎ'],[15,'おねえさん うさぎ'],[30,'うさぎの プリンセス']];
+function carrots(){let n=TASKS.filter(t=>(S.vals[t.id]||{}).done).length;WEEKS.forEach(w=>{if(weekPts(w).bonus)n+=2});return n}
+function stageOf(n){let s=0;STAGES.forEach((x,i)=>{if(n>=x[0])s=i});return s}
+const CPATH='<path class="lf" d="M12 11C10 6 7 4 5 4M12 11C12 6 12 3 12 1M12 11C14 6 17 4 19 4"/><path class="bd" d="M12 33C7 25 5 17 6 13a6 4.5 0 0 1 12 0C19 17 17 25 12 33z"/>';
+const CARROT='<svg viewBox="0 0 24 34" class="crt" aria-hidden="true">'+CPATH+'</svg>';
+function rabbit(st,eat){return `<svg viewBox="0 0 200 224" class="rb" style="width:${[70,90,108,124,140][st]}px" role="img" aria-label="しろい うさぎの ぴょんぴょん">
+<g class="rb-w"><ellipse cx="146" cy="188" rx="12" ry="11"/>
+<ellipse cx="78" cy="52" rx="16" ry="46" transform="rotate(-9 78 52)"/><ellipse cx="122" cy="52" rx="16" ry="46" transform="rotate(9 122 52)"/>
+<ellipse cx="100" cy="172" rx="44" ry="38"/><ellipse cx="74" cy="208" rx="19" ry="9"/><ellipse cx="126" cy="208" rx="19" ry="9"/>
+<ellipse cx="100" cy="112" rx="54" ry="45"/>
+<ellipse cx="80" cy="166" rx="9" ry="13" transform="rotate(20 80 166)"/><ellipse cx="120" cy="166" rx="9" ry="13" transform="rotate(-20 120 166)"/></g>
+<g class="rb-p"><ellipse cx="78" cy="54" rx="7" ry="32" transform="rotate(-9 78 54)"/><ellipse cx="122" cy="54" rx="7" ry="32" transform="rotate(9 122 54)"/><ellipse cx="66" cy="124" rx="10" ry="6" opacity=".55"/><ellipse cx="134" cy="124" rx="10" ry="6" opacity=".55"/><ellipse cx="100" cy="121" rx="5" ry="3.5"/></g>
+<g class="rb-e"><circle cx="81" cy="107" r="5.5"/><circle cx="119" cy="107" r="5.5"/></g><circle cx="83" cy="105" r="1.8" class="rb-h"/><circle cx="121" cy="105" r="1.8" class="rb-h"/>
+<path class="rb-m" d="M100 125q-6 8-13 2M100 125q6 8 13 2"/>
+${st>=2?'<g class="rb-r"><path d="M136 80l-17-10v20zM136 80l17-10v20z"/><circle cx="136" cy="80" r="5.5"/></g>':''}
+${st>=3?'<g class="rb-f"><circle cx="62" cy="74" r="5"/><circle cx="70" cy="80" r="5"/><circle cx="67" cy="89" r="5"/><circle cx="57" cy="89" r="5"/><circle cx="54" cy="80" r="5"/><circle class="ct" cx="62" cy="82" r="4.5"/></g>':''}
+${st>=4?'<path class="rb-c" d="M82 74l-4-23 12 10 10-16 10 16 12-10-4 23z"/>':''}
+${eat?'<g transform="translate(84 126) scale(1.35)"><g class="rb-crt">'+CPATH+'</g></g>':''}</svg>`}
+
+function renderHome(){
+  const groups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(t=>t.group))],today=ymd(Date.now());
+  const isDone=t=>!!(S.vals[t.id]||{}).done,n=carrots(),st=stageOf(n),nx=STAGES[st+1],fed=S.fed;
+  const cur=groups.find(g=>TASKS.some(t=>t.group===g&&!isDone(t)))||groups[0],ct=TASKS.filter(t=>t.group===cur);
+  const pct=nx?Math.round((n-STAGES[st][0])/(nx[0]-STAGES[st][0])*100):100;
+  app.innerHTML=`<div class="wrap">
+   <div><h1>がくしゅうノート</h1><p class="sub">やる ものを えらんで、おしましょう。1つ おわると、ぴょんぴょんが にんじんを 1本 たべられます。</p></div>
+   <section class="pyon${fed?' fed':''}">
+    <div class="pyon-pic">${rabbit(st,!!fed)}</div>
+    <div class="pyon-tx">
+     ${fed?`<p class="pyon-say">${fed.grew?'にんじんを たべて、おおきく なったよ！':'もぐもぐ… にんじん、おいしい！ ありがとう。'}</p>`:''}
+     <p class="pyon-name">ぴょんぴょん<span class="st go">${STAGES[st][1]}</span></p>
+     <p class="ptline"><span>たべた にんじん</span><b>${n}</b><span>本</span></p>
+     <div class="meter" role="img" aria-label="つぎに おおきく なるまで ${pct}パーセント"><i style="width:${pct}%"></i></div>
+     <p class="sub">${nx?`あと ${nx[0]-n}本で「${nx[1]}」に なるよ。`:'いちばん おおきく なりました。'}</p>
+     <div class="track">${ct.map(t=>`<span class="${isDone(t)?'done':''}">${CARROT}</span>`).join('')}</div>
+     <p class="sub">${esc(cur)}の にんじん：${ct.filter(isDone).length} / ${ct.length}本</p>
+    </div>
+   </section>
+   ${token?'':'<p class="banner">保護者の方へ：答えの送り先（鍵）がまだ入っていません。下の「保護者用」を開くと、いちばん上に入力欄があります。</p>'}
+   ${groups.map(g=>`<div class="grp"><h2>${esc(g)}</h2>
+     ${TASKS.some(t=>t.group===g&&t.date&&t.date>today)?'<p class="sub">1日に 1つずつ ひらきます。保護者の方は、下の「保護者用」から1週間分の問題用紙を見られます。</p>':''}
+     ${TASKS.some(t=>t.group===g&&t.set)?'<p class="sub">きょう、3つ やりましょう。1つ 10分、ぜんぶで 30分です。</p>':''}
+     <div class="cards">${TASKS.filter(t=>t.group===g).map(t=>{const v=S.vals[t.id]||{};
+     if(t.date&&t.date>today)return `<div class="card lock"><b>${esc(t.title)}</b><small>${md(t.date)}・${t.min}分</small><span class="st">${md(t.date)}に ひらきます</span></div>`;
+     const sx=v.done?['done','おわり']:v.started?['go','とちゅう']:['','まだ'];
+     return `<button class="card${t.date===today&&!v.done?' today':''}" data-open="${t.id}"><span class="cc${v.done?' done':''}">${CARROT}</span><b>${esc(t.title)}</b><small>${t.day?t.day+'日め・':''}${t.date?md(t.date)+(t.date===today?'（きょう）':'')+'・':''}${t.min}分${t.pts?'・'+t.pts+'点':''}</small><span class="st ${sx[0]}">${sx[1]}</span></button>`}).join('')}</div></div>`).join('')}
+   <div class="row"><button class="btn ghost sm" id="toParent">保護者用（採点・結果）</button><span class="save" id="save"></span></div>
+   <p class="sub" style="font-size:.75rem">書き順の手本：KanjiVG（© Ulrich Apel、CC BY-SA 3.0）</p>
+  </div>`;
+  app.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>go('task',b.dataset.open));
+  app.querySelector('#toParent').onclick=parentGate}
+
+async function parentGate(){
+  if(S.parentOK)return go('parent');
+  modal.innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true"><b>保護者の方へ</b><p class="sub">ご自身の生まれた年（西暦4けた）を入力してください。</p>
+   <input class="blank" id="py" inputmode="numeric" maxlength="4" autocomplete="off" style="width:8em"><div class="row end"><button class="btn ghost" id="pno">もどる</button><button class="btn" id="pyes">ひらく</button></div></div></div>`;
+  modal.querySelector('#pno').onclick=()=>modal.innerHTML='';
+  modal.querySelector('#pyes').onclick=()=>{const y=parseInt(norm(modal.querySelector('#py').value,'num'),10);if(y>=1930&&y<=2008){S.parentOK=true;modal.innerHTML='';go('parent')}else modal.querySelector('#py').value=''}}
+
+function itemHTML(t,it,n,ro){
+  const tid=t.id,v=V(tid).v,dis=ro?'disabled':'';
+  if(it.sub)return `<p class="q" style="font-weight:600">${rich(it.sub)}</p>`;
+  const num=n?`<span class="n">${n}</span>`:'';
+  const A=(ro&&t.hw)?x=>x?`<p class="ansline">こたえ：${esc(x)}</p>`:'':()=>'';
+  if(it.k==='kanji'){const sq=(k,lab,bg)=>`<div><span class="sub">${lab}</span><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000" data-mini="1" ${bg?`data-kvbg="${esc(it.ch)}"`:''}></div></div>`;
+    return `<div class="item kj"><div class="kjh"><div class="kjm" data-kv="${esc(it.ch)}"><span class="kjf">${esc(it.ch)}</span></div>
+      <div class="kji"><div><b>おん</b>${esc(it.on||'－')}　<b>くん</b>${esc(it.kun||'－')}　<b>かくすう</b>${esc(it.st||'')}画</div><div><b>ことば</b>${(it.ex||[]).map(e=>esc(e[0])+'（'+esc(e[1])+'）').join('　')}</div>
+      ${it.tip?`<div class="ansline" style="font-size:.95rem">${esc(it.tip)}</div>`:''}<button class="btn ghost sm" data-play="1">かきじゅんを 見る</button></div></div>
+      <div class="kjb">${sq('t','なぞる',1)}${sq('a','見て かく')}${sq('b','もう いちど')}</div>
+      ${it.rq?`<p class="q">よみを ひらがなで かく：<span class="tg">${esc(it.rq[0])}</span><span class="ib" data-ink="${it.id}.y" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.rq[1])}`:''}
+      ${it.wq?`<p class="q">かん字で かく：<span class="tg">${esc(it.wq[0])}</span><span class="ib" data-ink="${it.id}.w" data-h="${bh({w:8})}" data-mini="1" style="width:${bw({w:8})}px"></span></p>${A(it.wq[1])}`:''}</div>`}
+  if(it.k==='fill'){let i=0;
+    const body=rich(it.tpl).split('{}').map((seg,j,arr)=>{if(j===arr.length-1)return seg;const b=it.b[i],k=it.id+'.'+i;i++;
+      return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
+    return `<div class="item">${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
+      ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${esc(it.work.label)}</span></div>`:''}
+      <p class="q">${it.q?'':num}${body}</p>${A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}</div>`}
+  if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
+    return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
+      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${A(it.a)}</div>`}
+  if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model)}</div>`;
+  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model)}</div>`;
+  return ''}
+
+let clockTm=null,lastLocal=0;
+function startClock(){const t=S.task,v=V(t);S.running=true;v.started=true;touchVals(t);
+  clockTm=setInterval(()=>{v.el++;paintClock();if(v.el-lastLocal>=10){lastLocal=v.el;saveLocal()}},1000);paintClock()}
+function stopClock(){if(!S.running)return;S.running=false;clearInterval(clockTm);clockTm=null;if(S.task)touchVals(S.task)}
+function paintClock(){const el=document.getElementById('clock');if(!el)return;const t=TASK[S.task],v=V(S.task),left=t.min*60-v.el;
+  if(t.hw){el.textContent=mmss(v.el)+' / めやす '+t.min+'分';return}
+  el.textContent=left>=0?'のこり '+mmss(left):'＋'+mmss(-left);el.classList.toggle('over',left<0);
+  const b=document.getElementById('timeup');if(b)b.hidden=left>=0||v.done}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.running){stopClock();flushAll();if(S.screen==='task')gate()}else if(document.hidden)flushAll()});
+
+function renderTask(){
+  const t=TASK[S.task],v=V(t.id),pv=S.preview,ro=v.done||pv;
+  app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">${esc(t.title)}</span><span class="save" id="save"></span><span class="clock" id="clock"></span></div></div>
+  <div class="wrap${t.en?' en':''}">
+   ${pv?'<p class="banner">保護者用のプレビューです。書きこみはできません。</p>':ro?`<p class="banner">${t.hw?'きょうの ぶんは おわりです。おつかれさまでした。赤い 字の こたえと くらべて みましょう。':'この テストは 出しました。おつかれさまでした。'}</p>`:''}
+   <p class="banner red" id="timeup" hidden>じかんです。ここまでに して、下の「おわる」を おしましょう。</p>
+   ${t.sections.map(s=>{let n=0;return `<section class="sec${s.en?' en':''}"><h3>${esc(s.h)}</h3>${s.note?`<p class="note">${esc(s.note)}</p>`:''}
+     ${s.passage?`<div class="passage">${s.passage.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`:''}
+     <div class="${s.grid?'kgrid':''}" style="${s.grid?'':'display:flex;flex-direction:column;gap:16px'}">${s.items.map(it=>itemHTML(t,it,(it.k&&!it.scratch&&!it.sub&&!/^問/.test(it.q||''))?(++n)+'.':'',ro)).join('')}</div></section>`}).join('')}
+   ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
+  </div>`;
+  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink);const api=mkInk(sqHost(box),key,+box.dataset.h,ro,!!box.dataset.ruled);
+    if(!ro){const tools=document.createElement('div');tools.className='inktools';if(box.dataset.mini){const x=document.createElement('button');x.className='btn ghost';x.textContent='けす';x.onclick=()=>api.clear();box.appendChild(x);return}
+      tools.innerHTML='<button class="btn ghost sm" data-u>1つもどす</button><button class="btn ghost sm" data-x>ぜんぶけす</button>';box.appendChild(tools);
+      tools.querySelector('[data-u]').onclick=()=>api.undo();const x=tools.querySelector('[data-x]');let armed=0;
+      x.onclick=()=>{if(armed){api.clear();armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')}else{armed=1;x.textContent='ほんとうにけす';x.classList.add('red');setTimeout(()=>{armed=0;x.textContent='ぜんぶけす';x.classList.remove('red')},3000)}}}});
+  mountModels();app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const m=b.closest('.kjh').querySelector('.kjm');play(m)});
+  app.querySelector('#back').onclick=()=>go(pv?'parent':'home');
+  const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
+    if(await ask(`<b>${esc(t.title)}を 出しますか？</b><p class="sub">${blanks?`まだ かいて いない もんだいが ${blanks}こ あります。`:''}出した あとは、なおせません。出すと、ぴょんぴょんが にんじんを たべられます。</p>`,'出す','もどる')){const b0=stageOf(carrots());stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();S.fed={grew:stageOf(carrots())>b0};go('home')}};
+  paintClock();if(!ro)gate()}
+function wc(ta){const el=app.querySelector(`[data-wcfor="${ta.dataset.k}"]`);if(el)el.textContent=(ta.value.trim()?ta.value.trim().split(/\s+/).length:0)+' words'}
+function countBlank(t){const v=V(t.id).v;let n=0;items(t).forEach(it=>{if(it.scratch)return;
+  if(it.k==='fill')it.b.forEach((_,i)=>{if(!hasInk(t.id,it.id+'.'+i))n++});
+  else if(it.k==='choice'){if(!v[it.id])n++}else if(it.k==='kanji'){if(!hasInk(t.id,it.id+'.a'))n++}else{if(!hasInk(t.id,it.id))n++}});return n}
+async function gate(){const t=TASK[S.task],v=V(t.id);if(v.done||S.running)return;
+  const ok=await ask(v.started?`<b>${esc(t.title)}</b><p class="sub">とちゅうで とまって います。${t.hw?'':'のこり じかん：'+mmss(t.min*60-v.el)}</p>`
+   :`<b>${esc(t.title)}（${t.min}分${t.pts?'・'+t.pts+'点':''}）</b><ul><li>わからない もんだいは、あけた ままで だいじょうぶです。</li>${t.hw?'<li>てほんを よく 見て、ゆっくり ていねいに かきましょう。</li>':'<li>じしょや けいさんきは つかいません。</li>'}<li>こたえは、わくの 中に ペンか ゆびで かきます。</li><li>かいた ものは、じどうで のこります。</li></ul>`,
+   v.started?'つづける':'はじめる','もどる');
+  if(S.screen!=='task'||S.task!==t.id)return;if(ok)startClock();else go('home')}
+
+app.addEventListener('input',e=>{const el=e.target;if(S.screen!=='task'||!el.dataset||!el.dataset.k)return;V(S.task).v[el.dataset.k]=el.value;if(el.dataset.wc)wc(el);touchVals(S.task)});
+app.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-c]');if(!b||S.screen!=='task'||b.disabled)return;const v=V(S.task).v,k=b.dataset.c;
+  v[k]=v[k]===b.dataset.v?'':b.dataset.v;b.parentNode.querySelectorAll('.opt').forEach(o=>{const on=v[k]===o.dataset.v;o.classList.toggle('on',on);o.setAttribute('aria-checked',on)});touchVals(S.task)});
+
+/* ---------- parent ---------- */
+function verdict(got,max){const r=max?got/max:0;return r>=0.8?['a','定着']:r>=0.5?['b','復習が必要']:['c','学び直し']}
+function renderParent(){
+  const t=TASK[S.ptab]||TASKS[TASKS.length>BASE?BASE:0],v=V(t.id),g=G(t.id),T=total(t.id);S.ptab=t.id;
+  const rows=[];
+  t.sections.forEach(s=>{let n=0;const sh=s.h.split('　')[0];rows.push(`<h3 style="margin-top:14px">${esc(s.h)}</h3>`);
+   s.items.forEach(it=>{if(!it.k)return;const lab=it.scratch?'':(/^問/.test(it.q||'')?'':(++n)+'. ');
+    if(it.k==='fill'){const qt=(it.q?it.q+' ／ ':'')+it.tpl.replace(/\{\}/g,'□');
+      rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(qt)}</div><div class="ga">
+        ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"></div><div class="model">${esc(it.work.label)}：${esc(it.work.model)}</div>`:''}
+        ${it.b.map((b,i)=>{const k=it.id+'.'+i,o=g.o[k];return `<div class="row"><div class="inkbox" style="width:${bw(b)}px" data-ink="${k}" data-h="${bh(b)}"></div><span class="model">正答：${esc(b.a.join(' ／ '))}</span>
+          <button class="mk o${o===true?' sel':''}" data-o="${k}" data-val="1" aria-label="正解">○</button><button class="mk x${o===false?' sel':''}" data-o="${k}" data-val="0" aria-label="不正解">×</button></div>`}).join('')}</div>
+        <div class="gm">
+        ${it.work?pts(g,it.id+'.w',it.work.pts,it.work.label):''}
+        ${t.sansu&&it.work?`<label class="chk"><input type="checkbox" data-read="${it.id}" ${g.read[it.id]?'checked':''}>読み上げた</label>`:''}</div></div>`)}
+    else if(it.k==='choice'){const ok=v.v[it.id]===it.a;rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="ans">${esc(v.v[it.id]||'（空らん）')} <span class="model">正答：${esc(it.a)}</span></div></div><div class="gm"><span class="mk ${ok?'o':'x'}" style="display:grid;place-items:center">${ok?'○':'×'}</span></div></div>`)}
+    else if(it.k==='kanji'){const sc=k=>{const r=S.ink[ikey(t.id,it.id+'.'+k)];return r?r.s.length:0};
+      rows.push(`<div class="g"><div class="gq">漢字「${esc(it.ch)}」（${esc(it.st||'')}画）</div><div class="ga"><div class="row">${['t','a','b'].map(k=>`<div><div class="inkbox sq" data-ink="${it.id}.${k}" data-h="1000"></div>${k!=='t'?`<span class="sub">${sc(k)}画で書いた</span>`:''}</div>`).join('')}</div>
+        ${it.rq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.y" data-h="${bh({w:8})}"></div><span class="model">${esc(it.rq[0])}＝${esc(it.rq[1])}</span></div>`:''}
+        ${it.wq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.w" data-h="${bh({w:8})}"></div><span class="model">${esc(it.wq[0])}＝${esc(it.wq[1])}</span></div>`:''}</div><div class="gm"></div></div>`)}
+    else if(it.k==='ink'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="inkbox ${it.cls==='s'?'s':''}" data-ink="${it.id}" data-h="${it.h}"></div>${it.model?`<div class="model">正答：${esc(it.model)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
+    else if(it.k==='long'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${rich(it.q)}</div><div class="ga"><div class="inkbox" style="width:100%" data-ink="${it.id}" data-h="${lh(it)}"></div>
+       ${it.model?`<div class="model">解答例：${esc(it.model)}</div>`:''}${it.rubric?`<div class="model">採点の目安：${esc(it.rubric)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
+   })});
+  const pgroups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(x=>x.group))],PW=WEEKS.find(w=>w.label===t.group),PP=PW?weekPts(PW):null;
+  app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">保護者用　採点・結果</span><span class="save" id="save"></span></div></div>
+  <div class="wrap">
+   <section class="sec"><h3>答えの送り先</h3><p class="sub">GitHubで作った鍵（トークン）を入れると、答えと手書きが非公開の保存場所に送られ、Claudeが採点できます。入れない場合は、このiPadの中だけに保存されます。</p>
+    <div class="row"><input class="blank" id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" style="width:min(100%,20em);text-align:left"><button class="btn" id="tokSave">保存してテスト</button><span class="sub" id="tokMsg">${token?'設定ずみ':'未設定'}</span></div></section>
+   <div class="tabs">${pgroups.map(x=>`<button class="tab${x===t.group?' on':''}" data-grp="${esc(x)}">${esc(x)}</button>`).join('')}</div>
+   <div class="tabs">${TASKS.filter(x=>x.group===t.group).map(x=>`<button class="tab${x.id===t.id?' on':''}" data-tab="${x.id}">${esc(x.title)}</button>`).join('')}</div>
+   <div class="row"><button class="btn ghost sm" id="pview">「${esc(t.title)}」の問題用紙を見る</button></div>
+   ${PW?`<section class="sec"><p class="ptline"><span>この週のポイント</span><b>${PP.sum}</b><span class="sub">/ 100</span></p><div class="tblw"><table><tbody>
+     ${PW.days.map((d,i)=>`<tr><td>${esc(d.wd)}ようび（${md(d.d)}）の宿題</td><td class="num">${PP.rows[i]}</td></tr>`).join('')}
+     <tr><td>ぜんぶ そろったボーナス</td><td class="num">${PP.bonus}</td></tr><tr><td>土曜テスト${PP.prov?'（採点がすむと確定）':''}</td><td class="num">${PP.test}</td></tr><tr><td>ていねいボーナス</td><td class="num">${PP.neat}</td></tr></tbody></table></div>
+     <p class="sub">宿題は当日に出すと10、あとから出すと5です。テストは8割以上30、6〜8割20、6割未満10です。</p>
+     ${t.test?`<label class="chk"><input type="checkbox" id="neat" ${g.neat===true?'checked':''}>ていねいボーナスをつける（空らんがなく、字が読みやすい）</label>`:''}</section>`:''}
+   <section class="sec">
+    <div class="row"><div>${t.pts?`<div class="big">${T.got}<span style="font-size:1rem"> / ${T.max}点</span></div>`:'<b>点数はつけません</b>'}
+     <p class="sub">${v.done?'提出ずみ':v.started?'とちゅう':'まだ始めていません'}・使った時間 ${mmss(v.el||0)}（${t.hw?'めやす':'制限'} ${t.min}分）${T.pend?`・<span style="color:var(--shu)">未採点 ${T.pend}問</span>`:''}</p></div></div>
+    ${t.levels?`<div class="tblw"><table><thead><tr><th>レベル</th><th class="num">得点</th><th class="num">満点</th><th>判定</th></tr></thead><tbody>${t.levels.map(([k,name])=>{const L=T.lv[k]||{got:0,max:0},vd=verdict(L.got,L.max);
+       return `<tr><td>${esc(name)}</td><td class="num">${L.got}</td><td class="num">${L.max}</td><td>${!v.started?'－':T.pend?'採点がすむと出ます':`<span class="v ${vd[0]}">${vd[1]}</span>`}</td></tr>`}).join('')}</tbody></table></div>
+     <p class="sub">満点の8割以上で定着、5〜8割で復習が必要、5割未満はその学年の内容から学び直しです。${T.pend?'未採点の問題を採点すると判定が確定します。':''}</p>`:''}
+    <p class="sub">書きこみ欄は○か×をタップして採点します。式・記述は右の点数ボタンで採点します。選択問題は自動で採点されます。</p>
+   </section>
+   <section class="sec">${rows.join('')}</section>
+   <section class="sec"><h3>結果をClaudeに送る</h3><p class="sub">採点の結果をまとめた文です。コピーしてClaudeのチャットに貼りつけてください。手書きの内容は文に入らないので、見てほしい答案は画面の写真をいっしょに送ってください。</p>
+    <textarea class="long" id="report" rows="6" readonly style="font-size:.8rem;line-height:1.4;font-family:var(--f-en)"></textarea><div class="row"><button class="btn" id="copy">結果をコピー</button><span class="sub" id="copied"></span></div></section>
+   <section class="sec"><h3>やり直し</h3><div class="row"><button class="btn ghost" id="unlock" ${v.done?'':'disabled'}>もう一度書けるようにする</button><button class="btn red" id="wipe">この科目の答えをすべて消す</button></div></section>
+  </div>`;
+  app.querySelectorAll('[data-ink]').forEach(box=>mkInk(sqHost(box),ikey(t.id,box.dataset.ink),+box.dataset.h,true));
+  app.querySelector('#tokSave').onclick=async()=>{const v=app.querySelector('#tok').value.trim(),m=app.querySelector('#tokMsg');if(!v&&token){m.textContent='設定ずみ（変えるときは新しい鍵を入れてください）';return}m.textContent='確認中…';m.textContent=await setToken(v);status()};
+  const rp=app.querySelector('#report');rp.value=report();
+  app.querySelector('#copy').onclick=()=>{const done=m=>app.querySelector('#copied').textContent=m;rp.focus();rp.select();
+    try{navigator.clipboard.writeText(rp.value).then(()=>done('コピーしました'),()=>done('上の文を長押ししてコピーしてください'))}catch(e){done('上の文を長押ししてコピーしてください')}};
+  const keep=fn=>{const y=window.scrollY;fn();renderParent();status();window.scrollTo(0,y)};
+  app.querySelector('#back').onclick=()=>go('home');
+  app.querySelectorAll('[data-grp]').forEach(b=>b.onclick=()=>{S.ptab=TASKS.find(x=>x.group===b.dataset.grp).id;inks.length=0;renderParent();status();window.scrollTo(0,0)});
+  app.querySelector('#pview').onclick=()=>go('task',t.id,true);
+  const nb=app.querySelector('#neat');if(nb)nb.onchange=()=>keep(()=>{if(nb.checked)g.neat=true;else delete g.neat;touchGrades(t.id)});
+  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{S.ptab=b.dataset.tab;inks.length=0;renderParent();status();window.scrollTo(0,0)});
+  app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.o,val=b.dataset.val==='1';if(g.o[k]===val)delete g.o[k];else g.o[k]=val;touchGrades(t.id)}));
+  app.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.g,p=+b.dataset.p;if(g.m[k]===p)delete g.m[k];else g.m[k]=p;touchGrades(t.id)}));
+  app.querySelectorAll('[data-read]').forEach(c=>c.onchange=()=>{if(c.checked)g.read[c.dataset.read]=true;else delete g.read[c.dataset.read];touchGrades(t.id)});
+  app.querySelector('#unlock').onclick=()=>keep(()=>{v.done=false;touchVals(t.id)});
+  app.querySelector('#wipe').onclick=async()=>{if(await ask(`<b>${esc(t.title)}の答えと採点をすべて消しますか？</b><p class="sub">手書きもふくめて消えます。元にもどせません。</p>`,'消す','やめる'))keep(()=>{
+    S.vals[t.id]={v:{},el:0,started:false,done:false,t:0};touchVals(t.id);S.grades[t.id]={m:{},o:{},read:{},t:0};touchGrades(t.id);
+    Object.keys(S.ink).filter(k=>k.startsWith(t.id+'__')).forEach(k=>{if(S.ink[k].s.length){S.ink[k].s=[];touchInk(k)}})})}}
+function report(){const L=['【学習ノート 小2 結果】'];
+  TASKS.filter(x=>x.group===(TASK[S.ptab]||TASKS[0]).group).forEach(t=>{const v=V(t.id),g=G(t.id),T=total(t.id);
+   L.push('',`■${t.title}：${v.done?'提出ずみ':v.started?'とちゅう':'未実施'}／時間 ${mmss(v.el||0)}（制限${t.min}分）`+(t.pts?`／${T.got}/${T.max}点`+(T.pend?`（未採点${T.pend}問）`:''):''));
+   if(t.levels)L.push(t.levels.map(([k,n])=>{const x=T.lv[k]||{got:0,max:0};return `${n} ${x.got}/${x.max}`}).join('、'));
+   if(!v.started)return;
+   items(t).forEach(it=>{if(it.scratch)return;
+    if(it.k==='fill'){L.push(`${it.id}: `+it.b.map((b,i)=>{const k=it.id+'.'+i,o=g.o[k];return o===true?'○':o===false?'×':hasInk(t.id,k)?'未採点':'空らん'}).join(' ')+(it.work?` ${it.work.label}=${typeof g.m[it.id+'.w']==='number'?g.m[it.id+'.w']+'点':hasInk(t.id,it.id+'.w')?'未採点':'なし'}`:'')+(g.read[it.id]?' 読み上げ':''))}
+    else if(it.k==='choice')L.push(`${it.id}: ${v.v[it.id]||'-'} ${v.v[it.id]===it.a?'○':'×'}`);
+    else if(it.k==='kanji')L.push(`${it.id}: 漢字「${it.ch}」 ${hasInk(t.id,it.id+'.a')?'書いた':'空らん'}`);
+    else if(it.k==='ink')L.push(`${it.id}: 手書き `+(it.pts?(typeof g.m[it.id]==='number'?g.m[it.id]+'点':hasInk(t.id,it.id)?'未採点':'空らん'):(hasInk(t.id,it.id)?'あり（写真で送付）':'空らん')));
+    else if(it.k==='long')L.push(`${it.id}: 手書き `+(it.pts?(typeof g.m[it.id]==='number'?g.m[it.id]+'点':hasInk(t.id,it.id)?'未採点':'空らん'):(hasInk(t.id,it.id)?'あり（写真で送付）':'空らん')))})});
+  return L.join('\n')}
+function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span>`:'';for(let p=0;p<=max;p++)h+=`<button class="pt${g.m[key]===p?' on':''}" data-g="${key}" data-p="${p}">${p}</button>`;return h}
+
+window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
+render();openToday();
+const BUILD='20261011051717';
+async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
+    let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
+    if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
+checkUpdate();document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
+</script>
+
+
+</body>
+</html>

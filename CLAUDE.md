@@ -7,6 +7,9 @@
 - このリポジトリ（公開）: アプリ本体と毎週の宿題
 - `RyoNagamatsu/gakushu-data`（非公開）: 子どもの答え・手書き・採点。個人のデータなので外に出さない
 
+## kaede/ フォルダについて
+`kaede/` は妹（小2）用の別アプリ「ぴょんぴょんノート」。兄の「毎日の流れ」「1週間の作り方」「土曜テストの採点」では `kaede/` と `gakushu-data/kaede/` に触らない。妹のアプリを扱うときは `kaede/CLAUDE.md` に従う。
+
 ## ファイル
 - `index.html` … アプリ全体（1ファイル）。変更したら必ず `./deploy.sh "説明"` で反映（BUILD番号と version.json を更新して push する。手で git push だけすると端末が更新に気づかない）
 - `weeks/index.json` … 週IDの配列（古い順）。`weeks/<月曜の日付>.json` … 1週間分
