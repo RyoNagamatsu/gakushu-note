@@ -169,6 +169,8 @@ h1{color:var(--ai)}
 .meter{height:12px;border-radius:999px;background:var(--ai-bg);overflow:hidden}
 .meter i{display:block;height:100%;background:var(--ai);border-radius:999px}
 .track{display:flex;gap:6px;flex-wrap:wrap}
+.item.calcrow{flex-direction:row;flex-wrap:wrap;gap:10px 18px;align-items:flex-start}.cq{flex:1 1 250px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.cbox{flex:1 1 250px;max-width:400px;min-width:0;display:flex;flex-direction:column;gap:2px}.cbox .inkbox{width:100%}.cbox .inkbox>.btn{align-self:flex-end;min-height:32px;padding:0 10px;font-size:.8rem}
 .tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.tips h2{grid-column:1/-1;font-size:1.1rem;color:var(--soft)}
 .tip{background:var(--sheet);border:2px solid var(--line);border-radius:22px;padding:14px 18px;min-width:0}.tip b{color:var(--ai)}.tip p{margin:4px 0 0;font-family:var(--f-q);font-size:1.1rem;line-height:1.9}
 .rv{display:flex;flex-direction:column;gap:8px;background:var(--ai-bg);border-radius:14px;padding:8px 12px;margin-top:4px}
@@ -624,9 +626,11 @@ function itemHTML(t,it,n,ro){
   if(it.k==='fill'){let i=0;
     const body=rich(it.tpl).split('{}').map((seg,j,arr)=>{if(j===arr.length-1)return seg;const b=it.b[i],k=it.id+'.'+i;i++;
       return seg+`<span class="ib" data-ink="${k}" data-h="${bh(b)}" data-mini="1" style="width:${bw(b)}px"></span>`}).join('');
-    return `<div class="item">${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
+    // Sums get their own working-out box on the right (key <id>.c); word problems already have the しき box.
+    const cb=!it.work&&it.b[0]&&it.b[0].t==='num';
+    return `<div class="item${cb?' calcrow':''}">${cb?'<div class="cq">':''}${it.q?`<p class="q">${num}${rich(it.q)}</p>`:''}
       ${it.work?`<div class="inkbox" data-ink="${it.id}.w" data-h="420"><span class="sub">${esc(it.work.label)}</span></div>`:''}
-      <p class="q">${it.q?'':num}${body}</p>${mark?(it.work?R(it.id+'.w',it.work.label+'：'+it.work.model,300,0):'')+it.b.map((b,j)=>R(it.id+'.'+j,b.a[0],bh(b),bw(b))).join(''):A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}</div>`}
+      <p class="q">${it.q?'':num}${body}</p>${mark?(it.work?R(it.id+'.w',it.work.label+'：'+it.work.model,300,0):'')+it.b.map((b,j)=>R(it.id+'.'+j,b.a[0],bh(b),bw(b))).join(''):A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}${cb?`</div><div class="cbox"><span class="sub">けいさん</span><div class="inkbox" data-ink="${it.id}.c" data-h="400" data-mini="1"></div></div>`:''}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
       `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${!mark?A(it.a):v[it.id]===it.a?'<p class="ansline">○ せいかい！</p>':`<div class="rv"><p class="ansline">こたえ：${esc(it.a)}</p><div class="retry" data-rt="${it.id}"><span class="sub">もう いちど えらぼう</span><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="sub" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div></div>`}</div>`}
@@ -787,7 +791,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011120505';
+const BUILD='20261011120616';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
