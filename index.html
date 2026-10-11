@@ -934,7 +934,7 @@ function renderParent(){
   <div class="wrap">
    <section class="sec"><h3>答えの送り先</h3><p class="sub">GitHubで作った鍵（トークン）を入れると、答えと手書きが非公開の保存場所に送られ、Claudeが採点できます。入れない場合は、このiPadの中だけに保存されます。</p>
     <div class="row"><input class="blank" id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" style="width:min(100%,20em);text-align:left"><button class="btn" id="tokSave">保存してテスト</button><span class="sub" id="tokMsg">${token?'設定ずみ':'未設定'}</span></div></section>
-   <section class="sec"><h3 style="margin:0">英作文の自動採点（Claude API）</h3><p class="sub">キーを入れると、英作文を出した直後にAIが読んで、宿題ではつづり・文の数・直す点を本人に見せ、テストでは点数を入れます（あとから○×や点で直せます）。キーはこのiPadの中にだけ保存されます。</p>
+   <section class="sec"><h3 style="margin:0">手書きの自動採点（Claude API）</h3><p class="sub">キーを入れると、宿題やテストを出した直後にAIが手書きを読みます。国語・算数の手書き（漢字、読み、空らん、式、記述）は、宿題では○×の案を本人に見せ（押すのは本人）、テストでは○×と点を入れます。英作文は、宿題ではつづり・文の数・直す点を本人に見せ、テストでは点数を入れます。どれもあとから○×や点で直せます。キーはこのiPadの中にだけ保存されます。</p>
     <div class="row"><input class="blank" id="akey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk-ant-…" style="width:min(100%,20em);text-align:left"><button class="btn" id="akeySave">保存してテスト</button><span class="sub" id="akeyMsg">${akey?'設定ずみ':'未設定'}</span></div></section>
    <section class="sec"><h3 style="margin:0">ポイントの換金</h3>${(()=>{const W=walletSum(),w=wallet();return `<p class="sub">もらった ${W.earned}・つかった ${W.used}・のこり ${W.left} ポイント（${W.baht} バーツ）</p>
     <div class="row"><label>1ポイント ＝ <input class="blank" id="rate" type="number" inputmode="decimal" min="0" step="0.1" value="${w.rate}" style="width:5em"> バーツ</label><button class="btn ghost sm" id="rateSave">保存</button></div>
@@ -1001,7 +1001,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011155018';
+const BUILD='20261011155511';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
