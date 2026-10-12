@@ -170,6 +170,7 @@ h1{color:var(--ai)}
 .meter{height:12px;border-radius:999px;background:var(--ai-bg);overflow:hidden}
 .meter i{display:block;height:100%;background:var(--ai);border-radius:999px}
 .track{display:flex;gap:6px;flex-wrap:wrap}
+.emo{font-size:2.1em;line-height:1.1;vertical-align:middle;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}.opt .emo{font-size:2.4em}
 button.pyon-pic{border:0;cursor:pointer;font:inherit}.pyon-pic.hop .rb{animation:hop .5s ease-in-out 1}
 .lv{font-family:var(--f-en);font-size:1rem;font-weight:700;background:var(--ai);color:var(--sheet);border-radius:999px;padding:0 12px}
 .stat{display:grid;grid-template-columns:5.2em minmax(0,1fr) auto;gap:8px;align-items:center;font-size:.9rem}.stat .sub{font-size:.8rem;min-width:2.2em;text-align:right}
@@ -415,7 +416,9 @@ function total(t){const r={got:0,max:0,pend:0,lv:{}};items(TASK[t]).forEach(it=>
 
 /* ---------- helpers ---------- */
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const rich=s=>esc(s).replace(/【(.+?)】/g,'<span class="tg">$1</span>').replace(/\n/g,'<br>');
+// Pictures (emoji) in questions and options are shown big: during the kana phase they carry the meaning.
+const emo=h=>h.replace(/(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}|\uFE0F\u200D\p{Extended_Pictographic})*)/gu,'<span class="emo">$1</span>');
+const rich=s=>emo(esc(s).replace(/【(.+?)】/g,'<span class="tg">$1</span>').replace(/\n/g,'<br>'));
 const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 const app=document.getElementById('app'),modal=document.getElementById('modal');
 function ask(html,yes,no){return new Promise(res=>{
@@ -784,7 +787,7 @@ function itemHTML(t,it,n,ro){
       <p class="q">${it.q?'':num}${body}</p>${mark?(it.work?R(it.id+'.w',it.work.label+'：'+it.work.model,300,0):'')+it.b.map((b,j)=>R(it.id+'.'+j,b.a[0],bh(b),bw(b))).join(''):A(it.b.map(b=>b.a[0]).join('、')+(it.work?'　（'+it.work.label+'：'+it.work.model+'）':''))}${cb?`</div><div class="cbox"><span class="sub">けいさん</span><div class="inkbox" data-ink="${it.id}.c" data-h="400" data-mini="1"></div></div>`:''}</div>`}
   if(it.k==='choice'){const lab=it.lab||'ABCD',wide=it.opts.some(o=>o.length>22);
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
-      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${!mark?A(it.a):v[it.id]===it.a?'<p class="ansline">○ せいかい！</p>':`<div class="rv"><p class="ansline">こたえ：${esc(it.a)}</p><div class="retry" data-rt="${it.id}"><span class="sub">もう いちど えらぼう　Choose again</span><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="sub" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div></div>`}</div>`}
+      `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${emo(esc(o))}</span></button>`).join('')}</div>${!mark?A(it.a):v[it.id]===it.a?'<p class="ansline">○ せいかい！</p>':`<div class="rv"><p class="ansline">こたえ：${esc(it.a)}</p><div class="retry" data-rt="${it.id}"><span class="sub">もう いちど えらぼう　Choose again</span><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${emo(esc(o))}</span></button>`).join('')}</div><span class="sub" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div></div>`}</div>`}
   if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${it.model&&!it.scratch?R(it.id,it.model,it.h,it.cls==='s'?300:0):''}</div>`;
   if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${it.model?R(it.id,it.model,lh(it),0):''}</div>`;
   return ''}
@@ -956,7 +959,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261012054835';
+const BUILD='20261012055256';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
