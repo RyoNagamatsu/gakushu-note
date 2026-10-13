@@ -612,6 +612,14 @@ function spendDialog(){const W=walletSum(),w=wallet();return new Promise(res=>{
 /* ---------- AI check of handwritten answers (Claude API, parent's key kept on the iPad): suggestions for homework, scores for tests ---------- */
 let akey=LS.get('gk2.akey')||'';
 const AI_MODELS=['claude-sonnet-5-5','claude-sonnet-4-5','claude-haiku-4-5-20251001'];
+/* AIの返事からJSONを取り出す：```json の囲みや前後の文を外し、途中で切れていたら閉じかっこを補う */
+function parseAI(txt){let s=String(txt||'').replace(/```(?:json)?/gi,'').trim();const a=s.indexOf('{');if(a<0)throw new Error('AIの返事に結果がありません');s=s.slice(a);
+  const b=s.lastIndexOf('}');if(b>=0){try{return JSON.parse(s.slice(0,b+1))}catch(e){}}
+  const close=x=>{let out='',st=[],q=false,esc=false;for(const ch of x){out+=ch;if(q){if(esc)esc=false;else if(ch==='\\')esc=true;else if(ch==='"')q=false;continue}
+    if(ch==='"')q=true;else if(ch==='{'||ch==='[')st.push(ch==='{'?'}':']');else if(ch==='}'||ch===']')st.pop()}
+    if(q)out+='"';out=out.replace(/[,:\s]+$/,'');while(st.length)out+=st.pop();return JSON.parse(out)};
+  for(let i=0;i<200&&s.length>1;i++){try{return close(s)}catch(e){const c=s.lastIndexOf(',');if(c<1)break;s=s.slice(0,c)}}
+  throw new Error('AIの返事が途中で切れていて読めませんでした')}
 async function aiCall(content,maxTok){let last='';for(const model of AI_MODELS){
   const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':akey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model,max_tokens:maxTok||700,messages:[{role:'user',content}]})});
@@ -634,7 +642,7 @@ function inkSheets(t,L){const tiles=[];L.forEach((x,n)=>{const st=((S.ink[ikey(t
   tiles.forEach(tl=>{if(y+tl.height>1500)flush();cur.push(tl);y+=tl.height});flush();return sheets}
 function netFail(e){return navigator.onLine===false||e instanceof TypeError}
 let aiCatching=false;
-async function aiCatchUp(){if(!akey||aiCatching||navigator.onLine===false)return;aiCatching=true;try{for(const t of TASKS){const v=S.vals[t.id];if(!v||!v.done||!v.aiWait)continue;delete v.aiWait;delete v.aicq;await aiCheckTask(t);if(v.aiWait)break}}finally{aiCatching=false}}
+async function aiCatchUp(){if(!akey||aiCatching||navigator.onLine===false)return;aiCatching=true;try{for(const t of TASKS){const v=S.vals[t.id];const bad=v&&(v.aicErr||Object.values(v.ai||{}).some(a=>a&&a.error));if(!v||!v.done||!(v.aiWait||bad))continue;delete v.aiWait;delete v.aicErr;delete v.aicq;await aiCheckTask(t);if(v.aiWait)break}}finally{aiCatching=false}}
 async function aiCheckTask(t,force){if(!akey)return;const v=V(t.id);if(v.aicq)return;const L=aiKeys(t).filter(x=>force||!(v.aic||{})[x.key]);if(!L.length)return;
   v.aic=v.aic||{};v.aicq=1;if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render();
   const test=!!t.test;
@@ -652,9 +660,9 @@ Rules:
 - kind=work: an expression is ok if it is mathematically equivalent.
 - kind=long / ink: ok if the meaning matches the model answer.
 - If a box is unreadable, set ok to null.
-Return ONLY a JSON object: {"#1":{"ok":true|false|null,"read":"what she wrote","why":"ひらがなだけで、やさしく短く（○なら空でよい、×なら なにが ちがうか）"${test?',"pts":integer score 0..配点 for items that have 配点 (else omit)':''}}, "#2":...}`;
-    const txt=await aiCall([...sheets.map(d=>({type:'image',source:{type:'base64',media_type:'image/png',data:d}})),{type:'text',text:ask}],2500);
-    const m=txt.match(/\{[\s\S]*\}/);const j=JSON.parse(m?m[0]:txt);
+Return ONLY a raw JSON object (no markdown code fences, no text before or after): {"#1":{"ok":true|false|null,"read":"what she wrote","why":"ひらがなだけで、やさしく短く（○なら空でよい、×なら なにが ちがうか）"${test?',"pts":integer score 0..配点 for items that have 配点 (else omit)':''}}, "#2":...}`;
+    const txt=await aiCall([...sheets.map(d=>({type:'image',source:{type:'base64',media_type:'image/png',data:d}})),{type:'text',text:ask}],6000);
+    const j=parseAI(txt);
     part.forEach((x,n)=>{const r=j['#'+(n+1)];if(!r)return;v.aic[x.key]={ok:r.ok===true?true:r.ok===false?false:null,read:String(r.read||'').slice(0,120),why:String(r.why||'').slice(0,160),pts:typeof r.pts==='number'?r.pts:undefined,t:Date.now()};
       if(test){const g=G(t.id);if(x.o&&r.ok!==null&&typeof g.o[x.key]!=='boolean')g.o[x.key]=r.ok===true;
         if(x.m&&x.pts>0&&typeof g.m[x.key]!=='number'){const p=typeof r.pts==='number'?r.pts:(r.ok===true?x.pts:r.ok===false?0:null);if(p!==null)g.m[x.key]=Math.max(0,Math.min(x.pts,Math.round(p)))}}});
@@ -959,7 +967,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261012055256';
+const BUILD='20261013050520';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}

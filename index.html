@@ -555,6 +555,14 @@ function inkPNG(key,lh){const st=((S.ink[key]||{}).s||[]).map(x=>x.split(',').ma
   x.strokeStyle='#000';x.fillStyle='#000';x.lineWidth=3;x.lineCap='round';x.lineJoin='round';
   st.forEach(p=>{if(p.length<4){x.beginPath();x.arc(p[0],p[1],2,0,7);x.fill();return}x.beginPath();x.moveTo(p[0],p[1]);for(let i=2;i<p.length;i+=2)x.lineTo(p[i],p[i+1]);x.stroke()});
   return c.toDataURL('image/png').split(',')[1]}
+/* AIの返事からJSONを取り出す：```json の囲みや前後の文を外し、途中で切れていたら閉じかっこを補う */
+function parseAI(txt){let s=String(txt||'').replace(/```(?:json)?/gi,'').trim();const a=s.indexOf('{');if(a<0)throw new Error('AIの返事に結果がありません');s=s.slice(a);
+  const b=s.lastIndexOf('}');if(b>=0){try{return JSON.parse(s.slice(0,b+1))}catch(e){}}
+  const close=x=>{let out='',st=[],q=false,esc=false;for(const ch of x){out+=ch;if(q){if(esc)esc=false;else if(ch==='\\')esc=true;else if(ch==='"')q=false;continue}
+    if(ch==='"')q=true;else if(ch==='{'||ch==='[')st.push(ch==='{'?'}':']');else if(ch==='}'||ch===']')st.pop()}
+    if(q)out+='"';out=out.replace(/[,:\s]+$/,'');while(st.length)out+=st.pop();return JSON.parse(out)};
+  for(let i=0;i<200&&s.length>1;i++){try{return close(s)}catch(e){const c=s.lastIndexOf(',');if(c<1)break;s=s.slice(0,c)}}
+  throw new Error('AIの返事が途中で切れていて読めませんでした')}
 async function aiCall(content,maxTok){let last='';for(const model of AI_MODELS){
   const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':akey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model,max_tokens:maxTok||700,messages:[{role:'user',content}]})});
@@ -563,7 +571,7 @@ async function aiCall(content,maxTok){let last='';for(const model of AI_MODELS){
   throw new Error(last)}
 function netFail(e){return navigator.onLine===false||e instanceof TypeError}
 let aiCatching=false;
-async function aiCatchUp(){if(!akey||aiCatching||navigator.onLine===false)return;aiCatching=true;try{for(const t of TASKS){const v=S.vals[t.id];if(!v||!v.done||!v.aiWait)continue;delete v.aiWait;delete v.aiq;delete v.aicq;await aiGradeTask(t);await aiCheckTask(t);if(v.aiWait)break}}finally{aiCatching=false}}
+async function aiCatchUp(){if(!akey||aiCatching||navigator.onLine===false)return;aiCatching=true;try{for(const t of TASKS){const v=S.vals[t.id];const bad=v&&(v.aicErr||Object.values(v.ai||{}).some(a=>a&&a.error));if(!v||!v.done||!(v.aiWait||bad))continue;delete v.aiWait;delete v.aicErr;delete v.aiq;delete v.aicq;await aiGradeTask(t);await aiCheckTask(t);if(v.aiWait)break}}finally{aiCatching=false}}
 function aiItems(t){return items(t).filter(it=>it.k==='long'&&it.en&&!it.scratch)}
 async function aiGradeItem(t,it){const v=V(t.id);v.ai=v.ai||{};const png=inkPNG(ikey(t.id,it.id),lh(it));
   if(!png){v.ai[it.id]={empty:true,t:Date.now()};touchVals(t.id);return}
@@ -571,7 +579,7 @@ async function aiGradeItem(t,it){const v=V(t.id);v.ai=v.ai||{};const png=inkPNG(
   const ask=`You are grading handwritten English by a 10-year-old Japanese boy (grade 4, English-medium school, aiming at EIKEN pre-1). The image is his handwriting on ruled lines.
 Task given to him: "${it.q}"
 ${it.sample?'Example answer (for reference only; his answer can be different): "'+it.sample+'"\n':''}${test?'This is a TEST question worth '+max+' points. Scoring guide (Japanese): '+(it.rubric||'')+'\n':'This is daily homework (no score).\n'}
-Read the handwriting carefully. Then return ONLY a JSON object with these keys:
+Read the handwriting carefully. Then return ONLY a raw JSON object (no markdown code fences, no text before or after) with these keys:
 "readable": true/false (false if you cannot read most of it),
 "text": your best transcription,
 "sentences": number of sentences,
@@ -582,11 +590,11 @@ Read the handwriting carefully. Then return ONLY a JSON object with these keys:
 "fix": one short sentence in simple English telling the child the most important thing to improve (length first if he wrote fewer sentences than asked),
 "score": ${test?'integer 0-'+max+' following the scoring guide':'null'},
 "reason": ${test?'1-2 sentences in Japanese for the parent explaining the score':'1 sentence in Japanese for the parent summarizing the writing'}`;
-  try{const txt=await aiCall([{type:'image',source:{type:'base64',media_type:'image/png',data:png}},{type:'text',text:ask}]);
-    const m=txt.match(/\{[\s\S]*\}/);const j=JSON.parse(m?m[0]:txt);j.t=Date.now();v.ai[it.id]=j;touchVals(t.id);
+  try{const txt=await aiCall([{type:'image',source:{type:'base64',media_type:'image/png',data:png}},{type:'text',text:ask}],1500);
+    const j=parseAI(txt);j.t=Date.now();v.ai[it.id]=j;touchVals(t.id);
     if(test&&j.readable&&typeof j.score==='number'){const g=G(t.id);if(typeof g.m[it.id]!=='number'){g.m[it.id]=Math.max(0,Math.min(max,Math.round(j.score)));touchGrades(t.id)}}}
   catch(e){if(netFail(e)){v.aiWait=1;touchVals(t.id)}else{v.ai[it.id]={error:String(e.message||e).slice(0,160),t:Date.now()};touchVals(t.id)}}}
-async function aiGradeTask(t,force){if(!akey)return;const v=V(t.id);const list=aiItems(t).filter(it=>force||!(v.ai||{})[it.id]);if(!list.length)return;
+async function aiGradeTask(t,force){if(!akey)return;const v=V(t.id);const list=aiItems(t).filter(it=>force||!(v.ai||{})[it.id]||(v.ai||{})[it.id].error);if(!list.length)return;
   v.aiq=list.length;for(const it of list){await aiGradeItem(t,it);v.aiq--;if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render()}delete v.aiq;touchVals(t.id);if((S.screen==='task'&&S.task===t.id)||S.screen==='parent')render()}
 function aiHTML(t,it,forParent){const v=S.vals[t.id]||{},a=(v.ai||{})[it.id];
   if(!a){if(!akey)return '';if(v.aiWait&&!v.aiq)return `<p class="sub">${forParent?'オフラインのため未採点。ネットにつながると自動で採点します。':'AI will read this when the iPad is online again.'}</p>`;return v.aiq?`<p class="ansline sample"><span>⏳ ${forParent?'AIが読んでいます…':'AI is reading your writing…'}</span></p>`:''}
@@ -629,9 +637,9 @@ Rules:
 - kind=long: ok if the meaning matches the model answer; if the question asks for 「〜から。」 the answer must end with から。
 - kind=ink: ok if it matches the model.
 - If a box is unreadable, set ok to null.
-Return ONLY a JSON object: {"#1":{"ok":true|false|null,"read":"what he wrote","why":"子ども向けに日本語で短く（○なら空でよい、×なら何がちがうか）"${test?',"pts":integer score 0..配点 for items that have 配点 (else omit)':''}}, "#2":...}`;
-    const txt=await aiCall([...sheets.map(d=>({type:'image',source:{type:'base64',media_type:'image/png',data:d}})),{type:'text',text:ask}],2500);
-    const m=txt.match(/\{[\s\S]*\}/);const j=JSON.parse(m?m[0]:txt);
+Return ONLY a raw JSON object (no markdown code fences, no text before or after): {"#1":{"ok":true|false|null,"read":"what he wrote","why":"子ども向けに日本語で短く（○なら空でよい、×なら何がちがうか）"${test?',"pts":integer score 0..配点 for items that have 配点 (else omit)':''}}, "#2":...}`;
+    const txt=await aiCall([...sheets.map(d=>({type:'image',source:{type:'base64',media_type:'image/png',data:d}})),{type:'text',text:ask}],6000);
+    const j=parseAI(txt);
     part.forEach((x,n)=>{const r=j['#'+(n+1)];if(!r)return;v.aic[x.key]={ok:r.ok===true?true:r.ok===false?false:null,read:String(r.read||'').slice(0,120),why:String(r.why||'').slice(0,160),pts:typeof r.pts==='number'?r.pts:undefined,t:Date.now()};
       if(test){const g=G(t.id);if(x.o&&r.ok!==null&&typeof g.o[x.key]!=='boolean')g.o[x.key]=r.ok===true;
         if(x.m&&x.pts>0&&typeof g.m[x.key]!=='number'){const p=typeof r.pts==='number'?r.pts:(r.ok===true?x.pts:r.ok===false?0:null);if(p!==null)g.m[x.key]=Math.max(0,Math.min(x.pts,Math.round(p)))}}});
@@ -1020,7 +1028,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261011171103';
+const BUILD='20261013050520';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
