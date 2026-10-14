@@ -620,11 +620,13 @@ function parseAI(txt){let s=String(txt||'').replace(/```(?:json)?/gi,'').trim();
     if(q)out+='"';out=out.replace(/[,:\s]+$/,'');while(st.length)out+=st.pop();return JSON.parse(out)};
   for(let i=0;i<200&&s.length>1;i++){try{return close(s)}catch(e){const c=s.lastIndexOf(',');if(c<1)break;s=s.slice(0,c)}}
   throw new Error('AIの返事が途中で切れていて読めませんでした')}
-async function aiCall(content,maxTok){let last='';for(const model of AI_MODELS){
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function aiCall(content,maxTok){let last='';for(const model of AI_MODELS){for(let tr=0;tr<3;tr++){
   const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':akey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model,max_tokens:maxTok||700,messages:[{role:'user',content}]})});
   if(r.ok){const j=await r.json();return (j.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('')}
-  last=r.status+' '+(await r.text()).slice(0,200);if(r.status===404||/model/i.test(last))continue;throw new Error(last)}
+  last=r.status+' '+(await r.text()).slice(0,200);if([408,429,500,502,503,504,529].includes(r.status)&&tr<2){await sleep(4000*(tr+1)*(tr+1));continue}
+  if(r.status===404||/model/i.test(last))break;throw new Error(last)}}
   throw new Error(last)}
 function aiKeys(t){const L=[];items(t).forEach(it=>{if(it.scratch)return;
   if(it.k==='kanji'){if(it.rq)L.push({key:it.id+'.y',q:'「'+it.rq[0]+'」の読みをひらがなで',ans:[it.rq[1]],kind:'reading'});if(it.wq)L.push({key:it.id+'.w',q:'「'+it.wq[0]+'」を漢字で',ans:[it.wq[1]],kind:'kanji'})}
@@ -661,8 +663,8 @@ Rules:
 - kind=long / ink: ok if the meaning matches the model answer.
 - If a box is unreadable, set ok to null.
 Return ONLY a raw JSON object (no markdown code fences, no text before or after): {"#1":{"ok":true|false|null,"read":"what she wrote","why":"ひらがなだけで、やさしく短く（○なら空でよい、×なら なにが ちがうか）"${test?',"pts":integer score 0..配点 for items that have 配点 (else omit)':''}}, "#2":...}`;
-    const txt=await aiCall([...sheets.map(d=>({type:'image',source:{type:'base64',media_type:'image/png',data:d}})),{type:'text',text:ask}],6000);
-    const j=parseAI(txt);
+    let j=null;for(let tr=0;tr<3&&!j;tr++){const txt=await aiCall([...sheets.map(d=>({type:'image',source:{type:'base64',media_type:'image/png',data:d}})),{type:'text',text:ask}],6000);
+      try{j=parseAI(txt)}catch(e){if(tr===2)throw new Error(e.message+'：'+String(txt||'(空)').slice(0,80));await sleep(3000)}}
     part.forEach((x,n)=>{const r=j['#'+(n+1)];if(!r)return;v.aic[x.key]={ok:r.ok===true?true:r.ok===false?false:null,read:String(r.read||'').slice(0,120),why:String(r.why||'').slice(0,160),pts:typeof r.pts==='number'?r.pts:undefined,t:Date.now()};
       if(test){const g=G(t.id);if(x.o&&r.ok!==null&&typeof g.o[x.key]!=='boolean')g.o[x.key]=r.ok===true;
         if(x.m&&x.pts>0&&typeof g.m[x.key]!=='number'){const p=typeof r.pts==='number'?r.pts:(r.ok===true?x.pts:r.ok===false?0:null);if(p!==null)g.m[x.key]=Math.max(0,Math.min(x.pts,Math.round(p)))}}});
@@ -831,7 +833,11 @@ function renderTask(){
   mountModels();app.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{const m=b.closest('.kjh').querySelector('.kjm');play(m)});
   app.querySelector('#back').onclick=()=>go(pv?'parent':'home');
   const f=app.querySelector('#finish');if(f)f.onclick=async()=>{const blanks=countBlank(t);
-    if(await ask(`<b>${esc(t.title)}を 出しますか？</b><p class="sub">${blanks?`まだ かいて いない もんだいが ${blanks}こ あります。`:''}出した あとは、なおせません。${t.hw?'出したら、こたえあわせを します。おわると、ぴょんぴょんが にんじんを たべられます。':'出すと、ぴょんぴょんが にんじんを たべられます。'}</p>`,'出す','もどる')){const b0=stageOf(carrots()),l0=rpg().lv;stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();aiCheckTask(t);if(t.hw)return go('task',t.id);S.fed={grew:stageOf(carrots())>b0,lv:rpg().lv>l0?rpg().lv:0};go('home')}};
+    if(await ask(`<b>${esc(t.title)}を 出しますか？</b><p class="sub">${blanks?`まだ かいて いない もんだいが ${blanks}こ あります。`:''}出した あとは、なおせません。${t.hw?'出したら、こたえあわせを します。おわると、ぴょんぴょんが にんじんを たべられます。':'出すと、ぴょんぴょんが にんじんを たべられます。'}</p>`,'出す','もどる')){const b0=stageOf(carrots()),l0=rpg().lv;stopClock();v.done=true;v.doneAt=Date.now();touchVals(t.id);flushAll();const gp=aiCheckTask(t);if(t.hw)return go('task',t.id);
+      if(t.test&&akey){const w=WEEKS.find(x=>x._t===t.id);modal.innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true"><b>テスト、おつかれさま！</b><p class="sub">いま、まるを つけて います。30びょうほど まってね…</p></div></div>`;
+        await Promise.race([gp,sleep(150000)]);await aiCatchUp();modal.innerHTML='';flushAll();const T=total(t.id);
+        await ask(T.pend||!T.max?`<b>まるつけが まだ おわって いません</b><p class="sub">ネットに つながると、つづきを じどうで みます。けっかは ホームに 出ます。</p>`:`<b>テストの けっか</b><p class="ptline"><b>${T.got}</b><span> / ${T.max} てん</span></p><p class="sub">${T.got>=T.max*0.8?'すばらしい！ よく できました。':T.got>=T.max*0.6?'よく がんばりました。まちがえた ところは、つぎの しゅうの しゅくだいで もういちど やろう。':'まちがえた ところは、つぎの しゅうの しゅくだいで ゆっくり やりなおそう。'}</p>${w&&!WEEKS.some(x=>x.id>w.id)?'<p class="sub">この けっかを 見て、つぎの しゅうの しゅくだいを つくります。1〜2じかんで ひらきます。</p>':''}`,'ホームへ')}
+      S.fed={grew:stageOf(carrots())>b0,lv:rpg().lv>l0?rpg().lv:0};go('home')}};
   const rd=app.querySelector('#rvDone');if(rd){paintReview();rd.onclick=()=>{if(v.rev)return go('home');const c=reviewLeft(t);
     if(c.left>0){const sf=v.self||{},rc=v.rc||{};let el=[...app.querySelectorAll('[data-rv]')].find(r=>typeof sf[r.dataset.rv]!=='number');
       if(!el)el=[...app.querySelectorAll('.retry[data-rt]')].find(r=>{const k=r.dataset.rt;return r.querySelector('[data-rc]')?rc[k]!==(items(t).find(i=>i.id===k)||{}).a:(sf[k]===0&&!hasInk(t.id,k+'.r'))});
@@ -967,11 +973,11 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261013112739';
+const BUILD='20261014112828';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk2.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk2.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
-checkUpdate();document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkUpdate();aiCatchUp()}});
+setInterval(()=>{if(!document.hidden)aiCatchUp()},60000);checkUpdate();document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkUpdate();aiCatchUp()}});
 /* ---------- offline (the service worker is shared with the app one folder up) ---------- */
 if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('../sw.js').catch(()=>{});
 function warmFonts(){if(navigator.onLine===false||!document.fonts||!document.fonts.load)return;
