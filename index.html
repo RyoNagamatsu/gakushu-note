@@ -892,7 +892,7 @@ function renderTask(){
     if((t.hw&&blanks)||await ask(`<b>${esc(t.title)}を出しますか？</b><p class="sub">${blanks?`まだ書いていない問題が ${blanks} こあります。`:''}${t.hw?'出すと、こたえあわせに すすみます。':'出したあとは、なおせません。'}</p>`,'出す','もどる')){stopClock();v.done=true;v.doneAt=Date.now();if(t.hw)v.tip=TASKS.filter(x=>x.hw&&(S.vals[x.id]||{}).done).length-1;touchVals(t.id);flushAll();const gp=Promise.all([aiGradeTask(t),aiCheckTask(t)]);
       const w=WEEKS.find(x=>x.label===t.group);if(w){const c=cup(w);if(t.test&&akey){modal.innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true"><b>${esc(c.C.fin)}、おつかれさま！</b><p class="sub">いま、採点しています。30びょうほど まってね…</p></div></div>`;furi(modal);
         await Promise.race([gp,sleep(150000)]);await aiCatchUp();modal.innerHTML='';flushAll();const T=total(t.id);
-        await ask(T.pend||!T.max?`<b>採点が まだ おわっていません</b><p class="sub">ネットにつながると、つづきを 自動で 採点します。けっかは ホームに 出ます。</p>`:`<b>テストの けっか</b><p class="ptline"><b>${T.got}</b><span> / ${T.max} てん</span></p><p class="sub">${T.got>=T.max*0.8?'すばらしい！ よく できました。':T.got>=T.max*0.6?'よく がんばりました。まちがえた ところは、来週の 宿題で もういちど やろう。':'まちがえた ところは、来週の 宿題で ていねいに やりなおそう。'}</p>`,'ホームへ')}
+        await ask(T.pend||!T.max?`<b>採点が まだ おわっていません</b><p class="sub">ネットにつながると、つづきを 自動で 採点します。けっかは ホームに 出ます。</p>`:`<b>テストの けっか</b><p class="ptline"><b>${T.got}</b><span> / ${T.max} てん</span></p><p class="sub">${T.got>=T.max*0.8?'すばらしい！ よく できました。':T.got>=T.max*0.6?'よく がんばりました。まちがえた ところは、来週の 宿題で もういちど やろう。':'まちがえた ところは、来週の 宿題で ていねいに やりなおそう。'}</p>${WEEKS.some(x=>x.id>w.id)?'':'<p class="sub">このけっかを見て、つぎの週の 宿題を つくります。1〜2時間で ひらきます。</p>'}`,'ホームへ')}
       else await ask(t.test?'<b>'+c.C.fin+'、おつかれさま！</b><p class="sub">けっかは、採点のあとに出ます。</p>':`<b>${esc(c.stage)}！</b><p class="sub">${c.done<c.n?'きょうの宿題をやりきりました。あと'+(c.n-c.done)+'日で'+c.C.fin+'です。':'5日そろいました。テストが'+c.C.fin+'です！'}</p><div class="tips">${tipsHTML(v.tip||0)}</div>`,'やった！')}
       if(t.hw){go('task',t.id)}else go('home')}};
   const ud=app.querySelector('#undoDone');if(ud)ud.onclick=async()=>{if(!await ask('<b>「出す」を とりけしますか？</b><p class="sub">もういちど 書けるように なります。書いたものと ○× は そのまま のこります。おわったら、もういちど「出す」を おして、ふりかえりを おわらせよう。</p>','とりけす','やめる'))return;
@@ -1033,7 +1033,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261014034234';
+const BUILD='20261014034740';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
