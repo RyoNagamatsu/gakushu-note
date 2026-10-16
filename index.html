@@ -507,8 +507,12 @@ function norm(s,t){s=String(s==null?'':s).normalize('NFKC').replace(/\s/g,'');
   return s.replace(/[。、．，.,・「」]/g,'').toLowerCase()}
 function blankOK(t,it,i){return G(t).o[it.id+'.'+i]===true}
 const bw=b=>Math.max(64,(b.w||6)*26),bh=b=>Math.round(72000/bw(b)),lh=it=>(it.rows||3)*90+30;
-/* 英作文（英語で4行以上）は1行を大きく。まだ書いていない欄か、大きい行で書きはじめた欄（ink の g）だけ。前に書いた答えはそのままの行で見せる */
-const WROW=130,bigW=(tid,it)=>{if(!(it.k==='long'&&it.en&&(it.rows||3)>=4))return false;const r=S.ink[ikey(tid,it.id)];return !(r&&r.s.length)||!!(r&&r.g)},lhW=(tid,it)=>bigW(tid,it)?((it.rows||3)+1)*WROW+30:lh(it),rowAttr=(tid,it)=>bigW(tid,it)?`data-row="${WROW}"`:'data-ruled="1"';
+/* 英作文（英語で4行以上）は行の幅はそのままで、行を約1.5倍にふやす（下に行が足されるだけなので、書きかけの答えもずれない）。
+   ink に g がある欄は、10/16 に一時的に入れた「幅の広い行」で書いたもの。その欄だけ書いたときの行で見せる */
+const WROW=130,isW=it=>it.k==='long'&&it.en&&(it.rows||3)>=4,wRows=it=>{const r=it.rows||3;return r+Math.ceil(r/2)},
+bigW=(tid,it)=>{if(!isW(it))return false;const r=S.ink[ikey(tid,it.id)];return !!(r&&r.s.length&&r.g)},
+lhW=(tid,it)=>bigW(tid,it)?((it.rows||3)+1)*WROW+30:isW(it)?wRows(it)*90+30:lh(it),
+rowAttr=(tid,it)=>bigW(tid,it)?`data-row="${WROW}"`:'data-ruled="1"';
 const hasInk=(t,id)=>!!(S.ink[ikey(t,id)]&&S.ink[ikey(t,id)].s.length);
 function score(t,it){const g=G(t),v=V(t).v;let got=0,max=0,pend=0;
   const man=(key,pts,empty)=>{max+=pts;if(typeof g.m[key]==='number')got+=g.m[key];else if(!empty&&pts>0)pend++};
@@ -1035,7 +1039,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261016133220';
+const BUILD='20261016133332';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
