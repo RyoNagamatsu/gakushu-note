@@ -461,7 +461,7 @@ function newerVals(a,b){if(!b)return false;if(!a)return true;if(!!a.done!==!!b.d
 function mergeRemote(path,x){const p=path.split('/'),tid=p[1].replace(/\.json$/,'');let ch=false;if(!x)return ch;
   if(p[0]==='grades'){if((x.t||0)>((S.grades[tid]||{}).t||0)){x.m=x.m||{};x.o=x.o||{};x.read=x.read||{};S.grades[tid]=x;ch=true}return ch}
   if(x.vals&&newerVals(S.vals[tid],x.vals)){x.vals.v=x.vals.v||{};S.vals[tid]=x.vals;ch=true}
-  Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]={s:i.s,t:i.t};LS.set('gk1.ink.'+k,S.ink[k]);ch=true}});
+  Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]=i.g?{s:i.s,t:i.t,g:i.g}:{s:i.s,t:i.t};LS.set('gk1.ink.'+k,S.ink[k]);ch=true}});
   if(ch)saveLocal();return ch}
 async function getRemote(path){const g=await fetch(GH+path+'?t='+Date.now(),{headers:hdr(),cache:'no-store'});if(g.status===404)return null;if(!g.ok)throw new Error('get '+g.status);const j=await g.json();shas[path]=j.sha;
   let txt=j.content?new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\s/g,'')),c=>c.charCodeAt(0))):null;
@@ -507,6 +507,8 @@ function norm(s,t){s=String(s==null?'':s).normalize('NFKC').replace(/\s/g,'');
   return s.replace(/[。、．，.,・「」]/g,'').toLowerCase()}
 function blankOK(t,it,i){return G(t).o[it.id+'.'+i]===true}
 const bw=b=>Math.max(64,(b.w||6)*26),bh=b=>Math.round(72000/bw(b)),lh=it=>(it.rows||3)*90+30;
+/* 英作文（英語で4行以上）は1行を大きく。まだ書いていない欄か、大きい行で書きはじめた欄（ink の g）だけ。前に書いた答えはそのままの行で見せる */
+const WROW=130,bigW=(tid,it)=>{if(!(it.k==='long'&&it.en&&(it.rows||3)>=4))return false;const r=S.ink[ikey(tid,it.id)];return !(r&&r.s.length)||!!(r&&r.g)},lhW=(tid,it)=>bigW(tid,it)?((it.rows||3)+1)*WROW+30:lh(it),rowAttr=(tid,it)=>bigW(tid,it)?`data-row="${WROW}"`:'data-ruled="1"';
 const hasInk=(t,id)=>!!(S.ink[ikey(t,id)]&&S.ink[ikey(t,id)].s.length);
 function score(t,it){const g=G(t),v=V(t).v;let got=0,max=0,pend=0;
   const man=(key,pts,empty)=>{max+=pts;if(typeof g.m[key]==='number')got+=g.m[key];else if(!empty&&pts>0)pend++};
@@ -575,7 +577,7 @@ function netFail(e){return navigator.onLine===false||e instanceof TypeError}
 let aiCatching=false;
 async function aiCatchUp(){if(!akey||aiCatching||navigator.onLine===false)return;aiCatching=true;try{for(const t of TASKS){const v=S.vals[t.id];const bad=v&&(v.aicErr||Object.values(v.ai||{}).some(a=>a&&a.error));if(!v||!v.done||!(v.aiWait||bad))continue;delete v.aiWait;delete v.aicErr;delete v.aiq;delete v.aicq;await aiGradeTask(t);await aiCheckTask(t);if(v.aiWait)break}}finally{aiCatching=false}}
 function aiItems(t){return items(t).filter(it=>it.k==='long'&&it.en&&!it.scratch)}
-async function aiGradeItem(t,it){const v=V(t.id);v.ai=v.ai||{};const png=inkPNG(ikey(t.id,it.id),lh(it));
+async function aiGradeItem(t,it){const v=V(t.id);v.ai=v.ai||{};const png=inkPNG(ikey(t.id,it.id),lhW(t.id,it));
   if(!png){v.ai[it.id]={empty:true,t:Date.now()};touchVals(t.id);return}
   const test=!!t.test,max=it.pts||0;
   const ask=`You are grading handwritten English by a 10-year-old Japanese boy (grade 4, English-medium school, aiming at EIKEN pre-1). The image is his handwriting on ruled lines.
@@ -702,13 +704,13 @@ function ask(html,yes,no){return new Promise(res=>{
 
 /* ---------- handwriting ---------- */
 let penSeen=false;const inks=[];
-function mkInk(host,key,lh,ro,ruled,free,onchg){
+function mkInk(host,key,lh,ro,ruled,free,onchg,row){
   const c=document.createElement('canvas');c.className='ink'+(ruled?' ruled':'')+(ro?' ro':'');c.style.aspectRatio='1000/'+lh;c.setAttribute('aria-label','手書きのわく');host.appendChild(c);
   const strokes=()=>((S.ink[key]||{}).s||[]);
   let cur=null,drawer=null;
   function draw(){const w=c.clientWidth;if(!w)return;const dpr=window.devicePixelRatio||1;const W=Math.round(w*dpr),H=Math.round(w*lh/1000*dpr);
     if(c.width!==W||c.height!==H){c.width=W;c.height=H}
-    const x=c.getContext('2d'),k=W/1000;x.clearRect(0,0,W,H);x.lineCap='round';x.lineJoin='round';x.lineWidth=Math.max(1.6,2.4*dpr*(ro?0.8:1));
+    const x=c.getContext('2d'),k=W/1000;x.clearRect(0,0,W,H);if(row){x.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--line').trim()||'#cfd6e4';x.lineWidth=Math.max(1,dpr);for(let y=row;y<=lh;y+=row){const yy=Math.round(y*k)+0.5;x.beginPath();x.moveTo(0,yy);x.lineTo(W,yy);x.stroke()}}x.lineCap='round';x.lineJoin='round';x.lineWidth=Math.max(1.6,2.4*dpr*(ro?0.8:1));
     const col=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#1b2742';x.strokeStyle=col;x.fillStyle=col;
     const all=strokes().map(s=>s.split(',').map(Number));if(cur)all.push(cur);
     all.forEach(p=>{if(p.length<4){x.beginPath();x.arc(p[0]*k,p[1]*k,x.lineWidth*0.7,0,7);x.fill();return}
@@ -720,7 +722,7 @@ function mkInk(host,key,lh,ro,ruled,free,onchg){
     c.addEventListener('pointermove',e=>{if(!cur||e.pointerId!==drawer)return;e.preventDefault();
       const evs=(e.getCoalescedEvents&&e.getCoalescedEvents().length)?e.getCoalescedEvents():[e];
       evs.forEach(ev=>{const p=pt(ev),n=cur.length;if(Math.abs(p[0]-cur[n-2])+Math.abs(p[1]-cur[n-1])>=3)cur.push(p[0],p[1])});draw()});
-    const end=e=>{if(!cur||e.pointerId!==drawer)return;const r=S.ink[key]||(S.ink[key]={s:[],t:0});r.s.push(cur.join(','));cur=null;drawer=null;touchInk(key);draw();if(free)paintReview();if(onchg)onchg()};
+    const end=e=>{if(!cur||e.pointerId!==drawer)return;const r=S.ink[key]||(S.ink[key]={s:[],t:0});if(row&&!r.s.length)r.g=row;r.s.push(cur.join(','));cur=null;drawer=null;touchInk(key);draw();if(free)paintReview();if(onchg)onchg()};
     c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
   }
   if(window.ResizeObserver)new ResizeObserver(draw).observe(c);requestAnimationFrame(draw);
@@ -842,7 +844,7 @@ function itemHTML(t,it,n,ro,side){
     return `<div class="item"><p class="q">${num}${rich(it.q)}</p><div class="opts${wide?' wide':''}" role="radiogroup">${it.opts.map((o,i)=>
       `<button class="opt${v[it.id]===lab[i]?' on':''}" role="radio" aria-checked="${v[it.id]===lab[i]}" data-c="${it.id}" data-v="${lab[i]}" ${dis}><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div>${(ro&&t.hw)?`<p class="ansline"><span>こたえ：${esc(it.a)}</span><span class="auto ${v[it.id]===it.a?'o':'x'}">${v[it.id]===it.a?'○':'×'}</span></p>${canMark&&v[it.id]!==it.a?`<div class="retry" data-rt="${it.id}"><b>もういちど、正しいこたえを えらぼう</b><div class="opts${wide?' wide':''}">${it.opts.map((o,i)=>`<button class="opt${(V(tid).rc||{})[it.id]===lab[i]?' on':''}" data-rc="${it.id}" data-v="${lab[i]}"><i>${lab[i]}</i><span>${esc(o)}</span></button>`).join('')}</div><span class="rcres" data-rcres="${it.id}">${(V(tid).rc||{})[it.id]===it.a?'○ せいかい！':''}</span></div>`:''}`+(it.why?`<p class="whyline">${rich(it.why)}</p>`:''):''}</div>`}
   if(it.k==='ink')return `<div class="item"><p class="q">${it.scratch?'':num}${it.scratch?`<span class="sub">${esc(it.q)}</span>`:rich(it.q)}</p><div class="inkbox ${it.cls||''}" data-ink="${it.id}" data-h="${it.h}" ${it.ruled?'data-ruled="1"':''}></div>${A(it.model,it.scratch?null:it.id)}</div>`;
-  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lh(it)}" data-ruled="1"></div>${A(it.model,it.id)}${(ro&&t.hw&&it.sample)?`<p class="ansline sample"><span><b>${it.en?'Example（れい）':'れい'}：</b>${esc(it.sample)}</span></p><p class="sub">${it.en?'Your answer can be different. Compare: how many sentences? Is there a reason?':'こたえは 1つでは ありません。じぶんの文と くらべてみよう。'}</p>`:''}${(ro&&t.hw&&it.en)?aiHTML(t,it,false):''}</div>`;
+  if(it.k==='long')return `<div class="item${it.en?' en':''}"><p class="q">${rich(it.q)}</p><div class="inkbox" data-ink="${it.id}" data-h="${lhW(tid,it)}" ${rowAttr(tid,it)}></div>${A(it.model,it.id)}${(ro&&t.hw&&it.sample)?`<p class="ansline sample"><span><b>${it.en?'Example（れい）':'れい'}：</b>${esc(it.sample)}</span></p><p class="sub">${it.en?'Your answer can be different. Compare: how many sentences? Is there a reason?':'こたえは 1つでは ありません。じぶんの文と くらべてみよう。'}</p>`:''}${(ro&&t.hw&&it.en)?aiHTML(t,it,false):''}</div>`;
   return ''}
 
 let clockTm=null,lastLocal=0;
@@ -876,7 +878,7 @@ function renderTask(){
      <div class="row end"><button class="btn ghost" id="undoDone">やっていない もんだいが あった（「出す」を とりけす）</button><button class="btn" id="rvDone">${v.rev?'ホームに もどる':'ふりかえりを おわる'}</button></div></section>`:''}
    ${ro?'':'<div class="row end"><button class="btn" id="finish">おわる（出す）</button></div>'}
   </div>`;
-  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink),free=!!box.closest('.retry')||(!!box.dataset.free&&!!t.hw),bro=free?pv:ro,kch=box.dataset.kch;const api=mkInk(sqHost(box),key,+box.dataset.h,bro,!!box.dataset.ruled,free,kch&&!bro?(cleared=>judgeBox(t.id,box.dataset.ink,kch,cleared)):null);if(kch)judgeBox(t.id,box.dataset.ink,kch,false,true);
+  app.querySelectorAll('[data-ink]').forEach(box=>{const key=ikey(t.id,box.dataset.ink),free=!!box.closest('.retry')||(!!box.dataset.free&&!!t.hw),bro=free?pv:ro,kch=box.dataset.kch;const api=mkInk(sqHost(box),key,+box.dataset.h,bro,!!box.dataset.ruled,free,kch&&!bro?(cleared=>judgeBox(t.id,box.dataset.ink,kch,cleared)):null,+box.dataset.row||0);if(kch)judgeBox(t.id,box.dataset.ink,kch,false,true);
     if(!bro){const tools=document.createElement('div');tools.className='inktools';if(box.dataset.mini){const x=document.createElement('button');x.className='btn ghost';x.textContent='けす';x.onclick=()=>api.clear();box.appendChild(x);return}
       tools.innerHTML='<button class="btn ghost sm" data-u>1つもどす</button><button class="btn ghost sm" data-x>ぜんぶけす</button>';box.appendChild(tools);
       tools.querySelector('[data-u]').onclick=()=>api.undo();const x=tools.querySelector('[data-x]');let armed=0;
@@ -958,7 +960,7 @@ function renderParent(){
         ${it.rq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.y" data-h="${bh({w:8})}"></div><span class="model">${esc(it.rq[0])}＝${esc(it.rq[1])}</span></div>`:''}
         ${it.wq?`<div class="row"><div class="inkbox" style="width:${bw({w:8})}px" data-ink="${it.id}.w" data-h="${bh({w:8})}"></div><span class="model">${esc(it.wq[0])}＝${esc(it.wq[1])}</span></div>`:''}</div><div class="gm"></div></div>`)}
     else if(it.k==='ink'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${lab}${rich(it.q)}</div><div class="ga"><div class="inkbox ${it.cls==='s'?'s':''}" data-ink="${it.id}" data-h="${it.h}"></div>${it.model?`<div class="model">正答：${esc(it.model)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
-    else if(it.k==='long'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${rich(it.q)}</div><div class="ga"><div class="inkbox" style="width:100%" data-ink="${it.id}" data-h="${lh(it)}"></div>
+    else if(it.k==='long'){rows.push(`<div class="g"><div class="gq">${esc(sh)} ${rich(it.q)}</div><div class="ga"><div class="inkbox" style="width:100%" data-ink="${it.id}" data-h="${lhW(t.id,it)}" ${bigW(t.id,it)?`data-row="${WROW}"`:''}></div>
        ${it.model?`<div class="model">解答例：${esc(it.model)}</div>`:''}${it.rubric?`<div class="model">採点の目安：${esc(it.rubric)}</div>`:''}${it.view?`<div class="model">${esc(it.view)}</div>`:''}${it.en?'':aiNote(t,it.id)}${it.en?aiHTML(t,it,true)+(akey&&hasInk(t.id,it.id)?`<div class="row"><button class="btn ghost sm" data-ai="${it.id}">AIで採点する${(v.ai||{})[it.id]?'（やり直し）':''}</button></div>`:''):''}</div><div class="gm">${it.pts?pts(g,it.id,it.pts):''}</div></div>`)}
    })});
   const pgroups=[...new Set(TASKS.slice(BASE).concat(TASKS.slice(0,BASE)).map(x=>x.group))],PW=WEEKS.find(w=>w.label===t.group),PP=PW?weekPts(PW):null;
@@ -993,7 +995,7 @@ function renderParent(){
     <textarea class="long" id="report" rows="6" readonly style="font-size:.8rem;line-height:1.4;font-family:var(--f-en)"></textarea><div class="row"><button class="btn" id="copy">結果をコピー</button><span class="sub" id="copied"></span></div></section>
    <section class="sec"><h3>やり直し</h3><div class="row"><button class="btn ghost" id="unlock" ${v.done?'':'disabled'}>もう一度書けるようにする</button><button class="btn red" id="wipe">この科目の答えをすべて消す</button></div></section>
   </div>`;
-  app.querySelectorAll('[data-ink]').forEach(box=>mkInk(sqHost(box),ikey(t.id,box.dataset.ink),+box.dataset.h,true));
+  app.querySelectorAll('[data-ink]').forEach(box=>mkInk(sqHost(box),ikey(t.id,box.dataset.ink),+box.dataset.h,true,false,false,null,+box.dataset.row||0));
   app.querySelector('#tokSave').onclick=async()=>{const v=app.querySelector('#tok').value.trim(),m=app.querySelector('#tokMsg');if(!v&&token){m.textContent='設定ずみ（変えるときは新しい鍵を入れてください）';return}m.textContent='確認中…';m.textContent=await setToken(v);status()};
   const rp=app.querySelector('#report');rp.value=report();
   app.querySelector('#copy').onclick=()=>{const done=m=>app.querySelector('#copied').textContent=m;rp.focus();rp.select();
@@ -1033,7 +1035,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261014035645';
+const BUILD='20261016133220';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
