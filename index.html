@@ -433,7 +433,13 @@ const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
 
 /* ---------- state ---------- */
 const S={vals:{},grades:{},ink:{},screen:'home',task:null,ptab:TASKS[0].id,running:false,parentOK:false};
-const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){const j=JSON.stringify(v);try{localStorage.setItem(k,j)}catch(e){if(lsFree(k))try{localStorage.setItem(k,j)}catch(e2){}}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+/* iPad の保存場所（約5MB）がいっぱいになると、答えが保存されないまま残り、開き直したときに消えて見える（10/16 に起きた）。
+   いっぱいのときは、終わって送信ずみの日の手書きから端末の控えを消す（サーバーには残っていて、見るときに読みなおす） */
+function lsFree(keep){try{const dn=(typeof S!=='undefined'&&S.vals)||{},dt=JSON.parse(localStorage.getItem('gk1.dirty')||'{}'),c=[];
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!k.startsWith('gk1.ink.')||k===keep)continue;const tid=k.slice(8).split('__')[0];
+    if(dn[tid]&&dn[tid].done&&!dt['data/'+tid+'.json'])c.push([tid,k])}
+  if(!c.length)return false;c.sort((a,b)=>a[0]<b[0]?-1:1);const old=c[0][0];c.filter(x=>x[0]===old).forEach(x=>localStorage.removeItem(x[1]));return true}catch(e){return false}}
 (function loadLocal(){
   setWeeks(LS.get('gk1.weeks'));
   const d=LS.get('gk1');if(d){S.vals=d.vals||{};S.grades=d.grades||{}}
@@ -458,11 +464,17 @@ function bodyFor(path){const p=path.split('/'),tid=p[1].replace(/\.json$/,'');
   Object.keys(S.ink).forEach(k=>{if(k.startsWith(tid+'__')){ink[k]=S.ink[k];t=Math.max(t,S.ink[k].t||0)}});return {t,vals:v,ink}}
 // Merge one remote file into local state. Nothing is ever dropped: ink is merged box by box, and a finished task is not replaced by an unfinished copy unless a parent reopened it.
 function newerVals(a,b){if(!b)return false;if(!a)return true;if(!!a.done!==!!b.done){const d=a.done?a:b,u=a.done?b:a;return ((u.unlockedAt||0)>(d.doneAt||0))?u===b:d===b}return (b.t||0)>(a.t||0)}
+/* 終わっていない日の2つの控えを合わせる：base にない答えを other から足し、かかった時間は長いほう。足したら true */
+function unionVals(base,other){let add=false;if((other.el||0)>(base.el||0)){base.el=other.el;add=true}
+  ['v','kj','self','rc','ai'].forEach(f=>{const o=other[f];if(!o||typeof o!=='object')return;const b=base[f]||(base[f]={});Object.keys(o).forEach(k=>{if(!(k in b)){b[k]=o[k];add=true}})});
+  if(add)base.t=Math.max(base.t||0,other.t||0)+1;return add}
 function mergeRemote(path,x){const p=path.split('/'),tid=p[1].replace(/\.json$/,'');let ch=false;if(!x)return ch;
   if(p[0]==='grades'){if((x.t||0)>((S.grades[tid]||{}).t||0)){x.m=x.m||{};x.o=x.o||{};x.read=x.read||{};S.grades[tid]=x;ch=true}return ch}
-  if(x.vals&&newerVals(S.vals[tid],x.vals)){x.vals.v=x.vals.v||{};S.vals[tid]=x.vals;ch=true}
+  const lv=S.vals[tid];
+  if(x.vals&&newerVals(lv,x.vals)){x.vals.v=x.vals.v||{};S.vals[tid]=x.vals;ch=true;if(lv&&!lv.done&&!x.vals.done&&unionVals(x.vals,lv)){mark(path)}}
+  else if(x.vals&&lv&&!lv.done&&!x.vals.done&&unionVals(lv,x.vals)){ch=true;mark(path)}
   Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]=i.g?{s:i.s,t:i.t,g:i.g}:{s:i.s,t:i.t};LS.set('gk1.ink.'+k,S.ink[k]);ch=true}});
-  if(ch)saveLocal();return ch}
+  if(ch){saveLocal();try{inks.forEach(i=>i.draw())}catch(e){}}return ch}
 async function getRemote(path){const g=await fetch(GH+path+'?t='+Date.now(),{headers:hdr(),cache:'no-store'});if(g.status===404)return null;if(!g.ok)throw new Error('get '+g.status);const j=await g.json();shas[path]=j.sha;
   let txt=j.content?new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\s/g,'')),c=>c.charCodeAt(0))):null;
   if(txt===null){const r=await fetch(GH+path,{headers:hdr({Accept:'application/vnd.github.raw+json'}),cache:'no-store'});if(!r.ok)throw new Error('raw '+r.status);txt=await r.text()}
@@ -1039,7 +1051,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261016133332';
+const BUILD='20261016134040';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
