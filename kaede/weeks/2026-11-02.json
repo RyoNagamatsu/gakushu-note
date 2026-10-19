@@ -1,0 +1,3229 @@
+{
+ "id": "2026-11-02",
+ "n": 4,
+ "label": "4w",
+ "days": [
+  {
+   "d": "2026-11-02",
+   "wd": "げつ",
+   "min": 20,
+   "sections": [
+    {
+     "h": "一　かたかな（5字） Katakana",
+     "note": "かたかなは、ほかの くにから きた ことばに つかいます。ひらがなと おなじ おとです。\nは → ハ　ひ → ヒ　ふ → フ　へ → ヘ　ほ → ホ\n「ー」は おとを のばす しるしです（ハート、コーヒー）。\n(Katakana is used for words from other countries. Each one has the same sound as a hiragana. ー makes a sound longer.)\nかきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+     "grid": true,
+     "items": [
+      {
+       "k": "kana",
+       "id": "k1",
+       "ch": "ハ",
+       "ro": "",
+       "ex": [
+        "ハート",
+        "❤️"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k2",
+       "ch": "ヒ",
+       "ro": "",
+       "ex": [
+        "コーヒー",
+        "☕"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k3",
+       "ch": "フ",
+       "ro": "",
+       "ex": [
+        "ナイフ",
+        "🔪"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k4",
+       "ch": "ヘ",
+       "ro": "",
+       "ex": [
+        "ヘリコプター",
+        "🚁"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k5",
+       "ch": "ホ",
+       "ro": "",
+       "ex": [
+        "ホテル",
+        "🏨"
+       ]
+      }
+     ]
+    },
+    {
+     "h": "二　まちがえやすい かたかな Tricky katakana",
+     "note": "シ と ツ、ソ と ン は にて います。シ の さいごの せんは、したから うえへ はらいます。ツ は うえから したへ。\nカ は 2かくで かきます。はねは 1かくめの おわりに つけます。\n(シ and ツ look alike: the last line of シ goes up, the last line of ツ goes down. カ has only 2 lines.)\nかきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+     "grid": true,
+     "items": [
+      {
+       "k": "kana",
+       "id": "t1",
+       "ch": "シ",
+       "ro": "",
+       "ex": [
+        "シカ",
+        "🦌"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "t2",
+       "ch": "ツ",
+       "ro": "",
+       "ex": [
+        "キツネ",
+        "🦊"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "t3",
+       "ch": "ソ",
+       "ro": "",
+       "ex": [
+        "ソフトクリーム",
+        "🍦"
+       ]
+      }
+     ]
+    },
+    {
+     "h": "三　どの かたかな？ Same sound",
+     "note": "ひらがなと おなじ おとの かたかなを えらびます。\n(Choose the katakana with the same sound as the hiragana.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "m1",
+       "q": "【は】",
+       "opts": [
+        "ハ",
+        "ホ",
+        "ナ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m2",
+       "q": "【ひ】",
+       "opts": [
+        "ヘ",
+        "セ",
+        "ヒ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m3",
+       "q": "【ふ】",
+       "opts": [
+        "ワ",
+        "フ",
+        "ク"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m4",
+       "q": "【へ】",
+       "opts": [
+        "ヘ",
+        "ハ",
+        "ノ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m5",
+       "q": "【ほ】",
+       "opts": [
+        "ハ",
+        "キ",
+        "ホ"
+       ],
+       "a": "C",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "四　ふくしゅう Review",
+     "note": "ふくしゅうです。えを 見て、あう ことばを えらびます。にて いる 字に きを つけて（シ と ツ、ソ と ン）。\n(Review. Look at the picture and choose the word. Watch out for letters that look alike.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "f1",
+       "q": "🦌",
+       "opts": [
+        "シカ",
+        "ツカ",
+        "ソカ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f2",
+       "q": "🦊",
+       "opts": [
+        "キシネ",
+        "キソネ",
+        "キツネ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f3",
+       "q": "🍆",
+       "opts": [
+        "ナシ",
+        "ナス",
+        "ナヌ"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f4",
+       "q": "🐶",
+       "opts": [
+        "イヌ",
+        "イス",
+        "イソ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f5",
+       "q": "🍣",
+       "opts": [
+        "さし",
+        "むし",
+        "すし"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f6",
+       "q": "🚢",
+       "opts": [
+        "ふれ",
+        "ふね",
+        "ふわ"
+       ],
+       "a": "B",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "五　かけるかな Writing",
+     "note": "えを 見て、ぬけて いる 字を かきます。\n(Look at the picture. Write the missing letter.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "w1",
+       "tpl": "🦌　{}カ",
+       "b": [
+        {
+         "a": [
+          "シ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w2",
+       "tpl": "❤️　{}ート",
+       "b": [
+        {
+         "a": [
+          "ハ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w3",
+       "tpl": "☕　コー{}ー",
+       "b": [
+        {
+         "a": [
+          "ヒ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w4",
+       "tpl": "🔪　ナイ{}",
+       "b": [
+        {
+         "a": [
+          "フ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w5",
+       "tpl": "🚢　ふ{}",
+       "b": [
+        {
+         "a": [
+          "ね"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "六　かたかなを かこう Write katakana",
+     "note": "ひらがなを 見て、かたかなを かきます。つぎは、かたかなの ことばを よんで えを えらびます。さいごは、えを 見て かたかなで かきます。かたかなの ことばは、かたかなで かこう。\n(Write the katakana. Then read the katakana words and choose the picture. Last, write the word in katakana, not hiragana.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "x1",
+       "tpl": "そ → {}",
+       "b": [
+        {
+         "a": [
+          "ソ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "x2",
+       "tpl": "は → {}",
+       "b": [
+        {
+         "a": [
+          "ハ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p1",
+       "q": "【ハート】",
+       "opts": [
+        "⭐",
+        "🌙",
+        "❤️"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p2",
+       "q": "【コーヒー】",
+       "opts": [
+        "🥛",
+        "☕",
+        "🍵"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p3",
+       "q": "【シカ】",
+       "opts": [
+        "🦌",
+        "🐴",
+        "🐮"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "p9",
+       "tpl": "🔪 → {}",
+       "b": [
+        {
+         "a": [
+          "ナイフ"
+         ],
+         "w": 5
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "七　さんすう Math",
+     "note": "2の だんは 2ずつ ふえます。2、4、6、8、10…\nかけざんは「おなじ かずが なんこ ぶん」です。\nれい：🍎🍎 が 3つ → 2 ＋ 2 ＋ 2 ＝ 6 → 2 × 3 ＝ 6\nわからない ときは、えを かぞえるか、たしざんに して かんがえよう。\nひきざん：いちの くらいが ひけない ときは、じゅうの くらいから 10を かります。うえと したを ひっくりかえして ひかない。\nれい：42 － 18 → 12 － 8 ＝ 4、じゅうの くらいは 3 － 1 ＝ 2。こたえは 24。\n(Times means the same number, this many times. 2 × 3 = 2 + 2 + 2 = 6. If you are not sure, count the pictures or add.)\n(Subtraction: if the ones can't be taken away, borrow 10 from the tens. Never swap the top and bottom numbers.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "c1",
+       "tpl": "🍎🍎　🍎🍎　🍎🍎 → 2 × 3 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "6"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c2",
+       "tpl": "🍓🍓　🍓🍓　🍓🍓　🍓🍓 → 2 × 4 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "8"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c3",
+       "tpl": "2 ＋ 2 ＋ 2 ＋ 2 ＋ 2 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "10"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c4",
+       "tpl": "2 × 5 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "10"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c5",
+       "tpl": "2 × 7 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "14"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c6",
+       "tpl": "2 × 9 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "18"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c7",
+       "tpl": "🍪🍪🍪🍪　🍪🍪🍪🍪　🍪🍪🍪🍪 → 4 × 3 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "12"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c8",
+       "tpl": "31 － 7 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "24"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c9",
+       "tpl": "42 － 18 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "24"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c10",
+       "tpl": "63 － 25 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "38"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "d": "2026-11-03",
+   "wd": "か",
+   "min": 20,
+   "sections": [
+    {
+     "h": "一　かたかな（5字） Katakana",
+     "note": "かたかなは、ほかの くにから きた ことばに つかいます。ひらがなと おなじ おとです。\nま → マ　み → ミ　む → ム　め → メ　も → モ\n(Katakana is used for words from other countries. Each one has the same sound as a hiragana.)\nかきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+     "grid": true,
+     "items": [
+      {
+       "k": "kana",
+       "id": "k1",
+       "ch": "マ",
+       "ro": "",
+       "ex": [
+        "マスク",
+        "😷"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k2",
+       "ch": "ミ",
+       "ro": "",
+       "ex": [
+        "ミルク",
+        "🥛"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k3",
+       "ch": "ム",
+       "ro": "",
+       "ex": [
+        "アイスクリーム",
+        "🍨"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k4",
+       "ch": "メ",
+       "ro": "",
+       "ex": [
+        "メモ",
+        "📝"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k5",
+       "ch": "モ",
+       "ro": "",
+       "ex": [
+        "モアイ",
+        "🗿"
+       ]
+      }
+     ]
+    },
+    {
+     "h": "二　まちがえやすい かたかな Tricky katakana",
+     "note": "シ と ツ、ソ と ン は にて います。シ の さいごの せんは、したから うえへ はらいます。ツ は うえから したへ。\nカ は 2かくで かきます。はねは 1かくめの おわりに つけます。\n(シ and ツ look alike: the last line of シ goes up, the last line of ツ goes down. カ has only 2 lines.)\nかきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+     "grid": true,
+     "items": [
+      {
+       "k": "kana",
+       "id": "t1",
+       "ch": "シ",
+       "ro": "",
+       "ex": [
+        "タクシー",
+        "🚕"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "t2",
+       "ch": "ソ",
+       "ro": "",
+       "ex": [
+        "ソファ",
+        "🛋️"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "t3",
+       "ch": "カ",
+       "ro": "",
+       "ex": [
+        "カニ",
+        "🦀"
+       ]
+      }
+     ]
+    },
+    {
+     "h": "三　どの かたかな？ Same sound",
+     "note": "ひらがなと おなじ おとの かたかなを えらびます。\n(Choose the katakana with the same sound as the hiragana.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "m1",
+       "q": "【ま】",
+       "opts": [
+        "マ",
+        "ア",
+        "ム"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m2",
+       "q": "【み】",
+       "opts": [
+        "シ",
+        "ニ",
+        "ミ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m3",
+       "q": "【む】",
+       "opts": [
+        "マ",
+        "ム",
+        "ヌ"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m4",
+       "q": "【め】",
+       "opts": [
+        "メ",
+        "ヌ",
+        "ナ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m5",
+       "q": "【も】",
+       "opts": [
+        "テ",
+        "ニ",
+        "モ"
+       ],
+       "a": "C",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "四　ふくしゅう Review",
+     "note": "ふくしゅうです。えを 見て、あう ことばを えらびます。にて いる 字に きを つけて（シ と ツ、ソ と ン）。\n(Review. Look at the picture and choose the word. Watch out for letters that look alike.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "f1",
+       "q": "☕",
+       "opts": [
+        "コーヒー",
+        "コーヘー",
+        "コーホー"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f2",
+       "q": "🔪",
+       "opts": [
+        "ナイヘ",
+        "ナイク",
+        "ナイフ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f3",
+       "q": "❤️",
+       "opts": [
+        "ヘート",
+        "ハート",
+        "ホート"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f4",
+       "q": "🦊",
+       "opts": [
+        "キツネ",
+        "キシネ",
+        "キソネ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f5",
+       "q": "🦌",
+       "opts": [
+        "ツカ",
+        "ソカ",
+        "シカ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f6",
+       "q": "🐻",
+       "opts": [
+        "くほ",
+        "くま",
+        "くな"
+       ],
+       "a": "B",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "五　かけるかな Writing",
+     "note": "えを 見て、ぬけて いる 字を かきます。\n(Look at the picture. Write the missing letter.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "w1",
+       "tpl": "😷　{}スク",
+       "b": [
+        {
+         "a": [
+          "マ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w2",
+       "tpl": "🍅　ト{}ト",
+       "b": [
+        {
+         "a": [
+          "マ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w3",
+       "tpl": "📝　メ{}",
+       "b": [
+        {
+         "a": [
+          "モ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w4",
+       "tpl": "🚕　タク{}ー",
+       "b": [
+        {
+         "a": [
+          "シ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w5",
+       "tpl": "🦀　{}ニ",
+       "b": [
+        {
+         "a": [
+          "カ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "六　かたかなを かこう Write katakana",
+     "note": "ひらがなを 見て、かたかなを かきます。つぎは、かたかなの ことばを よんで えを えらびます。さいごは、えを 見て かたかなで かきます。かたかなの ことばは、かたかなで かこう。\n(Write the katakana. Then read the katakana words and choose the picture. Last, write the word in katakana, not hiragana.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "x1",
+       "tpl": "そ → {}",
+       "b": [
+        {
+         "a": [
+          "ソ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "x2",
+       "tpl": "み → {}",
+       "b": [
+        {
+         "a": [
+          "ミ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p1",
+       "q": "【マスク】",
+       "opts": [
+        "🎤",
+        "👓",
+        "😷"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p2",
+       "q": "【メモ】",
+       "opts": [
+        "✏️",
+        "📝",
+        "📕"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p3",
+       "q": "【トマト】",
+       "opts": [
+        "🍅",
+        "🍎",
+        "🍓"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "p9",
+       "tpl": "🍅 → {}",
+       "b": [
+        {
+         "a": [
+          "トマト"
+         ],
+         "w": 5
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "七　さんすう Math",
+     "note": "かけざんは「おなじ かずが なんこ ぶん」です。\nれい：🍎🍎 が 3つ → 2 ＋ 2 ＋ 2 ＝ 6 → 2 × 3 ＝ 6\nわからない ときは、えを かぞえるか、たしざんに して かんがえよう。\nひきざん：いちの くらいが ひけない ときは、じゅうの くらいから 10を かります。うえと したを ひっくりかえして ひかない。\nれい：42 － 18 → 12 － 8 ＝ 4、じゅうの くらいは 3 － 1 ＝ 2。こたえは 24。\n(Times means the same number, this many times. 2 × 3 = 2 + 2 + 2 = 6. If you are not sure, count the pictures or add.)\n(Subtraction: if the ones can't be taken away, borrow 10 from the tens. Never swap the top and bottom numbers.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "c1",
+       "tpl": "🍩🍩　🍩🍩　🍩🍩　🍩🍩　🍩🍩　🍩🍩 → 2 × 6 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "12"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c2",
+       "tpl": "2 ＋ 2 ＋ 2 ＋ 2 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "8"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c3",
+       "tpl": "2 × 4 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "8"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c4",
+       "tpl": "2 × 8 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "16"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c5",
+       "tpl": "2 × 3 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "6"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c6",
+       "tpl": "2 × 7 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "14"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c7",
+       "tpl": "🍬🍬🍬　🍬🍬🍬　🍬🍬🍬　🍬🍬🍬 → 3 × 4 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "12"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c8",
+       "tpl": "54 － 28 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "26"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c9",
+       "tpl": "71 － 35 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "36"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c10",
+       "tpl": "80 － 46 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "34"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "d": "2026-11-04",
+   "wd": "すい",
+   "min": 20,
+   "sections": [
+    {
+     "h": "一　かたかな（6字） Katakana",
+     "note": "かたかなは、ほかの くにから きた ことばに つかいます。ひらがなと おなじ おとです。\nや → ヤ　ゆ → ユ　よ → ヨ　わ → ワ　を → ヲ　ん → ン\nヲ は、ことばの なかには ほとんど でて きません。\nン と ソ は にて います。ン の 2かくめは したから うえへ。ソ は うえから したへ。\n(Katakana is used for words from other countries. Each one has the same sound as a hiragana. ヲ is almost never used inside words. ン and ソ look alike: the second line of ン goes up, the second line of ソ goes down.)\nかきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+     "grid": true,
+     "items": [
+      {
+       "k": "kana",
+       "id": "k1",
+       "ch": "ヤ",
+       "ro": "",
+       "ex": [
+        "ヤシ",
+        "🌴"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k2",
+       "ch": "ユ",
+       "ro": "",
+       "ex": [
+        "ユニコーン",
+        "🦄"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k3",
+       "ch": "ヨ",
+       "ro": "",
+       "ex": [
+        "ヨーヨー",
+        "🪀"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k4",
+       "ch": "ワ",
+       "ro": "",
+       "ex": [
+        "ワニ",
+        "🐊"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k5",
+       "ch": "ヲ",
+       "ro": "",
+       "ex": [
+        "ひらがなの を",
+        "📖"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k6",
+       "ch": "ン",
+       "ro": "",
+       "ex": [
+        "テント",
+        "⛺"
+       ]
+      }
+     ]
+    },
+    {
+     "h": "二　どの かたかな？ Same sound",
+     "note": "ひらがなと おなじ おとの かたかなを えらびます。\n(Choose the katakana with the same sound as the hiragana.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "m1",
+       "q": "【や】",
+       "opts": [
+        "ヤ",
+        "セ",
+        "マ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m2",
+       "q": "【ゆ】",
+       "opts": [
+        "コ",
+        "ヨ",
+        "ユ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m3",
+       "q": "【よ】",
+       "opts": [
+        "コ",
+        "ヨ",
+        "ユ"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m4",
+       "q": "【わ】",
+       "opts": [
+        "ワ",
+        "ウ",
+        "ク"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m5",
+       "q": "【ん】",
+       "opts": [
+        "ソ",
+        "シ",
+        "ン"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m6",
+       "q": "【そ】",
+       "opts": [
+        "ツ",
+        "ソ",
+        "ン"
+       ],
+       "a": "B",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "三　ふくしゅう Review",
+     "note": "ふくしゅうです。えを 見て、あう ことばを えらびます。にて いる 字に きを つけて（シ と ツ、ソ と ン）。\n(Review. Look at the picture and choose the word. Watch out for letters that look alike.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "f1",
+       "q": "😷",
+       "opts": [
+        "マスク",
+        "ムスク",
+        "アスク"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f2",
+       "q": "🍅",
+       "opts": [
+        "トアト",
+        "トムト",
+        "トマト"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f3",
+       "q": "📝",
+       "opts": [
+        "メミ",
+        "メモ",
+        "ヌモ"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f4",
+       "q": "🗿",
+       "opts": [
+        "モアイ",
+        "ホアイ",
+        "モアエ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f5",
+       "q": "🦊",
+       "opts": [
+        "キシネ",
+        "キソネ",
+        "キツネ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f6",
+       "q": "🍣",
+       "opts": [
+        "むし",
+        "すし",
+        "さし"
+       ],
+       "a": "B",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "四　かけるかな Writing",
+     "note": "えを 見て、ぬけて いる 字を かきます。\n(Look at the picture. Write the missing letter.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "w1",
+       "tpl": "🐊　{}ニ",
+       "b": [
+        {
+         "a": [
+          "ワ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w2",
+       "tpl": "🌴　{}シ",
+       "b": [
+        {
+         "a": [
+          "ヤ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w3",
+       "tpl": "⛺　テ{}ト",
+       "b": [
+        {
+         "a": [
+          "ン"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w4",
+       "tpl": "🪀　{}ーヨー",
+       "b": [
+        {
+         "a": [
+          "ヨ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w5",
+       "tpl": "🦌　{}カ",
+       "b": [
+        {
+         "a": [
+          "シ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "五　かたかなを かこう Write katakana",
+     "note": "ひらがなを 見て、かたかなを かきます。つぎは、かたかなの ことばを よんで えを えらびます。さいごは、えを 見て かたかなで かきます。かたかなの ことばは、かたかなで かこう。\n(Write the katakana. Then read the katakana words and choose the picture. Last, write the word in katakana, not hiragana.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "x1",
+       "tpl": "そ → {}",
+       "b": [
+        {
+         "a": [
+          "ソ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "x2",
+       "tpl": "ん → {}",
+       "b": [
+        {
+         "a": [
+          "ン"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p1",
+       "q": "【ワニ】",
+       "opts": [
+        "🦎",
+        "🐍",
+        "🐊"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p2",
+       "q": "【テント】",
+       "opts": [
+        "🏨",
+        "⛺",
+        "🏠"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p3",
+       "q": "【ユニコーン】",
+       "opts": [
+        "🦄",
+        "🐴",
+        "🦓"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "p9",
+       "tpl": "🐊 → {}",
+       "b": [
+        {
+         "a": [
+          "ワニ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "六　さんすう Math",
+     "note": "5の だんは 5ずつ ふえます。5、10、15、20、25…\n✋ は ゆびが 5ほん。✋ が 3つ → 5 × 3 ＝ 15\nひきざん：いちの くらいが ひけない ときは、じゅうの くらいから 10を かります。うえと したを ひっくりかえして ひかない。\nれい：42 － 18 → 12 － 8 ＝ 4、じゅうの くらいは 3 － 1 ＝ 2。こたえは 24。\n(The 5 times table: 5, 10, 15, 20, 25... One hand has 5 fingers. 3 hands → 5 × 3 = 15.)\n(Subtraction: if the ones can't be taken away, borrow 10 from the tens. Never swap the top and bottom numbers.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "c1",
+       "tpl": "✋　✋　✋ → 5 × 3 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "15"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c2",
+       "tpl": "✋　✋　✋　✋　✋　✋ → 5 × 6 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "30"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c3",
+       "tpl": "5 ＋ 5 ＋ 5 ＋ 5 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "20"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c4",
+       "tpl": "5 × 4 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "20"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c5",
+       "tpl": "5 × 7 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "35"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c6",
+       "tpl": "5 × 2 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "10"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c7",
+       "tpl": "5 × 9 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "45"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c8",
+       "tpl": "43 － 17 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "26"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c9",
+       "tpl": "65 － 38 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "27"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c10",
+       "tpl": "90 － 54 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "36"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "d": "2026-11-05",
+   "wd": "もく",
+   "min": 20,
+   "sections": [
+    {
+     "h": "一　かたかな（5字） Katakana",
+     "note": "かたかなは、ほかの くにから きた ことばに つかいます。ひらがなと おなじ おとです。\nら → ラ　り → リ　る → ル　れ → レ　ろ → ロ\n(Katakana is used for words from other countries. Each one has the same sound as a hiragana.)\nかきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+     "grid": true,
+     "items": [
+      {
+       "k": "kana",
+       "id": "k1",
+       "ch": "ラ",
+       "ro": "",
+       "ex": [
+        "ラーメン",
+        "🍜"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k2",
+       "ch": "リ",
+       "ro": "",
+       "ex": [
+        "リス",
+        "🐿️"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k3",
+       "ch": "ル",
+       "ro": "",
+       "ex": [
+        "ホテル",
+        "🏨"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k4",
+       "ch": "レ",
+       "ro": "",
+       "ex": [
+        "レモン",
+        "🍋"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k5",
+       "ch": "ロ",
+       "ro": "",
+       "ex": [
+        "メロン",
+        "🍈"
+       ]
+      }
+     ]
+    },
+    {
+     "h": "二　どの かたかな？ Same sound",
+     "note": "ひらがなと おなじ おとの かたかなを えらびます。\n(Choose the katakana with the same sound as the hiragana.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "m1",
+       "q": "【ら】",
+       "opts": [
+        "ラ",
+        "ヲ",
+        "フ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m2",
+       "q": "【り】",
+       "opts": [
+        "ソ",
+        "ハ",
+        "リ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m3",
+       "q": "【る】",
+       "opts": [
+        "レ",
+        "ル",
+        "ハ"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m4",
+       "q": "【れ】",
+       "opts": [
+        "レ",
+        "ル",
+        "シ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m5",
+       "q": "【ろ】",
+       "opts": [
+        "コ",
+        "ヨ",
+        "ロ"
+       ],
+       "a": "C",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "三　ふくしゅう Review",
+     "note": "ふくしゅうです。えを 見て、あう ことばを えらびます。にて いる 字に きを つけて（シ と ツ、ソ と ン）。\n(Review. Look at the picture and choose the word. Watch out for letters that look alike.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "f1",
+       "q": "🐊",
+       "opts": [
+        "ワニ",
+        "ウニ",
+        "クニ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f2",
+       "q": "⛺",
+       "opts": [
+        "テソト",
+        "テシト",
+        "テント"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f3",
+       "q": "🌴",
+       "opts": [
+        "ヤソ",
+        "ヤシ",
+        "ヤツ"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f4",
+       "q": "🦄",
+       "opts": [
+        "ユニコーン",
+        "ユニコーソ",
+        "ヨニコーン"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f5",
+       "q": "🚕",
+       "opts": [
+        "タクツー",
+        "タクソー",
+        "タクシー"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f6",
+       "q": "🐭",
+       "opts": [
+        "れずみ",
+        "ねずみ",
+        "わずみ"
+       ],
+       "a": "B",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "四　かけるかな Writing",
+     "note": "えを 見て、ぬけて いる 字を かきます。\n(Look at the picture. Write the missing letter.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "w1",
+       "tpl": "🍋　{}モン",
+       "b": [
+        {
+         "a": [
+          "レ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w2",
+       "tpl": "🍈　メ{}ン",
+       "b": [
+        {
+         "a": [
+          "ロ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w3",
+       "tpl": "🐿️　{}ス",
+       "b": [
+        {
+         "a": [
+          "リ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w4",
+       "tpl": "🏨　ホテ{}",
+       "b": [
+        {
+         "a": [
+          "ル"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w5",
+       "tpl": "🚕　タク{}ー",
+       "b": [
+        {
+         "a": [
+          "シ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "五　かたかなを かこう Write katakana",
+     "note": "ひらがなを 見て、かたかなを かきます。つぎは、かたかなの ことばを よんで えを えらびます。さいごは、えを 見て かたかなで かきます。かたかなの ことばは、かたかなで かこう。\n(Write the katakana. Then read the katakana words and choose the picture. Last, write the word in katakana, not hiragana.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "x1",
+       "tpl": "そ → {}",
+       "b": [
+        {
+         "a": [
+          "ソ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "x2",
+       "tpl": "ろ → {}",
+       "b": [
+        {
+         "a": [
+          "ロ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p1",
+       "q": "【ラーメン】",
+       "opts": [
+        "🍛",
+        "🍙",
+        "🍜"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p2",
+       "q": "【コアラ】",
+       "opts": [
+        "🐼",
+        "🐨",
+        "🐻"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p3",
+       "q": "【カメラ】",
+       "opts": [
+        "📷",
+        "📺",
+        "📱"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "p9",
+       "tpl": "🍋 → {}",
+       "b": [
+        {
+         "a": [
+          "レモン"
+         ],
+         "w": 5
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "六　さんすう Math",
+     "note": "2の だんと 5の だんを まぜます。\nかけざんは「おなじ かずが なんこ ぶん」です。\nれい：🍎🍎 が 3つ → 2 ＋ 2 ＋ 2 ＝ 6 → 2 × 3 ＝ 6\nわからない ときは、えを かぞえるか、たしざんに して かんがえよう。\nひきざん：いちの くらいが ひけない ときは、じゅうの くらいから 10を かります。うえと したを ひっくりかえして ひかない。\nれい：42 － 18 → 12 － 8 ＝ 4、じゅうの くらいは 3 － 1 ＝ 2。こたえは 24。\n(Mixed 2 and 5 times tables.)\n(Times means the same number, this many times. 2 × 3 = 2 + 2 + 2 = 6. If you are not sure, count the pictures or add.)\n(Subtraction: if the ones can't be taken away, borrow 10 from the tens. Never swap the top and bottom numbers.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "c1",
+       "tpl": "⭐⭐⭐⭐⭐　⭐⭐⭐⭐⭐ → 5 × 2 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "10"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c2",
+       "tpl": "5 ＋ 5 ＋ 5 ＋ 5 ＋ 5 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "25"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c3",
+       "tpl": "5 × 5 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "25"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c4",
+       "tpl": "5 × 8 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "40"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c5",
+       "tpl": "2 × 6 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "12"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c6",
+       "tpl": "5 × 3 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "15"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c7",
+       "tpl": "2 × 9 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "18"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c8",
+       "tpl": "72 － 46 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "26"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c9",
+       "tpl": "34 － 19 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "15"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c10",
+       "tpl": "81 － 57 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "24"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "d": "2026-11-06",
+   "wd": "きん",
+   "min": 20,
+   "sections": [
+    {
+     "h": "一　にごる おと・小さい 字・ー Katakana",
+     "note": "てんてん（゛）と まる（゜）は、ひらがなと おなじです。か → ガ　は → バ　は → パ\n小さい ッ・ャ・ュ・ョ も、ひらがなと おなじ。っ → ッ　ゅ → ュ\n「ー」は おとを のばす しるし。\n(The two dots and the small circle work just like hiragana. Small letters work the same way too. ー makes a sound longer.)\nかきじゅんを 見て、なぞって、となりに かきます。\n(Watch the stroke order. Trace it, then write it in the next box.)",
+     "grid": true,
+     "items": [
+      {
+       "k": "kana",
+       "id": "k1",
+       "ch": "ガ",
+       "ro": "",
+       "ex": [
+        "ギター",
+        "🎸"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k2",
+       "ch": "バ",
+       "ro": "",
+       "ex": [
+        "バナナ",
+        "🍌"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k3",
+       "ch": "パ",
+       "ro": "",
+       "ex": [
+        "パン",
+        "🍞"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k4",
+       "ch": "ッ",
+       "ro": "",
+       "ex": [
+        "ロケット",
+        "🚀"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k5",
+       "ch": "ュ",
+       "ro": "",
+       "ex": [
+        "ジュース",
+        "🧃"
+       ]
+      },
+      {
+       "k": "kana",
+       "id": "k6",
+       "ch": "ー",
+       "ro": "",
+       "ex": [
+        "ケーキ",
+        "🍰"
+       ]
+      }
+     ]
+    },
+    {
+     "h": "二　どの かたかな？ Same sound",
+     "note": "ひらがなと おなじ おとの かたかなを えらびます。\n(Choose the katakana with the same sound as the hiragana.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "m1",
+       "q": "【が】",
+       "opts": [
+        "ガ",
+        "カ",
+        "ザ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m2",
+       "q": "【ば】",
+       "opts": [
+        "パ",
+        "ハ",
+        "バ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m3",
+       "q": "【ぱ】",
+       "opts": [
+        "ハ",
+        "パ",
+        "バ"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m4",
+       "q": "【じゅ】",
+       "opts": [
+        "ジュ",
+        "シュ",
+        "ジョ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "m5",
+       "q": "【っ】",
+       "opts": [
+        "ツ",
+        "シ",
+        "ッ"
+       ],
+       "a": "C",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "三　ふくしゅう Review",
+     "note": "ふくしゅうです。えを 見て、あう ことばを えらびます。にて いる 字に きを つけて（シ と ツ、ソ と ン）。\n(Review. Look at the picture and choose the word. Watch out for letters that look alike.)",
+     "items": [
+      {
+       "k": "choice",
+       "id": "f1",
+       "q": "🍜",
+       "opts": [
+        "ラーメン",
+        "ラーメソ",
+        "ラーメシ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f2",
+       "q": "🍋",
+       "opts": [
+        "ルモン",
+        "レモソ",
+        "レモン"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f3",
+       "q": "🍈",
+       "opts": [
+        "メロソ",
+        "メロン",
+        "ヌロン"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f4",
+       "q": "🐨",
+       "opts": [
+        "コアラ",
+        "コアウ",
+        "ユアラ"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f5",
+       "q": "🦌",
+       "opts": [
+        "ツカ",
+        "ソカ",
+        "シカ"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "f6",
+       "q": "🍙",
+       "opts": [
+        "おにきり",
+        "おにぎり",
+        "おにさり"
+       ],
+       "a": "B",
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "四　かけるかな Writing",
+     "note": "えを 見て、ぬけて いる 字を かきます。\n(Look at the picture. Write the missing letter.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "w1",
+       "tpl": "🍌　{}ナナ",
+       "b": [
+        {
+         "a": [
+          "バ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w2",
+       "tpl": "🍞　{}ン",
+       "b": [
+        {
+         "a": [
+          "パ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w3",
+       "tpl": "🚀　ロケ{}ト",
+       "b": [
+        {
+         "a": [
+          "ッ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w4",
+       "tpl": "🧃　ジ{}ース",
+       "b": [
+        {
+         "a": [
+          "ュ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "w5",
+       "tpl": "🦌　{}カ",
+       "b": [
+        {
+         "a": [
+          "シ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "五　かたかなを かこう Write katakana",
+     "note": "ひらがなを 見て、かたかなを かきます。つぎは、かたかなの ことばを よんで えを えらびます。さいごは、えを 見て かたかなで かきます。かたかなの ことばは、かたかなで かこう。\n(Write the katakana. Then read the katakana words and choose the picture. Last, write the word in katakana, not hiragana.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "x1",
+       "tpl": "そ → {}",
+       "b": [
+        {
+         "a": [
+          "ソ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "x2",
+       "tpl": "ば → {}",
+       "b": [
+        {
+         "a": [
+          "バ"
+         ],
+         "w": 4
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p1",
+       "q": "【テレビ】",
+       "opts": [
+        "📷",
+        "📱",
+        "📺"
+       ],
+       "a": "C",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p2",
+       "q": "【ピアノ】",
+       "opts": [
+        "🥁",
+        "🎹",
+        "🎸"
+       ],
+       "a": "B",
+       "pts": 1
+      },
+      {
+       "k": "choice",
+       "id": "p3",
+       "q": "【ドーナツ】",
+       "opts": [
+        "🍩",
+        "🍪",
+        "🍰"
+       ],
+       "a": "A",
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "p9",
+       "tpl": "🍌 → {}",
+       "b": [
+        {
+         "a": [
+          "バナナ"
+         ],
+         "w": 5
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    },
+    {
+     "h": "六　さんすう Math",
+     "note": "2の だんと 5の だんの まとめです。\nかけざんは「おなじ かずが なんこ ぶん」です。\nれい：🍎🍎 が 3つ → 2 ＋ 2 ＋ 2 ＝ 6 → 2 × 3 ＝ 6\nわからない ときは、えを かぞえるか、たしざんに して かんがえよう。\nひきざん：いちの くらいが ひけない ときは、じゅうの くらいから 10を かります。うえと したを ひっくりかえして ひかない。\nれい：42 － 18 → 12 － 8 ＝ 4、じゅうの くらいは 3 － 1 ＝ 2。こたえは 24。\n(2 and 5 times tables, all mixed.)\n(Times means the same number, this many times. 2 × 3 = 2 + 2 + 2 = 6. If you are not sure, count the pictures or add.)\n(Subtraction: if the ones can't be taken away, borrow 10 from the tens. Never swap the top and bottom numbers.)",
+     "items": [
+      {
+       "k": "fill",
+       "id": "c1",
+       "tpl": "🍎🍎　🍎🍎　🍎🍎　🍎🍎　🍎🍎　🍎🍎　🍎🍎 → 2 × 7 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "14"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c2",
+       "tpl": "5 × 6 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "30"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c3",
+       "tpl": "2 × 4 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "8"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c4",
+       "tpl": "5 × 9 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "45"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c5",
+       "tpl": "2 × 8 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "16"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c6",
+       "tpl": "5 × 7 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "35"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c7",
+       "tpl": "2 × 5 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "10"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c8",
+       "tpl": "61 － 24 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "37"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c9",
+       "tpl": "93 － 58 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "35"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      },
+      {
+       "k": "fill",
+       "id": "c10",
+       "tpl": "50 － 23 ＝ {}",
+       "b": [
+        {
+         "a": [
+          "27"
+         ],
+         "t": "num",
+         "w": 6
+        }
+       ],
+       "pts": 1
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "test": {
+  "d": "2026-11-07",
+  "min": 20,
+  "sections": [
+   {
+    "h": "一　どれかな Reading（1もん1点）",
+    "note": "えを 見て、あう ことばを えらびます。\n(Look at the picture and choose the word.)",
+    "items": [
+     {
+      "k": "choice",
+      "id": "y1",
+      "q": "❤️",
+      "opts": [
+       "ハート",
+       "ホート",
+       "ヘート"
+      ],
+      "a": "A",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y2",
+      "q": "😷",
+      "opts": [
+       "ムスク",
+       "アスク",
+       "マスク"
+      ],
+      "a": "C",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y3",
+      "q": "🍅",
+      "opts": [
+       "トムト",
+       "トマト",
+       "トアト"
+      ],
+      "a": "B",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y4",
+      "q": "🐊",
+      "opts": [
+       "ワニ",
+       "ウニ",
+       "クニ"
+      ],
+      "a": "A",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y5",
+      "q": "⛺",
+      "opts": [
+       "テソト",
+       "テシト",
+       "テント"
+      ],
+      "a": "C",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y6",
+      "q": "🍋",
+      "opts": [
+       "レモソ",
+       "レモン",
+       "ルモン"
+      ],
+      "a": "B",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y7",
+      "q": "🐨",
+      "opts": [
+       "コアラ",
+       "コアウ",
+       "ユアラ"
+      ],
+      "a": "A",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y8",
+      "q": "🍌",
+      "opts": [
+       "パナナ",
+       "ハナナ",
+       "バナナ"
+      ],
+      "a": "C",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y9",
+      "q": "🦌",
+      "opts": [
+       "ソカ",
+       "シカ",
+       "ツカ"
+      ],
+      "a": "B",
+      "pts": 1
+     },
+     {
+      "k": "choice",
+      "id": "y10",
+      "q": "🚢",
+      "opts": [
+       "ふね",
+       "ふわ",
+       "ふれ"
+      ],
+      "a": "A",
+      "pts": 1
+     }
+    ]
+   },
+   {
+    "h": "二　かけるかな Writing（1もん1点）",
+    "note": "えを 見て、ぬけて いる 字を かきます。「そ → 」は、おなじ おとの かたかなを かきます。\n(Look at the picture. Write the missing letter. For そ, write the katakana.)",
+    "items": [
+     {
+      "k": "fill",
+      "id": "w1",
+      "tpl": "🔪　ナイ{}",
+      "b": [
+       {
+        "a": [
+         "フ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w2",
+      "tpl": "📝　メ{}",
+      "b": [
+       {
+        "a": [
+         "モ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w3",
+      "tpl": "🌴　{}シ",
+      "b": [
+       {
+        "a": [
+         "ヤ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w4",
+      "tpl": "🍈　メ{}ン",
+      "b": [
+       {
+        "a": [
+         "ロ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w5",
+      "tpl": "🐿️　{}ス",
+      "b": [
+       {
+        "a": [
+         "リ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w6",
+      "tpl": "🍞　{}ン",
+      "b": [
+       {
+        "a": [
+         "パ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w7",
+      "tpl": "🚀　ロケ{}ト",
+      "b": [
+       {
+        "a": [
+         "ッ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w8",
+      "tpl": "🦌　{}カ",
+      "b": [
+       {
+        "a": [
+         "シ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w9",
+      "tpl": "そ → {}",
+      "b": [
+       {
+        "a": [
+         "ソ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "w10",
+      "tpl": "🦀　{}ニ",
+      "b": [
+       {
+        "a": [
+         "カ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     }
+    ]
+   },
+   {
+    "h": "三　ことば Words（1もん1点）",
+    "note": "えを 見て、ことばを ぜんぶ かきます。かたかなの ことばは かたかなで。\n(Look at the picture and write the whole word. Katakana words in katakana.)",
+    "items": [
+     {
+      "k": "fill",
+      "id": "t1",
+      "tpl": "🍅 → {}",
+      "b": [
+       {
+        "a": [
+         "トマト"
+        ],
+        "w": 5
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "t2",
+      "tpl": "🐊 → {}",
+      "b": [
+       {
+        "a": [
+         "ワニ"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "t3",
+      "tpl": "🍋 → {}",
+      "b": [
+       {
+        "a": [
+         "レモン"
+        ],
+        "w": 5
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "t4",
+      "tpl": "🍆 → {}",
+      "b": [
+       {
+        "a": [
+         "ナス"
+        ],
+        "w": 4
+       }
+      ],
+      "pts": 1
+     }
+    ]
+   },
+   {
+    "h": "四　けいさん Math（1もん1点）",
+    "note": "けいさんを しましょう。\n(Work out the answers.)",
+    "items": [
+     {
+      "k": "fill",
+      "id": "c1",
+      "tpl": "🍎🍎🍎　🍎🍎🍎　🍎🍎🍎　🍎🍎🍎 → 3 × 4 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "12"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c2",
+      "tpl": "✋　✋　✋　✋ → 5 × 4 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "20"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c3",
+      "tpl": "2 × 6 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "12"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c4",
+      "tpl": "2 × 8 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "16"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c5",
+      "tpl": "5 × 3 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "15"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c6",
+      "tpl": "5 × 7 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "35"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c7",
+      "tpl": "2 × 7 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "14"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c8",
+      "tpl": "53 － 27 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "26"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c9",
+      "tpl": "84 － 39 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "45"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     },
+     {
+      "k": "fill",
+      "id": "c10",
+      "tpl": "70 － 42 ＝ {}",
+      "b": [
+       {
+        "a": [
+         "28"
+        ],
+        "t": "num",
+        "w": 6
+       }
+      ],
+      "pts": 1
+     }
+    ]
+   }
+  ]
+ }
+}
