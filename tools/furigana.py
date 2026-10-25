@@ -16,12 +16,15 @@ FIX = {
  '｜入《いっ》': '｜入《はい》', '｜入《い》ろう': '｜入《はい》ろう', 'が｜入《い》る': 'が｜入《はい》る',
  '2｜回《まわ》つ': '2｜回《かい》つ', 'その｜日《にち》': 'その｜日《ひ》', '10｜本《ほん》の｜指': '｜10本《じっぽん》の｜指',
  '｜目《め》ひょう': '｜目《もく》ひょう',
+ 'か｜所《ところ》': 'か｜所《しょ》', '｜重《おも》ね': '｜重《かさ》ね',
  '｜今年《こんねん》': '｜今年《ことし》', '｜今日《こんにち》': '｜今日《きょう》', '｜回《まわ》たたく': '｜回《かい》たたく',
  '1｜人分《にんぶん》': '｜1人分《ひとりぶん》', '｜画《が》': '｜画《かく》', 'つ｜分《ふん》': 'つ｜分《ぶん》', '｜回読《かいどく》': '｜回《かい》｜読《よ》',
 }
 # Kanji taught in grade 1: words written only with these get no furigana.
 G1 = set('一右雨円王音下火花貝学気九休玉金空月犬見五口校左三山子四糸字耳七車手十出女小上森人水正生青夕石赤千川先早草足村大男竹中虫町天田土二日入年白八百文木本名目立力林六')
-KNOWN = set(G1)   # add more characters here as the child learns to read them
+# Grade 2 (160 chars): added from week 4 (agreed with the father; he already reads most of them)
+G2 = set('引羽雲園遠何科夏家歌画回会海絵外角楽活間丸岩顔汽記帰弓牛魚京強教近兄形計元言原戸古午後語工公広交光考行高黄合谷国黒今才細作算止市矢姉思紙寺自時室社弱首秋週春書少場色食心新親図数西声星晴切雪船線前組走多太体台地池知茶昼長鳥朝直通弟店点電刀冬当東答頭同道読内南肉馬売買麦半番父風分聞米歩母方北毎妹万明鳴毛門夜野友用曜来里理話')
+KNOWN = G1 | G2   # add more characters here as the child learns to read them
 def _tok(o, h):
     segs = re.findall(KJ + r'+|[^一-龥々]+', o)
     kana = lambda sg: ''.join(chr(ord(c) - 0x60) if 'ァ' <= c <= 'ヶ' else c for c in sg)
