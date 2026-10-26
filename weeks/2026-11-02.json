@@ -951,21 +951,6 @@
        ],
        "pts": 0,
        "why": "「大（おお）」＋「雨（あめ）」で「おおあめ」。たくさんふる雨のことです。"
-      },
-      {
-       "k": "fill",
-       "id": "y2",
-       "tpl": "【足音】　{}",
-       "b": [
-        {
-         "a": [
-          "あしおと"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「足（あし）」＋「音（おと）」で「あしおと」。歩くときの音です。"
       }
      ]
     },
@@ -1048,21 +1033,6 @@
        ],
        "pts": 0,
        "why": "「ポ・ケ・ッ・ト」で4回。小さい「ッ」も1回分。「ポ」は「ホ」に丸。"
-      },
-      {
-       "k": "fill",
-       "id": "kw3",
-       "tpl": "たおる　→　{}",
-       "b": [
-        {
-         "a": [
-          "タオル"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「タ」は「ク」とにていますが、中に線が1本あります。「オ」「ル」も、ひらがなとちがう形。"
       }
      ]
     },
@@ -1181,29 +1151,6 @@
        ],
        "pts": 0,
        "why": "｜述語《じゅつご》は「どうする」だけでなく「どんなだ」もあります。「。」の前の「やさしい」が｜述語《じゅつご》。だれがやさしい？→「先生は」。"
-      },
-      {
-       "k": "fill",
-       "id": "g3",
-       "tpl": "「きのう　姉も　｜図書館《としょかん》へ　行った。」\n｜主語《しゅご》{}　｜述語《じゅつご》{}",
-       "b": [
-        {
-         "a": [
-          "姉も",
-          "あねも"
-         ],
-         "w": 8
-        },
-        {
-         "a": [
-          "行った",
-          "いった"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「。」の前の「行った」が｜述語《じゅつご》。だれが行った？→「姉も」。「きのう」はいつ、「｜図書館《としょかん》へ」はどこへ、です。"
       }
      ]
     },
@@ -1344,22 +1291,6 @@
        "why": "9.3 を 9.30 と考えてわり｜進《すす》めます。9.3 ÷ 6 ＝ 1.55。たしかめ：1.55 × 6 ＝ 9.3"
       },
       {
-       "k": "fill",
-       "id": "c6",
-       "tpl": "2.6 ÷ 4 ＝ {}",
-       "b": [
-        {
-         "a": [
-          "0.65"
-         ],
-         "w": 6,
-         "t": "num"
-        }
-       ],
-       "pts": 0,
-       "why": "一の｜位《くらい》がわる数より小さいので「0.」から。2.6 を 2.60 と考えてわり｜進《すす》めます。2.6 ÷ 4 ＝ 0.65。たしかめ：0.65 × 4 ＝ 2.6"
-      },
-      {
        "sub": "｜単位《たんい》（先週のふくしゅう）"
       },
       {
@@ -1377,22 +1308,6 @@
        ],
        "pts": 0,
        "why": "1 kg ＝ 1000 g なので 2 kg ＝ 2000 g。2000 ＋ 50 ＝ 2050 g。「250」ではありません。"
-      },
-      {
-       "k": "fill",
-       "id": "u2",
-       "tpl": "3 L 6 dL ＝ {} mL",
-       "b": [
-        {
-         "a": [
-          "3600"
-         ],
-         "w": 6,
-         "t": "num"
-        }
-       ],
-       "pts": 0,
-       "why": "3 L ＝ 3000 mL。6 dL ＝ 600 mL（1 dL ＝ 100 mL）。3000 ＋ 600 ＝ 3600 mL"
       },
       {
        "k": "ink",
@@ -1485,6 +1400,26 @@
      ]
     },
     {
+     "h": "｜面接《めんせつ》のポイント①　ながれと音読",
+     "note": "｜面接《めんせつ》は、こんなじゅんばんです。\n① カードの文を、だまって20びょう読む\n② 声に出して読む（音読）\n③ しつもんが4つ（No.1〜No.4）\n④ さいごに あいさつをして 出る\n音読のコツ：タイトルから読む。カンマ（,）とピリオド（.）で いきをすう。まちがえても とまらずに、さいごまで はっきり読む。",
+     "items": [
+      {
+       "k": "choice",
+       "id": "i1",
+       "q": "You are going to read the passage aloud. What do you read first?",
+       "opts": [
+        "The title",
+        "Your name",
+        "The second sentence"
+       ],
+       "a": "A",
+       "pts": 0,
+       "en": true,
+       "why": "Start with the title. タイトルから読みはじめます。"
+      }
+     ]
+    },
+    {
      "h": "English　Words",
      "note": "deplete = use so much of something that little is left ／ vital = very important and needed ／ fragile = easy to break",
      "en": true,
@@ -1552,54 +1487,19 @@
      ]
     },
     {
-     "h": "English　Reading",
-     "note": "Answer in a full sentence. Start with the subject (WHO or WHAT).\nUse the same tense as the question: \"What did …\" → answer in the past (flew, learned, put).\nQ: What did the boy eat?  ✗ Rice.  ✓ The boy ate rice.",
-     "passage": [
-      "More than half of the people in the world now live in cities. Cities have many jobs, schools, and hospitals, so people move there. But big cities also have problems, such as heavy traffic, noise, and dirty air. To make cities better places to live, some cities are building more parks and bike lanes. Trees in parks clean the air and keep the city cooler in summer."
-     ],
-     "en": true,
-     "items": [
-      {
-       "k": "choice",
-       "id": "r1",
-       "q": "What is the main idea of this passage?",
-       "opts": [
-        "Cities have no schools.",
-        "Big cities have problems, and some cities are adding parks and bike lanes to make life better.",
-        "Trees make cities hotter.",
-        "Everyone should move to a small town."
-       ],
-       "a": "B",
-       "pts": 0,
-       "why": "The passage talks about city problems and how some cities are fixing them. B has both parts.",
-       "en": true
-      },
-      {
-       "k": "long",
-       "id": "r2",
-       "q": "Why do people move to cities? Answer in a full sentence.",
-       "rows": 2,
-       "pts": 0,
-       "en": true,
-       "model": "People move to cities because cities have many jobs, schools, and hospitals.",
-       "why": "Look at the second sentence. Start with the subject: \"People move to cities because ...\""
-      }
-     ]
-    },
-    {
      "h": "English　Writing",
-     "note": "Count your sentences before you stop: 1, 2, 3, 4, 5. Each sentence starts with a capital letter and ends with a period (.). Fill all the lines.",
+     "note": "Interview style: give your answer first, then two reasons. Each sentence starts with a capital letter and ends with a period (.).",
      "en": true,
      "items": [
       {
        "k": "long",
        "id": "w1",
-       "q": "Is it better to live in a big city or in a small town? Write 5 sentences: (1) your opinion, (2) \"First, …\", (3) \"Second, …\", (4) one more sentence about a reason, (5) \"That is why …\".",
-       "rows": 8,
+       "q": "Is it better to live in a big city or in a small town? Write 3 sentences like an interview answer: (1) \"I think living in … is better.\" (2) \"First, …\" (3) \"Also, …\"",
+       "rows": 5,
        "pts": 0,
        "en": true,
-       "sample": "I think it is better to live in a small town. First, small towns are quiet, so I can sleep well. Second, there is more nature, and I can play outside with my friends. The air is also cleaner than in a big city. That is why I would like to live in a small town.",
-       "why": "Check: Did you write 5 sentences? Did you use First and Second?"
+       "sample": "I think living in a small town is better. First, small towns are quiet, so people can relax. Also, there is more nature, and children can play outside.",
+       "why": "Check: 3 sentences? Did you say your answer first, then First and Also?"
       }
      ]
     }
@@ -1780,21 +1680,6 @@
        ],
        "pts": 0,
        "why": "「休（きゅう）」＋「日（じつ）」で「きゅうじつ」。休みの日のことです。"
-      },
-      {
-       "k": "fill",
-       "id": "y2",
-       "tpl": "【入学】　{}",
-       "b": [
-        {
-         "a": [
-          "にゅうがく"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「入（にゅう）」＋「学（がく）」で「にゅうがく」。学校に入ることです。"
       }
      ]
     },
@@ -1829,20 +1714,6 @@
        "pts": 0,
        "lab": "アイウ",
        "why": "｜宿題《しゅくだい》をおえた → つぎに → テレビを見た。じゅんばんなので「それから」。"
-      },
-      {
-       "k": "choice",
-       "id": "n3",
-       "q": "朝は晴れていた。（　）、昼から雨がふってきた。",
-       "opts": [
-        "それから",
-        "しかし",
-        "たとえば"
-       ],
-       "a": "イ",
-       "pts": 0,
-       "lab": "アイウ",
-       "why": "晴れていたのに、雨がふってきた。｜反対《はんたい》のことなので「しかし」。"
       }
      ]
     },
@@ -1893,28 +1764,6 @@
        ],
        "pts": 0,
        "why": "「。」の前の「つめたい」が｜述語《じゅつご》（どんなだ）。何がつめたい？→「水は」。"
-      },
-      {
-       "k": "fill",
-       "id": "g3",
-       "tpl": "「妹は　毎朝　犬と　さんぽを　する。」\n｜主語《しゅご》{}　｜述語《じゅつご》{}",
-       "b": [
-        {
-         "a": [
-          "妹は",
-          "いもうとは"
-         ],
-         "w": 8
-        },
-        {
-         "a": [
-          "する"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「。」の前の「する」が｜述語《じゅつご》。「さんぽを」はまん中のことばなので、｜述語《じゅつご》ではありません。だれがする？→「妹は」。"
       }
      ]
     },
@@ -2028,22 +1877,6 @@
        "why": "6.3 を 6.30 と考えてわり｜進《すす》めます。6.3 ÷ 5 ＝ 1.26。たしかめ：1.26 × 5 ＝ 6.3"
       },
       {
-       "k": "fill",
-       "id": "c5",
-       "tpl": "4.6 ÷ 4 ＝ {}",
-       "b": [
-        {
-         "a": [
-          "1.15"
-         ],
-         "w": 6,
-         "t": "num"
-        }
-       ],
-       "pts": 0,
-       "why": "4.6 を 4.60 と考えてわり｜進《すす》めます。4.6 ÷ 4 ＝ 1.15。たしかめ：1.15 × 4 ＝ 4.6"
-      },
-      {
        "k": "ink",
        "id": "sc",
        "q": "計算スペース（とちゅうの｜式《しき》を書いてよい）",
@@ -2126,22 +1959,6 @@
        ],
        "pts": 0,
        "why": "1/7 から 4/7 はひけないので、3 から 1 をかりる。3と1/7 ＝ 2と8/7。2と8/7 － 4/7 ＝ 2と4/7"
-      },
-      {
-       "k": "fill",
-       "id": "f3",
-       "tpl": "1と5/8 ＋ 6/8 ＝ {}",
-       "b": [
-        {
-         "a": [
-          "2と3/8",
-          "19/8"
-         ],
-         "w": 7
-        }
-       ],
-       "pts": 0,
-       "why": "5/8 ＋ 6/8 ＝ 11/8 ＝ 1と3/8。1 ＋ 1と3/8 ＝ 2と3/8"
       },
       {
        "k": "ink",
@@ -2234,6 +2051,26 @@
      ]
     },
     {
+     "h": "｜面接《めんせつ》のポイント②　No.1（文についてのしつもん）",
+     "note": "No.1は、カードの文について聞かれます。\n・How（どうやって）で聞かれたら → By 〜ing. で答える\n・Why（なぜ）で聞かれたら → Because 〜. で答える\n答えは、文の中の By doing so や In this way の【前の文】にあることが多い。\n人の名前やことばは、they や it にかえて言う（students → they）。",
+     "items": [
+      {
+       "k": "choice",
+       "id": "i1",
+       "q": "The question is: \"How can teachers check students' work quickly?\" How do you start your answer?",
+       "opts": [
+        "By sending homework to their tablets.",
+        "Yes, they can.",
+        "Because I like tablets."
+       ],
+       "a": "A",
+       "pts": 0,
+       "en": true,
+       "why": "A \"How\" question → answer with \"By ~ing.\""
+      }
+     ]
+    },
+    {
      "h": "English　Words",
      "note": "migrate = move to another place when the season changes ／ eliminate = take away completely ／ substantial = large in amount",
      "en": true,
@@ -2286,41 +2123,6 @@
      ]
     },
     {
-     "h": "English　Reading",
-     "note": "Answer in a full sentence. Start with the subject (WHO or WHAT).\nUse the same tense as the question: \"What did …\" → answer in the past (flew, learned, put).\nQ: What did the boy eat?  ✗ Rice.  ✓ The boy ate rice.",
-     "passage": [
-      "The Arctic tern is a small bird, but it makes one of the longest trips of any animal. Every year, it flies from the Arctic, near the North Pole, to the Antarctic, near the South Pole, and then back again. Scientists found that one bird can fly about 70,000 kilometers in a year. Why does it travel so far? By moving between the two poles, the tern can enjoy two summers every year, when there is a lot of food."
-     ],
-     "en": true,
-     "items": [
-      {
-       "k": "choice",
-       "id": "r1",
-       "q": "What is the main idea of this passage?",
-       "opts": [
-        "The Arctic tern is the biggest bird in the world.",
-        "The Arctic tern flies very far every year to enjoy two summers.",
-        "The Arctic tern lives only near the North Pole.",
-        "Scientists do not like the Arctic tern."
-       ],
-       "a": "B",
-       "pts": 0,
-       "why": "The passage tells how far the tern flies and why (two summers with a lot of food).",
-       "en": true
-      },
-      {
-       "k": "long",
-       "id": "r2",
-       "q": "Where does the Arctic tern fly to from the Arctic? Answer in a full sentence.",
-       "rows": 2,
-       "pts": 0,
-       "en": true,
-       "model": "The Arctic tern flies to the Antarctic, near the South Pole.",
-       "why": "Look at the second sentence. Start with the subject: \"The Arctic tern flies to ...\""
-      }
-     ]
-    },
-    {
      "h": "English　Spelling",
      "note": "These words were wrong more than once. Say the letters out loud as you write them.",
      "en": true,
@@ -2359,18 +2161,18 @@
     },
     {
      "h": "English　Writing",
-     "note": "Count your sentences before you stop: 1, 2, 3, 4, 5. Each sentence starts with a capital letter and ends with a period (.). Fill all the lines.",
+     "note": "Interview style: give your answer first, then two reasons. Each sentence starts with a capital letter and ends with a period (.).",
      "en": true,
      "items": [
       {
        "k": "long",
        "id": "w1",
-       "q": "What can your school do to save energy? Write 5 sentences: (1) your opinion, (2) \"First, …\" (idea 1 and why), (3) \"Second, …\" (idea 2 and why), (4) one more sentence, (5) \"That is why …\".",
-       "rows": 8,
+       "q": "Some people say that schools should use less electricity. What do you think about that? Write 3 sentences: (1) \"I agree.\" or \"I disagree.\" (2) \"First, …\" (3) \"Also, …\"",
+       "rows": 5,
        "pts": 0,
        "en": true,
-       "sample": "I think my school can save a lot of energy. First, we can turn off the lights when we leave the classroom, because empty rooms do not need light. Second, we can set the air conditioner to 26 degrees, so it uses less electricity. Students can also make posters to remind everyone. That is why small actions can save energy at school.",
-       "why": "Check: Did you write 5 sentences? Did you say WHY each idea helps?"
+       "sample": "I agree. First, using less electricity is good for the earth. Also, schools can use the money they save to buy new books.",
+       "why": "Check: 3 sentences? Did you say your answer first, then First and Also?"
       }
      ]
     }
@@ -2551,21 +2353,6 @@
        ],
        "pts": 0,
        "why": "「花（はな）」＋「見（み）」で「はなみ」。さくらの花を見て楽しむことです。"
-      },
-      {
-       "k": "fill",
-       "id": "y2",
-       "tpl": "【水車】　{}",
-       "b": [
-        {
-         "a": [
-          "すいしゃ"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「水（すい）」＋「車（しゃ）」で「すいしゃ」。水の力でまわる車です。"
       }
      ]
     },
@@ -2648,21 +2435,6 @@
        ],
        "pts": 0,
        "why": "「シャ」は「シ」＋小さい「ャ」で手1回。「ツ」は点が上からならびます（「シ」とちがう）。"
-      },
-      {
-       "k": "fill",
-       "id": "kw3",
-       "tpl": "ちーず　→　{}",
-       "b": [
-        {
-         "a": [
-          "チーズ"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「チ」のあとに「ー」でのばして、「ズ」は「ス」に｜点々《てんてん》。"
       }
      ]
     },
@@ -2766,28 +2538,6 @@
        ],
        "pts": 0,
        "why": "「。」の前の「赤い」が｜述語《じゅつご》（どんなだ）。何が赤い？→「空は」。「夕方の」は「空」をくわしくすることばです。"
-      },
-      {
-       "k": "fill",
-       "id": "g3",
-       "tpl": "「あしたは　ぼくも　サッカーの　しあいに　出る。」\n｜主語《しゅご》{}　｜述語《じゅつご》{}",
-       "b": [
-        {
-         "a": [
-          "ぼくも"
-         ],
-         "w": 8
-        },
-        {
-         "a": [
-          "出る",
-          "でる"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「。」の前の「出る」が｜述語《じゅつご》。だれが出る？→「ぼくも」。「あしたは」は「は」がついていますが、「いつ」をあらわすことばなので｜主語《しゅご》ではありません。"
       }
      ]
     },
@@ -2957,29 +2707,6 @@
        "why": "一の｜位《くらい》までわると 26 ÷ 8 ＝ 3 あまり 2。小数点より下もおろして、あまりは 2.5。たしかめ：8 × 3 ＋ 2.5 ＝ 26.5"
       },
       {
-       "k": "fill",
-       "id": "c6",
-       "tpl": "20.4 ÷ 3 ＝ {} あまり {}　（｜商《しょう》は一の｜位《くらい》まで）",
-       "b": [
-        {
-         "a": [
-          "6"
-         ],
-         "w": 5,
-         "t": "num"
-        },
-        {
-         "a": [
-          "2.4"
-         ],
-         "w": 5,
-         "t": "num"
-        }
-       ],
-       "pts": 0,
-       "why": "一の｜位《くらい》までわると 20 ÷ 3 ＝ 6 あまり 2。小数点より下もおろして、あまりは 2.4。たしかめ：3 × 6 ＋ 2.4 ＝ 20.4"
-      },
-      {
        "sub": "がい数（ふくしゅう）"
       },
       {
@@ -2997,22 +2724,6 @@
        ],
        "pts": 0,
        "why": "十の｜位《くらい》の「5」を見る。5は5〜9なので切り上げて 3700。"
-      },
-      {
-       "k": "fill",
-       "id": "a2",
-       "tpl": "58420 を千の｜位《くらい》までのがい数にすると {}",
-       "b": [
-        {
-         "a": [
-          "58000"
-         ],
-         "w": 6,
-         "t": "num"
-        }
-       ],
-       "pts": 0,
-       "why": "百の｜位《くらい》の「4」を見る。4は0〜4なので切りすてて 58000。"
       },
       {
        "k": "ink",
@@ -3112,6 +2823,26 @@
      ]
     },
     {
+     "h": "｜面接《めんせつ》のポイント③　No.2（3コマのえ）",
+     "note": "No.2は、3コマのえを見て、お話をします。じゅんびは20びょう。\n・カードに書いてある さいしょの文から はじめる\n・1コマに 2文くらい\n・うごきは was 〜ing / were 〜ing（〜していました）\n・ふきだしは He said to her, \"…\". と言う\n・2コマ目と3コマ目は、上の時間のことば（The next day, など）から はじめる",
+     "items": [
+      {
+       "k": "choice",
+       "id": "i1",
+       "q": "In the picture, Ken is picking tomatoes in the garden. Which sentence is the best?",
+       "opts": [
+        "Ken was picking tomatoes in the garden.",
+        "Ken pick tomato in garden.",
+        "Ken is pick tomatoes."
+       ],
+       "a": "A",
+       "pts": 0,
+       "en": true,
+       "why": "Use \"was ~ing\" for what he was doing in the picture."
+      }
+     ]
+    },
+    {
      "h": "English　Words",
      "note": "reinforce = make something stronger ／ abandon = leave something and not come back ／ profound = very deep or strong (a feeling or an idea)",
      "en": true,
@@ -3179,54 +2910,19 @@
      ]
     },
     {
-     "h": "English　Reading",
-     "note": "Answer in a full sentence. Start with the subject (WHO or WHAT).\nUse the same tense as the question: \"What did …\" → answer in the past (flew, learned, put).\nQ: What did the boy eat?  ✗ Rice.  ✓ The boy ate rice.",
-     "passage": [
-      "Around the world, a large amount of food is thrown away every day. This happens on farms, in shops, and at home. When food is thrown away, the water and energy used to grow it are wasted, too. Some supermarkets now sell \"ugly\" vegetables, with strange shapes, at lower prices. At home, families can plan their meals and buy only what they need."
-     ],
-     "en": true,
-     "items": [
-      {
-       "k": "choice",
-       "id": "r1",
-       "q": "What is the main idea of this passage?",
-       "opts": [
-        "Ugly vegetables taste bad.",
-        "A lot of food is wasted, and shops and families can do things to waste less.",
-        "Farms use too much water.",
-        "Families should buy more food."
-       ],
-       "a": "B",
-       "pts": 0,
-       "why": "The passage first shows the problem (food is wasted) and then gives ideas to waste less. B has both parts.",
-       "en": true
-      },
-      {
-       "k": "long",
-       "id": "r2",
-       "q": "What do some supermarkets sell at lower prices? Answer in a full sentence.",
-       "rows": 2,
-       "pts": 0,
-       "en": true,
-       "model": "Some supermarkets sell ugly vegetables at lower prices.",
-       "why": "Look at the fourth sentence. Start with the subject: \"Some supermarkets sell ...\""
-      }
-     ]
-    },
-    {
      "h": "English　Writing",
-     "note": "Count your sentences before you stop: 1, 2, 3, 4, 5. Each sentence starts with a capital letter and ends with a period (.). Fill all the lines.",
+     "note": "Interview style: give your answer first, then two reasons. Each sentence starts with a capital letter and ends with a period (.).",
      "en": true,
      "items": [
       {
        "k": "long",
        "id": "w1",
-       "q": "Many families throw away food that they did not eat. Write 5 sentences: (1) Why is this a problem? (2) What idea would help? (3) \"First, …\" (why your idea works) (4) \"Second, …\" (another reason) (5) \"That is why …\".",
-       "rows": 8,
+       "q": "Do you think people waste too much food? Write 3 sentences: (1) \"Yes.\" or \"No.\" (2) \"First, …\" (3) \"Also, …\"",
+       "rows": 5,
        "pts": 0,
        "en": true,
-       "sample": "Throwing away food is a problem because the water and energy used to make it are wasted. My idea is that families should write a shopping list before they go to the shop. First, they will buy only the food they need. Second, they will save money, too. That is why a shopping list is a good idea.",
-       "why": "This is the same kind of question as the test. Check: 5 sentences? Problem, idea, First, Second?"
+       "sample": "Yes. First, many people buy more food than they need. Also, restaurants throw away a lot of food at the end of the day.",
+       "why": "Check: 3 sentences? Did you say your answer first, then First and Also?"
       }
      ]
     }
@@ -3406,21 +3102,6 @@
        ],
        "pts": 0,
        "why": "「青（せい）」＋「年（ねん）」で「せいねん」。わかい人のことです。"
-      },
-      {
-       "k": "fill",
-       "id": "y2",
-       "tpl": "【白玉】　{}",
-       "b": [
-        {
-         "a": [
-          "しらたま"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「白」は、ほかのことばの前では「しら」と読むことがあります。「しら」＋「たま」で「しらたま」。"
       }
      ]
     },
@@ -3457,21 +3138,6 @@
        "pts": 0,
        "lab": "アイウ",
        "why": "外であそぶことの「れい」を出しているので「たとえば」。"
-      },
-      {
-       "k": "fill",
-       "id": "k5",
-       "tpl": "「かぎを　{}に　おいたか、わすれて　しまった。」",
-       "b": [
-        {
-         "a": [
-          "どこ"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "｜場所《ばしょ》がわからないときは「ど」。「どこ」です。"
       }
      ]
     },
@@ -3523,29 +3189,6 @@
        ],
        "pts": 0,
        "why": "「。」の前の「｜起《お》きる」が｜述語《じゅつご》。だれが｜起《お》きる？→「父は」。「｜早起《はやお》きの」は「父」をくわしくすることばです。"
-      },
-      {
-       "k": "fill",
-       "id": "g3",
-       "tpl": "「教室の　まどから　青い　空が　見える。」\n｜主語《しゅご》{}　｜述語《じゅつご》{}",
-       "b": [
-        {
-         "a": [
-          "空が",
-          "そらが"
-         ],
-         "w": 8
-        },
-        {
-         "a": [
-          "見える",
-          "みえる"
-         ],
-         "w": 8
-        }
-       ],
-       "pts": 0,
-       "why": "「。」の前の「見える」が｜述語《じゅつご》。何が見える？→「空が」。「まどから」は｜場所《ばしょ》です。"
       }
      ]
     },
@@ -3636,22 +3279,6 @@
        ],
        "pts": 0,
        "why": "一の｜位《くらい》がわる数より小さいので「0.」から。5.1 を 5.10 と考えてわり｜進《すす》めます。5.1 ÷ 6 ＝ 0.85。たしかめ：0.85 × 6 ＝ 5.1"
-      },
-      {
-       "k": "fill",
-       "id": "c4",
-       "tpl": "2.2 ÷ 4 ＝ {}",
-       "b": [
-        {
-         "a": [
-          "0.55"
-         ],
-         "w": 6,
-         "t": "num"
-        }
-       ],
-       "pts": 0,
-       "why": "一の｜位《くらい》がわる数より小さいので「0.」から。2.2 を 2.20 と考えてわり｜進《すす》めます。2.2 ÷ 4 ＝ 0.55。たしかめ：0.55 × 4 ＝ 2.2"
       },
       {
        "sub": "｜商《しょう》は一の｜位《くらい》まで。あまりも書く"
@@ -3749,22 +3376,6 @@
        ],
        "pts": 0,
        "why": "5/6 ＋ 3/6 ＝ 8/6 ＝ 1と2/6。2 ＋ 1と2/6 ＝ 3と2/6（3と1/3 でもよい）"
-      },
-      {
-       "k": "fill",
-       "id": "u1",
-       "tpl": "1 kg 8 g ＝ {} g",
-       "b": [
-        {
-         "a": [
-          "1008"
-         ],
-         "w": 6,
-         "t": "num"
-        }
-       ],
-       "pts": 0,
-       "why": "1 kg ＝ 1000 g。1000 ＋ 8 ＝ 1008 g。「18」や「108」ではありません。"
       },
       {
        "k": "fill",
@@ -3887,6 +3498,26 @@
      ]
     },
     {
+     "h": "｜面接《めんせつ》のポイント④　No.3・No.4と たいど",
+     "note": "No.3とNo.4は、あなたの考えを聞かれます。\n・さいしょに I agree. / I disagree. か Yes. / No. を はっきり言う\n・Why? と聞かれたら、｜理由《りゆう》を2つ（First, … Also, …）\n・聞こえなかったら Could you say that again, please? と言ってよい。だまるより ずっといい\n・たいども 点になる：大きな声、あいての目を見る、すぐに答えはじめる",
+     "items": [
+      {
+       "k": "choice",
+       "id": "i1",
+       "q": "You did not hear the question well. What do you say?",
+       "opts": [
+        "Could you say that again, please?",
+        "(say nothing and wait)",
+        "I don't know."
+       ],
+       "a": "A",
+       "pts": 0,
+       "en": true,
+       "why": "It is OK to ask. Asking is much better than saying nothing."
+      }
+     ]
+    },
+    {
      "h": "English　Words",
      "note": "renewable = can be made again and will not run out ／ endure = go through something hard without giving up ／ hostile = unfriendly and ready to fight",
      "en": true,
@@ -3939,41 +3570,6 @@
      ]
     },
     {
-     "h": "English　Reading",
-     "note": "Answer in a full sentence. Start with the subject (WHO or WHAT).\nUse the same tense as the question: \"What did …\" → answer in the past (flew, learned, put).\nQ: What did the boy eat?  ✗ Rice.  ✓ The boy ate rice.",
-     "passage": [
-      "In the past, most electricity came from burning coal, oil, and gas. Burning them puts a lot of CO2 into the air and makes the earth warmer. Today, more and more countries are using solar and wind power. The sun and the wind will not run out, and they do not make CO2 when they make electricity. However, the sun does not shine at night, so people are building big batteries to save the electricity for later."
-     ],
-     "en": true,
-     "items": [
-      {
-       "k": "choice",
-       "id": "r1",
-       "q": "What is the main idea of this passage?",
-       "opts": [
-        "Coal is the best way to make electricity.",
-        "Batteries make CO2.",
-        "More countries are using solar and wind power, which do not make CO2.",
-        "The sun shines all night."
-       ],
-       "a": "C",
-       "pts": 0,
-       "why": "The passage says burning coal is a problem, and that more countries now use solar and wind power. C is the main idea.",
-       "en": true
-      },
-      {
-       "k": "long",
-       "id": "r2",
-       "q": "Why are people building big batteries? Answer in a full sentence.",
-       "rows": 2,
-       "pts": 0,
-       "en": true,
-       "model": "People are building big batteries because the sun does not shine at night.",
-       "why": "Look at the last sentence. Start with the subject: \"People are building big batteries because ...\""
-      }
-     ]
-    },
-    {
      "h": "English　Spelling",
      "note": "Say the letters out loud as you write them.",
      "en": true,
@@ -4013,18 +3609,18 @@
     },
     {
      "h": "English　Writing",
-     "note": "Count your sentences before you stop: 1, 2, 3, 4, 5. Each sentence starts with a capital letter and ends with a period (.). Fill all the lines.",
+     "note": "Interview style: give your answer first, then two reasons. Each sentence starts with a capital letter and ends with a period (.).",
      "en": true,
      "items": [
       {
        "k": "long",
        "id": "w1",
-       "q": "Should children have their own smartphones? Write 5 sentences: (1) your opinion, (2) \"First, …\", (3) \"Second, …\", (4) one more sentence, (5) \"That is why …\".",
-       "rows": 8,
+       "q": "Do you think children should have their own smartphones? Write 3 sentences: (1) \"Yes.\" or \"No.\" (2) \"First, …\" (3) \"Also, …\"",
+       "rows": 5,
        "pts": 0,
        "en": true,
-       "sample": "I do not think young children should have their own smartphones. First, they may play games for too long and not sleep enough. Second, they may see things on the internet that are not safe. Parents can lend their phones when children really need them. That is why I think children should wait until they are older.",
-       "why": "Check: Did you write 5 sentences? Did you use First and Second?"
+       "sample": "No. First, children may spend too much time playing games. Also, they might meet dangerous people on the internet.",
+       "why": "Check: 3 sentences? Did you say your answer first, then First and Also?"
       }
      ]
     }

@@ -268,6 +268,53 @@ body.bg-v .daychip{border-color:var(--d5);color:var(--warn)}
 @media print{body{background:#fff!important}.bar{position:static}.item,.kjh,.kjb,.sec>h3{break-inside:avoid}.wrap{padding-block:8px}body{background:#fff}}
 @media (max-width:480px){ body{font-size:16px} .q{font-size:1.1rem} .sec{padding:14px} .item>.inkbox:not(.s){margin-right:36px} }
 @media (prefers-reduced-motion:no-preference){ .opt,.btn,.tab{transition:background .12s,border-color .12s} }
+/* 面接れんしゅう */
+.mzhome{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--sheet);border:3px solid var(--d6);border-radius:16px;padding:14px 16px;box-shadow:0 3px 0 var(--d6)}
+.mzhome .cb{display:flex;flex-direction:column;flex:1;min-width:0}.mzhome b{font-size:1.25rem}.mzhome small{color:var(--soft)}
+.mzhi{font-size:2rem;line-height:1}
+.mzhead{background:var(--sheet);border-radius:14px;padding:16px 20px;border:1px solid var(--line)}
+.mzcount{font-size:1.5rem;color:var(--d6)}
+.mzmode{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mzm{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:2px solid var(--line);background:var(--tint);border-radius:12px;padding:10px 14px}
+.mzm small{color:var(--soft);font-size:.8rem;line-height:1.4}.mzm.on{border-color:var(--ai);background:var(--ai-bg)}
+.mzset.next{border-color:var(--d6)}
+.mztip{border:1px solid var(--line);border-radius:12px;background:var(--sun-bg);padding:8px 14px}
+.mztip summary{font-weight:700;cursor:pointer}.mztip p{margin:6px 0 2px;font-size:.98rem;line-height:1.8}
+.mzlog{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.9rem}
+.mzlog th,.mzlog td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:center}.mzlog tbody tr{cursor:pointer}
+.sec:has(.mzlog){overflow-x:auto}
+.mzprog{display:flex;gap:4px}.mzprog i{width:10px;height:10px;border-radius:50%;background:var(--line)}.mzprog i.d{background:var(--ok)}.mzprog i.c{background:var(--d6)}
+.mzrun{gap:16px}
+.mzex{display:flex;gap:12px;align-items:flex-start}.mzexa{font-size:2.6rem;line-height:1}
+.mzexb{flex:1;min-width:0;background:var(--sheet);border:2px solid var(--line);border-radius:4px 16px 16px 16px;padding:12px 16px;display:flex;flex-direction:column;gap:4px;min-height:52px;font-size:1.1rem}
+.mzcard{background:var(--sheet);border:2px solid var(--ink);border-radius:10px;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.mzcard h3{text-align:center;font-size:1.2rem}.mzcard p{margin:0;font-size:1.15rem;line-height:1.85}
+.mzfirst{font-size:1rem!important}
+.mzpanels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.mzp{position:relative;display:flex;flex-direction:column;gap:4px;min-width:0}
+.mzcap{font-weight:700;font-size:.85rem;text-align:center;background:var(--sun-bg);border-radius:999px;padding:0 8px}
+.mzbox{border:2px solid var(--ink);border-radius:8px;min-height:150px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:8px;gap:6px;background:var(--tint)}
+.mzemo{font-size:2.3rem;line-height:1.2;text-align:center;word-break:break-all}
+.mzbub{background:var(--sheet);border:2px solid var(--ink);border-radius:14px;padding:4px 8px;font-size:.85rem;line-height:1.35;text-align:center;align-self:stretch}
+.mzarr{position:absolute;right:-13px;top:50%;font-weight:900;color:var(--soft)}
+@media (max-width:560px){.mzemo{font-size:1.6rem}.mzbub{font-size:.72rem}.mzbox{min-height:120px}}
+.mzwait{display:flex;align-items:baseline;gap:10px;justify-content:center}
+.mzbig{font-size:3rem;font-weight:900;font-variant-numeric:tabular-nums;color:var(--d6)}
+.mzlisten{background:var(--sheet);border-radius:16px;border:2px solid var(--shu);padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.mzlisten p{margin:0}
+.mzmic{--lv:0;width:84px;height:84px;border-radius:50%;background:var(--shu);display:grid;place-items:center;box-shadow:0 0 0 calc(6px + var(--lv)*26px) color-mix(in srgb,var(--shu) 22%,transparent);transition:box-shadow .09s}
+.mzmic span{width:22px;height:34px;border-radius:11px;background:var(--sheet)}
+.mzlive{min-height:1.6em;color:var(--soft);font-size:1rem}
+.mzdone{background:var(--shu);border-color:var(--shu);min-width:12em}
+.row.center{justify-content:center;flex-wrap:wrap}
+.mztotal .mzbig{font-size:2.6rem}
+.mzrh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.mzrh h3{border:0;padding:0}
+.mzsc{font-variant-numeric:tabular-nums}.mzsc b{font-size:1.6rem;color:var(--d6)}
+.mzbar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.mzbar i{display:block;height:100%;background:var(--ok)}
+.mzsaid,.mzbetter,.mzmodel{margin:0;font-size:1rem;line-height:1.7}
+.mzmodel{background:var(--tint);border-radius:10px;padding:8px 12px}.mzbetter{background:var(--ai-bg);border-radius:10px;padding:8px 12px}
+.mzgood{margin:0;color:var(--ok);font-weight:700}.mzfix{margin:0;color:var(--warn);font-weight:700}
+.mzres audio{width:100%}
 </style>
 
 <div id="app"></div>
@@ -800,7 +847,7 @@ async function judgeBox(tid,ikeyPart,ch,cleared,quiet){const v=V(tid),key=ikey(t
 function badKanji(t){const kj=V(t.id).kj||{};return Object.keys(kj).filter(k=>(kj[k].r==='ng'&&!kj[k].f)||kj[k].r==='few')}
 
 /* ---------- furigana for interface words ---------- */
-const FURI={'学習':'がくしゅう','宿題':'しゅくだい','準優勝':'じゅんゆうしょう','優勝':'ゆうしょう','決勝':'けっしょう','突破':'とっぱ','優勝決定戦':'ゆうしょうけっていせん','開幕戦':'かいまくせん','勝利':'しょうり','首位':'しゅい','立つ':'たつ','2位':'2い','3位':'3い','4位':'4い','5位':'5い','天皇杯':'てんのうはい','世界一':'せかいいち','大会':'たいかい','日本一':'にっぽんいち','日本':'にほん','昇格':'しょうかく','海外':'かいがい','カップ戦':'カップせん','月曜日':'げつようび','火曜日':'かようび','水曜日':'すいようび','木曜日':'もくようび','金曜日':'きんようび','土曜':'どよう','週':'しゅう','第':'だい','漢字':'かんじ','国語':'こくご','算数':'さんすう','保存':'ほぞん','採点':'さいてん','道':'みち','回':'かい','点':'てん','時間':'じかん','問題':'もんだい','毎日':'まいにち','前':'まえ','土曜日':'どようび'};
+const FURI={'面接官':'めんせつかん','面接':'めんせつ','練習':'れんしゅう','一度':'いちど','一覧':'いちらん','単語':'たんご','必要':'ひつよう','本館':'ほんかん','目安':'めやす','目標':'もくひょう','英検':'えいけん','2級':'にきゅう','記録':'きろく','録音':'ろくおん','使え':'つかえ','聞き取り':'ききとり','開き直':'ひらきなお','学習':'がくしゅう','宿題':'しゅくだい','準優勝':'じゅんゆうしょう','優勝':'ゆうしょう','決勝':'けっしょう','突破':'とっぱ','優勝決定戦':'ゆうしょうけっていせん','開幕戦':'かいまくせん','勝利':'しょうり','首位':'しゅい','立つ':'たつ','2位':'2い','3位':'3い','4位':'4い','5位':'5い','天皇杯':'てんのうはい','世界一':'せかいいち','大会':'たいかい','日本一':'にっぽんいち','日本':'にほん','昇格':'しょうかく','海外':'かいがい','カップ戦':'カップせん','月曜日':'げつようび','火曜日':'かようび','水曜日':'すいようび','木曜日':'もくようび','金曜日':'きんようび','土曜':'どよう','週':'しゅう','第':'だい','漢字':'かんじ','国語':'こくご','算数':'さんすう','保存':'ほぞん','採点':'さいてん','道':'みち','回':'かい','点':'てん','時間':'じかん','問題':'もんだい','毎日':'まいにち','前':'まえ','土曜日':'どようび'};
 const FRE=new RegExp(Object.keys(FURI).sort((a,b)=>b.length-a.length).join('|'),'g');
 function furi(root){if(!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentElement;return(!p||p.closest('ruby,.tg,.kjm,.kji,.sec,.noruby,.en,.ansline,.whyline,.tips,textarea,script,style'))?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}}),ns=[];
   while(w.nextNode())ns.push(w.currentNode);
@@ -808,18 +855,209 @@ function furi(root){if(!root)return;const w=document.createTreeWalker(root,NodeF
     t.replace(FRE,(m,i)=>{if(i>last)f.append(t.slice(last,i));const r=document.createElement('ruby');r.append(m);const rt=document.createElement('rt');rt.textContent=FURI[m];r.append(rt);f.append(r);last=i+m.length;return m});
     if(last<t.length)f.append(t.slice(last));n.replaceWith(f)})}
 
+const MZ_SETS=[{"id": "s1", "title": "Community Gardens", "passage": "In some cities, people share a piece of land and grow vegetables together. These places are called community gardens. People who live alone can meet their neighbors there and make new friends. Some gardens also give vegetables to local schools. In this way, they help children learn where their food comes from. Community gardens are becoming more popular.", "q1": "According to the passage, how do some community gardens help children learn where their food comes from?", "a1": "By giving vegetables to local schools.", "first": "One day, Ken and his mother were talking in their garden.", "panels": [{"cap": "", "e": ["👦", "👩", "🏡"], "alt": "Ken and his mother are in their garden. Ken says, \"Let's plant some vegetables!\"", "b": "Let's plant some vegetables!"}, {"cap": "The next day", "e": ["👩", "🏪", "🌱"], "alt": "Ken's mother is buying seeds at a store."}, {"cap": "A few months later", "e": ["👦", "🍅", "🧺"], "alt": "Ken is picking tomatoes in the garden. He looks happy."}], "a2": "One day, Ken and his mother were talking in their garden. Ken said to his mother, \"Let's plant some vegetables.\" The next day, Ken's mother was buying seeds at a store. A few months later, Ken was picking tomatoes in the garden. He looked very happy.", "q3": "Some people say that more people should grow their own vegetables. What do you think about that?", "a3": "I agree. Growing vegetables is a good way to learn about nature. Also, people can eat fresh and safe food.", "q4": "Today, many families enjoy outdoor activities such as camping. Do you think this kind of activity is good for children?", "a4": "Yes. Children can learn many things in nature, such as how to make a fire. Also, they can spend time with their family without playing video games."}, {"id": "s2", "title": "Tablets at School", "passage": "Today, many schools give tablets to their students. Students can use them to look up information and watch videos about their lessons. Some teachers also send homework to students' tablets. By doing so, teachers can check students' work quickly and give advice. However, some parents worry that their children spend too much time looking at screens.", "q1": "According to the passage, how can some teachers check students' work quickly and give advice?", "a1": "By sending homework to students' tablets.", "first": "One day, Yuki's teacher was talking to the class.", "panels": [{"cap": "", "e": ["👩‍🏫", "🧒", "👧"], "alt": "A teacher says to the class, \"Please make a presentation about animals.\"", "b": "Please make a presentation about animals."}, {"cap": "That evening", "e": ["👧", "💻", "🐧"], "alt": "Yuki is looking for information about penguins on her tablet at home."}, {"cap": "A week later", "e": ["👧", "🐧", "👏"], "alt": "Yuki is giving a presentation about penguins. Her classmates are clapping."}], "a2": "One day, Yuki's teacher was talking to the class. She said to them, \"Please make a presentation about animals.\" That evening, Yuki was looking for information about penguins on her tablet. A week later, Yuki was giving a presentation about penguins, and her classmates were clapping.", "q3": "Some people say that students should use tablets more than paper notebooks. What do you think about that?", "a3": "I disagree. Writing by hand helps students remember things better. Also, looking at screens for a long time is bad for their eyes.", "q4": "Do you think it is a good idea for children to have their own smartphones?", "a4": "No. Children may spend too much time on games and videos. Also, they might meet dangerous people on the internet."}, {"id": "s3", "title": "Saving Energy at Home", "passage": "Electricity has become more expensive in recent years. Many families are now trying to use less of it. For example, some people change their old lights to LED lights, which use much less electricity. Others turn off machines that they are not using. By doing these things, they can lower their electricity bills. Saving energy is also good for the earth.", "q1": "According to the passage, how can people lower their electricity bills?", "a1": "By changing their old lights to LED lights and turning off machines that they are not using.", "first": "One evening, Mr. Sato and his son were looking at the electricity bill.", "panels": [{"cap": "", "e": ["👨", "🧾", "👦"], "alt": "A father and his son are looking at a bill. The father says, \"The bill is very high!\"", "b": "The bill is very high!"}, {"cap": "That night", "e": ["👦", "💡", "🚪"], "alt": "The son is turning off the lights in an empty room."}, {"cap": "A month later", "e": ["👨", "🧾", "😊"], "alt": "The father is looking at a new bill and smiling. The bill is lower."}], "a2": "One evening, Mr. Sato and his son were looking at the electricity bill. Mr. Sato said to his son, \"The bill is very high.\" That night, his son was turning off the lights in an empty room. A month later, Mr. Sato was happy because the bill was lower.", "q3": "Some people say that people do not try hard enough to save energy at home. What do you think about that?", "a3": "I agree. Many people leave the lights and the TV on when they are not using them. They should turn them off.", "q4": "Today, more people are driving electric cars. Do you think more people will use electric cars in the future?", "a4": "Yes. Electric cars are better for the environment because they do not produce exhaust gas. Also, more charging stations will be built."}, {"id": "s4", "title": "Cleaning Beaches", "passage": "Every year, a lot of plastic trash is washed up on beaches. This trash can hurt sea animals such as turtles and birds. Some towns hold beach-cleaning events on weekends, and many volunteers join them. In this way, the towns can keep their beaches clean and protect sea animals. These events also give people a chance to think about how much plastic they use.", "q1": "According to the passage, how can some towns keep their beaches clean and protect sea animals?", "a1": "By holding beach-cleaning events on weekends.", "first": "One day, Mika and her friend were walking on the beach.", "panels": [{"cap": "", "e": ["👧", "👦", "🏖️", "🗑️"], "alt": "Mika and her friend are on a beach with a lot of trash. Mika says, \"Let's clean the beach next Sunday!\"", "b": "Let's clean the beach next Sunday!"}, {"cap": "On Sunday", "e": ["👨‍👩‍👧", "🛍️", "🧴"], "alt": "Many people are picking up trash on the beach with bags."}, {"cap": "After that", "e": ["👧", "🏐", "👦", "🏖️"], "alt": "The beach is clean. Mika and her friends are playing volleyball."}], "a2": "One day, Mika and her friend were walking on the beach. Mika said to her friend, \"Let's clean the beach next Sunday.\" On Sunday, many people were picking up trash on the beach. After that, the beach was clean, and Mika and her friends were playing volleyball.", "q3": "Some people say that schools should give students more time for volunteer activities. What do you think about that?", "a3": "I agree. Volunteer activities help students learn how to help other people. Also, they can meet people of different ages.", "q4": "Do you think people in Japan should use fewer plastic bags?", "a4": "Yes. Plastic bags often end up in the sea and hurt animals. People can bring their own bags when they go shopping."}, {"id": "s5", "title": "Breakfast at School", "passage": "Some children go to school without eating breakfast. Without breakfast, it is hard for them to pay attention in class. Because of this, some schools have started serving free breakfast before classes begin. Students eat together in the cafeteria, so they can also talk with their friends. Teachers say that these students now study harder and feel more energetic.", "q1": "According to the passage, why have some schools started serving free breakfast?", "a1": "Because without breakfast, it is hard for children to pay attention in class.", "first": "One morning, Taro was leaving home in a hurry.", "panels": [{"cap": "", "e": ["👩", "🍞", "👦", "🏃"], "alt": "A boy is running out of the house without breakfast. His mother says, \"Eat your breakfast!\"", "b": "Eat your breakfast!"}, {"cap": "At soccer practice", "e": ["👦", "⚽", "😫"], "alt": "Taro is very tired and hungry at soccer practice."}, {"cap": "The next morning", "e": ["⏰", "👦", "🍳"], "alt": "Taro got up early and is eating breakfast."}], "a2": "One morning, Taro was leaving home in a hurry. His mother said to him, \"Eat your breakfast,\" but he did not have time. At soccer practice, Taro was very tired and hungry. The next morning, Taro got up early and was eating breakfast with his family.", "q3": "Some people say that schools should serve breakfast to all students. What do you think about that?", "a3": "I agree. Some parents are too busy to make breakfast. If schools serve breakfast, all students can study well in the morning.", "q4": "Today, many people eat fast food. Do you think people eat too much fast food?", "a4": "Yes. Fast food is cheap and easy, so many people eat it very often. But eating too much of it is bad for our health."}, {"id": "s6", "title": "Learning Languages Online", "passage": "Today, more people are learning foreign languages on the internet. There are many websites and apps that let people talk with teachers in other countries. People can take lessons at home at any time they like. By doing so, busy people can study without going to a language school. Some people, however, say that it is better to learn face to face.", "q1": "According to the passage, how can busy people study without going to a language school?", "a1": "By taking lessons at home at any time they like.", "first": "One day, Sho got a letter from his friend in Australia.", "panels": [{"cap": "", "e": ["👦", "✉️", "🇦🇺"], "alt": "Sho is reading a letter from a friend in Australia. It says, \"I will visit Japan in August!\"", "b": "I will visit Japan in August!"}, {"cap": "The next day", "e": ["👦", "🗺️", "✏️"], "alt": "Sho is making a plan with a map to show his friend around."}, {"cap": "In August", "e": ["👦", "🧑", "⛩️", "📸"], "alt": "Sho is taking pictures with his friend at a temple."}], "a2": "One day, Sho got a letter from his friend in Australia. It said, \"I will visit Japan in August.\" The next day, Sho was making a plan to show his friend around. In August, Sho was taking pictures with his friend at a temple.", "q3": "Some people say that it is better to start learning a foreign language when you are young. What do you think about that?", "a3": "I agree. Young children can learn the sounds of a new language easily. Also, they are not afraid of making mistakes.", "q4": "Do you think more foreign tourists will visit Japan in the future?", "a4": "Yes. Japan has beautiful nature and delicious food. Also, it is easy to travel around Japan by train."}];
+const MZ_TIPS={"flow": ["｜面接《めんせつ》の ながれ", "① 入るとき：ノックして May I come in? → Hello.\n② 名前と 気分を聞かれる：My name is ◯◯. / I'm fine, thank you.\n③ カードの文を だまって20びょう → 声に出して読む\n④ しつもんが4つ（No.1〜No.4）\n⑤ カードを｜返《かえ》す：Here you are. → さいごに Thank you. Goodbye."], "att": ["たいども 点になる（3点）", "・大きな声で、あいての目を見て話す\n・しつもんが おわったら、3びょういないに 話しはじめる\n・聞こえなかったら Could you say that again, please? と言ってよい。だまっているより ずっといい"], "read": ["音読のコツ", "・タイトルから読む\n・カンマ（,）とピリオド（.）で いきをすう\n・はやく読むより、はっきり読む\n・まちがえても とまらずに、さいごまで読む"], "silent": ["だまって読む20びょう", "・まず タイトルを見て、なんの話かを つかむ\n・By doing so や In this way を さがしておく。No.1の答えは、その【前の文】にあることが多い"], "no1": ["No.1　文についての しつもん", "・How（どうやって）→ By 〜ing. で答える\n・Why（なぜ）→ Because 〜. で答える\n・人やものの名前は they や it にかえる（students → they）\n・カードの文を見て答えてよい"], "no2": ["No.2　3コマの え", "・カードに書いてある さいしょの文から はじめる\n・1コマに 2文くらい\n・うごきは was 〜ing / were 〜ing（〜していました）\n・ふきだしは He said to her, \"…\". と言う\n・2コマ目と3コマ目は、上の時間のことば（The next day, など）から はじめる"], "no3": ["No.3　あなたの考え", "・さいしょに I agree. か I disagree. を はっきり言う\n・つづけて ｜理由《りゆう》を2つ（First, … Also, …）\n・むずかしいことばより、自分が言える かんたんなことばで"], "no4": ["No.4　Yes か No か", "・まず Yes. か No. だけを はっきり言う\n・Why? / Why not? と聞かれたら、｜理由《りゆう》を2文で\n・カードは もう見ない（うらがえしにする）"], "end": ["さいごの あいさつ", "・May I have the card back? → Here you are.（カードをわたす）\n・You may go now. → Thank you. Goodbye.\n・へやを出るまでが ｜面接《めんせつ》。さいごまで えがおで"]};
+
+/* ---------- 英検2級 面接れんしゅう ----------
+   面接官の質問を iPad の読み上げで流し、子どもの答えを音声認識で文字にして（できれば録音も）、最後に Claude API で採点する。
+   結果は data/mz-<セットID>.json に保存（vals.att に1回ごとの記録。音声は保存しない）。本番は 2026-11-08。 */
+const MZ_DAY='2026-11-08';
+const MZ={run:null,stream:null,rec:true,honban:false,srOK:!!(window.SpeechRecognition||window.webkitSpeechRecognition),wake:null,ac:null};
+try{MZ.honban=!!LS.get('gk1.mzhonban')}catch(e){}
+const mzDays=()=>Math.round((new Date(MZ_DAY+'T12:00:00')-new Date(ymd(Date.now())+'T12:00:00'))/864e5);
+const mzAtt=id=>((S.vals['mz-'+id]||{}).att)||[];
+const mzAllAtt=()=>MZ_SETS.flatMap(s=>mzAtt(s.id).map(a=>Object.assign({set:s.id},a)));
+function mzTip(k,open){const t=MZ_TIPS[k];if(!t)return '';return `<details class="mztip"${open?' open':''}><summary>${rich(t[0])}</summary><p>${rich(t[1])}</p></details>`}
+function mzVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^en[-_](US|GB|AU)/i.test(v.lang));
+  return vs.find(v=>/^en[-_]US/i.test(v.lang)&&/Samantha|Ava|Allison|Susan|Nicky/.test(v.name))||vs.find(v=>/^en[-_]US/i.test(v.lang))||vs[0]||null}catch(e){return null}}
+function mzSay(text,rate){return new Promise(res=>{let done=false,tm=null;const fin=()=>{if(done)return;done=true;clearTimeout(tm);res()};
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const v=mzVoice();if(v)u.voice=v;u.rate=rate||0.9;u.onend=fin;u.onerror=fin;
+    tm=setTimeout(fin,2500+text.length*90);speechSynthesis.speak(u)}catch(e){fin()}})}
+async function mzMic(){if(MZ.stream&&MZ.stream.getTracks().some(t=>t.readyState==='live'))return MZ.stream;
+  MZ.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});return MZ.stream}
+function mzMicOff(){try{MZ.stream&&MZ.stream.getTracks().forEach(t=>t.stop())}catch(e){}MZ.stream=null;try{MZ.wake&&MZ.wake.release()}catch(e){}MZ.wake=null}
+/* 答えを1つ聞く。音声認識（文字）＋録音（聞き直し用）。録音と聞き取りが同時にできない端末では、録音をやめて聞き取りだけにする */
+function mzListen(maxSec,ui){return new Promise(async resolve=>{
+  const SRc=window.SpeechRecognition||window.webkitSpeechRecognition;const t0=Date.now();let fin=[],interim='',first=0,stopped=false,sr=null,mr=null,chunks=[],err='',meter=null;
+  if(MZ.rec&&window.MediaRecorder){try{const st=await mzMic();mr=new MediaRecorder(st);mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mr.start(250);
+      try{MZ.ac=MZ.ac||new (window.AudioContext||window.webkitAudioContext)();MZ.ac.resume();const an=MZ.ac.createAnalyser();an.fftSize=256;MZ.ac.createMediaStreamSource(st).connect(an);const buf=new Uint8Array(an.fftSize);
+        meter=setInterval(()=>{an.getByteTimeDomainData(buf);let m=0;for(const b of buf)m=Math.max(m,Math.abs(b-128));ui.level(m/128)},90)}catch(e){}}catch(e){mr=null}}
+  const startSR=()=>{if(!SRc||stopped)return;try{sr=new SRc();sr.lang='en-US';sr.continuous=true;sr.interimResults=true;sr.maxAlternatives=1;
+    sr.onresult=e=>{if(!first)first=Date.now();let im='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)fin.push(r[0].transcript.trim());else im+=r[0].transcript}interim=im.trim();
+      ui.text((fin.join(' ')+' '+interim).trim());if(!meter)ui.level(.6)};
+    sr.onerror=e=>{err=e.error||'error'};
+    sr.onend=()=>{sr=null;if(!stopped&&Date.now()-t0<maxSec*1000&&!['not-allowed','service-not-allowed','audio-capture'].includes(err))setTimeout(startSR,120)};
+    sr.start()}catch(e){err=err||'start'}};
+  startSR();
+  const stop=async()=>{if(stopped)return;stopped=true;clearTimeout(tm);clearInterval(meter);
+    if(sr){await new Promise(r=>{const x=sr;const t=setTimeout(r,1500);x.onend=()=>{clearTimeout(t);r()};try{x.stop()}catch(e){clearTimeout(t);r()}})}
+    if(interim)fin.push(interim);let blob=null;
+    if(mr&&mr.state!=='inactive'){await new Promise(r=>{mr.onstop=r;try{mr.stop()}catch(e){r()}});if(chunks.length)blob=new Blob(chunks,{type:mr.mimeType||'audio/mp4'})}
+    const text=fin.join(' ').replace(/\s+/g,' ').trim();
+    resolve({text,dur:Math.round((Date.now()-t0)/100)/10,lat:first?Math.round((first-t0)/100)/10:null,blob,err,usedRec:!!mr})};
+  const tm=setTimeout(stop,maxSec*1000);ui.stop=stop})}
+
+/* 1セットの流れ。k: say=読み上げだけ, wait=○びょう待つ, ask=読み上げて答えを聞く */
+function mzSteps(s){return [
+  {k:'ask',part:'name',tip:'flow',say:'Hello. May I have your name, please?',max:15,hint:'My name is ◯◯.'},
+  {k:'ask',part:'how',tip:'att',say:'Thank you. How are you today?',max:15,hint:"I'm fine, thank you."},
+  {k:'wait',part:'silent',tip:'silent',card:1,say:"OK. Let's start the test. Here is your card. First, please read the passage silently for 20 seconds.",sec:20},
+  {k:'ask',part:'read',tip:'read',card:1,say:'All right. Now, please read it aloud.',max:80},
+  {k:'ask',part:'no1',tip:'no1',card:1,say:"Now, I'm going to ask you four questions. No. 1. "+s.q1,q:s.q1,max:45},
+  {k:'wait',part:'prep2',tip:'no2',card:2,say:'No. 2. Now, please look at the picture and describe the situation. You have 20 seconds to prepare. Your story should begin with the sentence on the card.',sec:20},
+  {k:'ask',part:'no2',tip:'no2',card:2,say:'Please begin.',max:90},
+  {k:'ask',part:'no3',tip:'no3',say:'Now, please turn over the card and put it down. No. 3. '+s.q3,q:s.q3,max:50},
+  {k:'ask',part:'no4',tip:'no4',say:'No. 4. '+s.q4,q:s.q4,max:30,follow:true},
+  {k:'ask',part:'card',tip:'end',say:'Thank you. That is all. May I have the card back, please?',max:12,hint:'Here you are.'},
+  {k:'ask',part:'bye',tip:'end',say:'Thank you. You may go now.',max:12,hint:'Thank you. Goodbye.'}]}
+
+function mzCardHTML(s,mode){if(mode===1)return `<div class="mzcard en"><h3>${esc(s.title)}</h3><p>${esc(s.passage)}</p></div>`;
+  if(mode===2)return `<div class="mzcard en"><p class="mzfirst">Your story should begin with this sentence: <b>${esc(s.first)}</b></p><div class="mzpanels">${s.panels.map((p,i)=>`<div class="mzp"><span class="mzcap">${p.cap?esc(p.cap):'&nbsp;'}</span><div class="mzbox" role="img" aria-label="${esc(p.alt)}">${p.b?`<span class="mzbub">${esc(p.b)}</span>`:''}<span class="mzemo">${p.e.join(' ')}</span></div>${i<2?'<span class="mzarr" aria-hidden="true">→</span>':''}</div>`).join('')}</div></div>`;
+  return ''}
+
+function renderMZ(){if(MZ.run)return mzPaint();
+  const d=mzDays(),att=mzAllAtt(),today=att.filter(a=>ymd(a.at)===ymd(Date.now())).length;
+  const best=id=>{const a=mzAtt(id).filter(x=>typeof x.total==='number');return a.length?Math.max(...a.map(x=>x.total)):null};
+  const nextSet=MZ_SETS.find(s=>!mzAtt(s.id).length)||MZ_SETS.slice().sort((a,b)=>(best(a.id)??99)-(best(b.id)??99))[0];
+  app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← もどる</button><span class="bar-t">英検2級 面接れんしゅう</span><span class="save" id="save"></span></div></div>
+  <div class="wrap">
+   <div class="mzhead"><div><b class="mzcount">${d>0?'本番まで あと'+d+'日':d===0?'きょうが 本番！':'本番は おわりました'}</b><p class="sub">11月8日（日）・日本人会サートーン本館。1日1セットを目標に。きょうは ${today}回 やりました。</p></div></div>
+   ${MZ.srOK?'':'<p class="banner red noruby">このiPadでは、話したことばを文字にする機能が使えません。設定 → 一般 → キーボード →「音声入力」をオンにしてから、アプリを開き直してください。</p>'}
+   ${akey?'':'<p class="banner noruby">保護者の方へ：AIの採点には、保護者用画面のAPIキーが必要です。キーがなくても練習と録音の聞き直しはできます。</p>'}
+   <div class="sec"><h3>やり方</h3>
+    <p class="note">面接官の声が しつもんします。話しおわったら「話しおわった」をおします。さいごに AI が点数と アドバイスを出します。</p>
+    <div class="mzmode" role="radiogroup" aria-label="モード"><button class="mzm${MZ.honban?'':' on'}" data-mode="0" role="radio" aria-checked="${!MZ.honban}"><b>れんしゅう</b><small>ポイントと しつもんの文を見ながら</small></button><button class="mzm${MZ.honban?' on':''}" data-mode="1" role="radio" aria-checked="${MZ.honban}"><b>本番モード</b><small>本番と同じ。文は出ない</small></button></div>
+    <div class="row"><button class="btn ghost sm" id="mztest">マイクのテスト</button><span class="sub" id="mztestout"></span></div>
+   </div>
+   <div class="grp"><h2>セットをえらぶ</h2><div class="cards">${MZ_SETS.map((s,i)=>{const n=mzAtt(s.id).length,b=best(s.id);
+     return `<button class="card mzset${s===nextSet?' next':''}" data-set="${s.id}"><span class="dot d${i+1}">${i+1}</span><span class="cb en"><b>${esc(s.title)}</b><small >${n?n+'回・さいこう '+(b??'-')+'/33点':'まだ'}</small>${s===nextSet?'<span class="st go">つぎは これ</span>':''}</span></button>`}).join('')}</div></div>
+   <div class="sec"><h3>面接のポイント（ぜんぶ）</h3>${['flow','att','silent','read','no1','no2','no3','no4','end'].map(k=>mzTip(k)).join('')}</div>
+   ${att.length?`<div class="sec"><h3>これまでの記録</h3><table class="mzlog"><thead><tr><th>日</th><th>セット</th><th>点</th><th>音読</th><th>No.1</th><th>No.2</th><th>No.3</th><th>No.4</th><th>たいど</th></tr></thead><tbody>${att.slice().sort((a,b)=>b.at-a.at).slice(0,15).map(a=>{const g=a.g||{},c=k=>g[k]&&typeof g[k].score==='number'?g[k].score:'-';
+     return `<tr data-log="${a.set}:${a.at}"><td>${new Date(a.at).getMonth()+1}/${new Date(a.at).getDate()}</td><td>${esc(a.set.slice(1))}</td><td><b>${a.total??'-'}</b></td><td>${c('read')}</td><td>${c('no1')}</td><td>${c('no2')}</td><td>${c('no3')}</td><td>${c('no4')}</td><td>${c('att')}</td></tr>`}).join('')}</tbody></table><p class="sub">行をおすと、そのときの答えと アドバイスが見られます。</p></div>`:''}
+  </div>`;
+  app.querySelector('#back').onclick=()=>go('home');
+  app.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{MZ.honban=b.dataset.mode==='1';LS.set('gk1.mzhonban',MZ.honban);renderMZ();furi(app)});
+  app.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>mzStart(MZ_SETS.find(s=>s.id===b.dataset.set)));
+  app.querySelectorAll('[data-log]').forEach(r=>r.onclick=()=>{const [sid,at]=r.dataset.log.split(':');const a=mzAtt(sid).find(x=>String(x.at)===at);if(a){MZ.view={s:MZ_SETS.find(s=>s.id===sid),a,blobs:{}};mzResult()}});
+  app.querySelector('#mztest').onclick=async()=>{const out=app.querySelector('#mztestout'),btn=app.querySelector('#mztest');btn.disabled=true;out.textContent='「Hello, my name is ◯◯.」と言ってみよう（5びょう）';
+    try{await mzMic()}catch(e){out.textContent='マイクが使えません。iPadの設定でSafari（またはこのアプリ）のマイクを「許可」にしてください。';btn.disabled=false;return}
+    await mzSay('Hello. Please say your name.');const ui={level(){},text(t){out.textContent='聞こえたことば：'+t}};const r=await mzListen(5,ui);
+    if(!r.text&&r.usedRec&&MZ.srOK){MZ.rec=false;out.textContent='録音と聞き取りが同時にできないので、聞き取りだけにしました。もう一度テストしてください。'}
+    else out.textContent=r.text?'聞こえたことば：'+r.text+'（OK！）':MZ.srOK?'聞こえませんでした。もう少し大きな声で、iPadに近づいて話してみよう。':'録音はできました（文字にする機能は使えません）。';
+    btn.disabled=false};}
+
+async function mzStart(s){
+  try{await mzMic()}catch(e){if(!MZ.srOK){await ask('<b>マイクが使えません</b><p class="sub">iPadの設定で、マイクを「許可」にしてください。</p>','OK');return}MZ.rec=false}
+  try{MZ.wake=await navigator.wakeLock.request('screen')}catch(e){}
+  MZ.run={s,steps:mzSteps(s),i:0,ans:{},blobs:{},honban:MZ.honban,at:Date.now(),phase:'say',text:'',left:0,repeat:0};
+  window.scrollTo(0,0);mzPaint();mzNext()}
+function mzPaint(){const R=MZ.run;if(!R)return;const st=R.steps[R.i]||{},s=R.s,nPart=['read','no1','no2','no3','no4'].indexOf(st.part);
+  app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="mzquit">やめる</button><span class="bar-t en">${esc(s.title)}</span><span class="mzprog">${R.steps.map((x,i)=>`<i class="${i<R.i?'d':i===R.i?'c':''}"></i>`).join('')}</span></div></div>
+  <div class="wrap mzrun">
+   <div class="mzex"><span class="mzexa" aria-hidden="true">🧑‍🏫</span><div class="mzexb en">${R.phase==='say'?'<i class="sub">（面接官が話しています…）</i>':''}${R.honban?'':`<b>${esc(R.follow||st.say)}</b>`}${!R.honban&&st.hint&&R.phase==='listen'?`<span class="sub">れい：${esc(st.hint)}</span>`:''}</div></div>
+   ${st.card&&!(R.honban&&false)?mzCardHTML(s,st.card):''}
+   ${R.phase==='wait'?`<div class="mzwait"><b class="mzbig">${R.left}</b><span >びょう ${st.part==='silent'?'だまって読もう':'じゅんびしよう（1コマ2文）'}</span></div>`:''}
+   ${R.phase==='listen'?`<div class="mzlisten"><div class="mzmic" id="mzmic"><span></span></div><p ><b>あなたの番です。</b>話しおわったら、下のボタンをおそう。</p>${R.honban?'':`<p class="mzlive en" id="mzlive">${esc(R.text)}</p>`}
+     <div class="row center"><button class="btn mzdone" id="mzdone">話しおわった</button><button class="btn ghost sm" id="mzagain">もう一度 聞く</button></div></div>`:''}
+   ${R.phase==='msg'?`<p class="banner">${esc(R.msg)}</p>`:''}
+   ${R.honban||!st.tip?'':mzTip(st.tip,true)}
+  </div>`;
+  app.querySelector('#mzquit').onclick=async()=>{if(await ask('<b>れんしゅうを やめますか？</b><p class="sub">このセットの答えは保存されません。</p>','やめる','つづける')){mzStop();go('mz')}};
+  const dn=app.querySelector('#mzdone');if(dn)dn.onclick=()=>{dn.disabled=true;R.ui&&R.ui.stop&&R.ui.stop()};
+  const ag=app.querySelector('#mzagain');if(ag)ag.onclick=async()=>{R.repeat++;R.ans._rep=(R.ans._rep||0)+1;ag.disabled=true;    if(R.ui&&R.ui.stop){R.again=true;R.ui.stop()}};
+  furi(app)}
+function mzStop(){const R=MZ.run;MZ.run=null;try{speechSynthesis.cancel()}catch(e){}if(R&&R.ui&&R.ui.stop)R.ui.stop();mzMicOff()}
+function mzLevel(v){const m=document.getElementById('mzmic');if(m)m.style.setProperty('--lv',Math.min(1,v*2.2).toFixed(2))}
+async function mzNext(){const R=MZ.run;if(!R)return;const st=R.steps[R.i];if(!st)return mzFinish();
+  R.phase='say';R.follow='';R.text='';mzPaint();await mzSay(st.say);if(MZ.run!==R)return;
+  if(st.k==='wait'){R.phase='wait';R.left=st.sec;mzPaint();while(R.left>0){await sleep(1000);if(MZ.run!==R)return;R.left--;const b=app.querySelector('.mzbig');if(b)b.textContent=R.left}R.i++;return mzNext()}
+  const one=async(key,max)=>{for(;;){R.phase='listen';R.text='';mzPaint();const ui={level:mzLevel,text:t=>{R.text=t;const el=document.getElementById('mzlive');if(el)el.textContent=t}};R.ui=ui;
+      const r=await mzListen(max,ui);R.ui=null;if(MZ.run!==R)return null;
+      if(R.again){R.again=false;R.phase='say';mzPaint();await mzSay(R.follow||st.say,0.85);if(MZ.run!==R)return null;continue}
+      if(!r.text&&r.usedRec&&MZ.srOK&&['audio-capture','not-allowed','service-not-allowed','start'].includes(r.err)){MZ.rec=false;R.phase='msg';R.msg='録音と聞き取りが同時にできないので、聞き取りだけにします。もう一度どうぞ。';mzPaint();await sleep(2200);if(MZ.run!==R)return null;continue}
+      if(r.blob)R.blobs[key]=URL.createObjectURL(r.blob);return r}};
+  const r=await one(st.part,st.max);if(!r)return;R.ans[st.part]={text:r.text,dur:r.dur,lat:r.lat};
+  if(st.follow){const t=r.text.toLowerCase(),words=r.text.split(/\s+/).filter(Boolean).length;
+    if(words<8){R.follow=/^\s*(no\b|nope|i don'?t|i do not|not really)/.test(t)?'Why not?':/^\s*(yes|yeah|i do\b|i think so|sure)/.test(t)?'Why?':'Why do you think so?';
+      R.phase='say';mzPaint();await mzSay(R.follow);if(MZ.run!==R)return;const r2=await one(st.part+'w',45);if(!r2)return;R.ans[st.part+'w']={text:r2.text,dur:r2.dur,lat:r2.lat,q:R.follow}}}
+  R.i++;mzNext()}
+/* 音読：カードの単語のうち、聞きとれた単語の割合（順番どおりに合ったもの） */
+function mzReadMatch(passage,said){const w=x=>String(x||'').toLowerCase().replace(/[^a-z0-9' ]/g,' ').split(/\s+/).filter(Boolean),a=w(passage),b=w(said);if(!a.length)return 0;
+  const dp=new Array(b.length+1).fill(0);for(let i=1;i<=a.length;i++){let prev=0;for(let j=1;j<=b.length;j++){const tmp=dp[j];dp[j]=a[i-1]===b[j-1]?prev+1:Math.max(dp[j],dp[j-1]);prev=tmp}}
+  return Math.round(dp[b.length]/a.length*100)}
+async function mzFinish(){const R=MZ.run;mzMicOff();MZ.run=null;const s=R.s,A=R.ans;
+  const rec={at:R.at,mode:R.honban?'honban':'practice',ans:A,readPct:mzReadMatch(s.title+' '+s.passage,(A.read||{}).text),rep:A._rep||0};delete A._rep;
+  const v=V('mz-'+s.id);v.att=(v.att||[]).concat([rec]);v.done=true;v.started=true;touchVals('mz-'+s.id);
+  MZ.view={s,a:rec,blobs:R.blobs,grading:!!akey};mzResult();
+  if(akey){try{rec.g=await mzGrade(s,rec);rec.total=['read','no1','no2','no3','no4','att'].reduce((n,k)=>n+((rec.g[k]||{}).score||0),0)}catch(e){rec.gerr=String(e.message||e).slice(0,120)}
+    const v2=V('mz-'+s.id),hit=(v2.att||[]).find(x=>x.at===rec.at);if(hit&&hit!==rec)Object.assign(hit,{g:rec.g,total:rec.total,gerr:rec.gerr});touchVals('mz-'+s.id)}
+  if(MZ.view&&MZ.view.a===rec){MZ.view.grading=false;if(S.screen==='mz'&&!MZ.run)mzResult()}}
+async function mzGrade(s,rec){const A=rec.ans,T=k=>A[k]?`"${A[k].text||'(nothing recognized)'}" (started speaking after ${A[k].lat==null?'?':A[k].lat}s, total ${A[k].dur}s)`:'(not answered)';
+  const ask=`You are an EIKEN Grade 2 interview examiner and a kind coach. The test-taker is a 10-year-old Japanese boy (grade 4, English-medium school in Bangkok). His spoken answers were turned into text by automatic speech recognition, so small word errors may come from the recognizer, not from him: judge content, structure and grammar generously, and never take points off for a single odd word that is likely a recognition error. If a transcript is empty, he probably said nothing (or very little).
+Score like the real EIKEN Grade 2 interview: reading aloud 0-5, No.1 0-5, No.2 0-5, No.3 0-5, No.4 0-5, attitude 0-3 (total 33).
+CARD title: ${s.title}
+CARD passage: ${s.passage}
+No.1 question: ${s.q1}  | expected answer: ${s.a1}
+No.2 pictures (3 panels; he must start with "${s.first}"): ${s.panels.map((p,i)=>`[${i+1}${p.cap?' '+p.cap:''}] ${p.alt}`).join(' ')}  | model story: ${s.a2}
+No.3 question: ${s.q3}  | model: ${s.a3}
+No.4 question: ${s.q4} (the examiner asks "Why?/Why not?" after a short Yes/No)  | model: ${s.a4}
+HIS ANSWERS
+Greeting "May I have your name?": ${T('name')}
+"How are you today?": ${T('how')}
+Reading aloud: ${T('read')}. Words of the card matched in order: ${rec.readPct}% (recognition misses some words even when read well; 80%+ is good). He asked the examiner to repeat ${rec.rep} time(s) in total.
+No.1: ${T('no1')}
+No.2: ${T('no2')}
+No.3: ${T('no3')}
+No.4: ${T('no4')}${A.no4w?`  then to "${A.no4w.q}": ${T('no4w')}`:''}
+"May I have the card back?": ${T('card')}
+"You may go now.": ${T('bye')}
+Attitude: judge from greetings, how quickly he started each answer (within about 3 seconds is good), and whether he kept talking instead of staying silent.
+Reply with JSON only, no other text:
+{"read":{"score":0,"good":"","fix":""},"no1":{"score":0,"good":"","fix":"","better":""},"no2":{"score":0,"good":"","fix":"","better":""},"no3":{"score":0,"good":"","fix":"","better":""},"no4":{"score":0,"good":"","fix":"","better":""},"att":{"score":0,"good":"","fix":""},"summary":"","next":""}
+"good" = one concrete thing he did well; "fix" = the one most useful thing to improve. Write good, fix, summary and next in easy Japanese for a 10-year-old who reads only hiragana, katakana and grade 1-2 kanji (write other words in hiragana), each at most 2 short sentences. "better" = his own answer rewritten in correct, simple English (keep his ideas; if he said nothing, give a short model). "summary" = overall comment (start with praise). "next" = what to practice tomorrow.`;
+  const j=parseAI(await aiCall([{type:'text',text:ask}],1800));['read','no1','no2','no3','no4','att'].forEach(k=>{j[k]=j[k]||{};const mx=k==='att'?3:5;j[k].score=Math.max(0,Math.min(mx,Math.round(+j[k].score||0)))});return j}
+function mzResult(){const V0=MZ.view;if(!V0)return go('mz');S.screen='mz';const {s,a}=V0,g=a.g||{},A=a.ans||{};
+  const part=(k,label,mx,model,extra)=>{const x=g[k]||{},sc=typeof x.score==='number'?x.score:null,said=A[k];
+    return `<div class="sec mzres"><div class="mzrh"><h3>${label}</h3>${sc==null?'':`<span class="mzsc"><b>${sc}</b>/${mx}</span>`}</div>
+     ${sc==null?'':`<div class="mzbar"><i style="width:${sc/mx*100}%"></i></div>`}
+     ${said?`<p class="mzsaid en"><span class="sub">聞きとれたことば：</span>${esc(said.text||'（聞きとれませんでした）')}${A[k+'w']?`<br><span class="sub">${esc(A[k+'w'].q)} →</span> ${esc(A[k+'w'].text||'（聞きとれませんでした）')}`:''}</p>`:''}
+     ${extra||''}
+     ${V0.blobs[k]?`<audio controls preload="none" src="${V0.blobs[k]}"></audio>`:''}
+     ${x.good?`<p class="mzgood">◎ ${rich(x.good)}</p>`:''}${x.fix?`<p class="mzfix">▲ ${rich(x.fix)}</p>`:''}
+     ${x.better?`<p class="mzbetter en"><span class="sub">こう言うと もっといい：</span>${esc(x.better)}</p>`:''}
+     ${model?`<p class="mzmodel en"><span class="sub">おてほん：</span>${esc(model)} <button class="btn ghost sm" data-say="${esc(model)}">🔊 聞く</button></p>`:''}</div>`};
+  app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="back">← 一覧へ</button><span class="bar-t en">${esc(s.title)}</span><span class="save" id="save"></span></div></div>
+  <div class="wrap">
+   <div class="sec mztotal">${V0.grading?'<p ><b>AIが さいてん中です…</b>（30びょうくらい）</p>':typeof a.total==='number'?`<p><span class="mzbig">${a.total}</span><span > / 33点</span>　<span class="st ${a.total>=20?'done':'go'}">${a.total>=20?'合かくラインを こえている':'目ひょうは 20点'}</span></p>${g.summary?`<p>${rich(g.summary)}</p>`:''}${g.next?`<p class="mzfix">あしたの れんしゅう：${rich(g.next)}</p>`:''}`:a.gerr?`<p class="banner red">AIの採点ができませんでした（${esc(a.gerr)}）。答えは保存しました。</p>`:'<p >AIのキーがないので、点数は出ません。おてほんと くらべてみよう。</p>'}
+    <p class="sub">目安：33点中 20点（6わり）くらいが 合かくライン。音声を文字にするときの まちがいもあるので、点数は めやすです。</p></div>
+   ${part('read','音読',5,'',`<p class="sub">カードの文と合っていた単語：${a.readPct??'-'}%</p>`)}
+   ${part('no1','No.1　文についての しつもん',5,s.a1)}
+   ${part('no2','No.2　3コマの え',5,s.a2,mzCardHTML(s,2))}
+   ${part('no3','No.3　あなたの考え',5,s.a3)}
+   ${part('no4','No.4　Yes か No か',5,s.a4)}
+   ${part('att','たいど（あいさつ・すぐ話す）',3,'',`<p class="mzsaid en"><span class="sub">名前：</span>${esc((A.name||{}).text||'-')}　<span class="sub">気分：</span>${esc((A.how||{}).text||'-')}　<span class="sub">さいご：</span>${esc([(A.card||{}).text,(A.bye||{}).text].filter(Boolean).join(' / ')||'-')}</p>`)}
+   <div class="row center"><button class="btn" id="mzre">もう一度 このセット</button><button class="btn ghost" id="mzlist">ほかのセットへ</button></div>
+  </div>`;
+  app.querySelector('#back').onclick=app.querySelector('#mzlist').onclick=()=>{MZ.view=null;go('mz')};
+  app.querySelector('#mzre').onclick=()=>{MZ.view=null;mzStart(s)};
+  app.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>mzSay(b.dataset.say,0.85));
+  furi(app);status();window.scrollTo(0,0)}
+function mzHomeHTML(){const d=mzDays();if(d<0)return '';const today=mzAllAtt().filter(a=>ymd(a.at)===ymd(Date.now())).length;
+  return `<button class="mzhome" id="toMZ"><span class="mzhi" aria-hidden="true">🎤</span><span class="cb"><b>英検2級 面接れんしゅう</b><small >${d>0?'本番（11月8日）まで あと'+d+'日':'きょうが 本番！'}・きょう ${today}回</small></span><span class="st ${today?'done':'go'}">${today?'できた！':'1セットやろう'}</span></button>`}
+
 /* ---------- screens ---------- */
-function go(screen,task,pv){if(S.running)stopClock();S.screen=screen;S.task=task||null;S.preview=!!pv;LS.set('gk1.route',{task:screen==='task'&&!pv?task:null});render();window.scrollTo(0,0);
+function go(screen,task,pv){if(S.running)stopClock();if(MZ.run&&screen!=='mz')mzStop();S.screen=screen;S.task=task||null;S.preview=!!pv;LS.set('gk1.route',{task:screen==='task'&&!pv?task:null});render();window.scrollTo(0,0);
   if(screen!=='task')pull().then(ch=>{if(ch&&S.screen===screen)render()})}
 function dayTheme(){const v=[2,4,0].includes(new Date(Date.now()).getDay());document.body.classList.toggle('bg-v',v);document.body.classList.toggle('bg-s',!v);
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=v?'#ffdcae':'#c9edc4';return v}
-function render(){dayTheme();inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else renderHome();if(S.screen!=='parent')furi(app);status()}
+function render(){dayTheme();inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else if(S.screen==='mz'){if(MZ.view&&!MZ.run)mzResult();else renderMZ()}else renderHome();if(S.screen!=='parent')furi(app);status()}
 
 function renderHome(){
   const groups=[...new Set(TASKS.slice(BASE).map(t=>t.group))],today=ymd(Date.now());
   const all=WEEKS.reduce((n,w)=>n+weekPts(w).sum,0),won=WEEKS.filter(w=>cup(w).res==='win').sort((a,b)=>a.id<b.id?-1:1),wins=won.length;
   app.innerHTML=`<div class="wrap">
    <div class="hero"><img src="icon-180.png" alt=""><div><h1>学習ノート</h1><p class="sub">やるものをえらんで、タップしましょう。</p><span class="daychip">${dayTheme()?'きょうは バレーボールの日':'きょうは サッカーの日'}</span></div></div>
+   ${mzHomeHTML()}
    ${wins?`<p class="cabinet"><span>優勝 ${wins}回</span>${Array.from({length:Math.min(wins,12)},()=>'<img src="icon-180.png" alt="">').join('')}</p><p class="titles">${won.map(w=>`<span>${esc(comp(w).name)}</span>`).join('')}</p>`:''}
    ${WEEKS.length?walletHTML():''}
    ${groups.map(g=>{const w=WEEKS.find(x=>x.label===g),P=w?weekPts(w):null;return `<div class="grp"><h2>${esc(g)}</h2>
@@ -837,6 +1075,7 @@ function renderHome(){
   </div>`;
   app.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>go('task',b.dataset.open));
   const sp=app.querySelector('#spend');if(sp)sp.onclick=async()=>{if(await spendDialog())render()};
+  const mzb=app.querySelector('#toMZ');if(mzb)mzb.onclick=()=>go('mz');
   app.querySelector('#toParent').onclick=parentGate}
 
 async function parentGate(){
@@ -1063,7 +1302,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261025032138';
+const BUILD='20261026154553';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
