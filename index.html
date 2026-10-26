@@ -870,17 +870,27 @@ const mzAllAtt=()=>MZ_SETS.flatMap(s=>mzAtt(s.id).map(a=>Object.assign({set:s.id
 function mzTip(k,open){const t=MZ_TIPS[k];if(!t)return '';return `<details class="mztip"${open?' open':''}><summary>${rich(t[0])}</summary><p>${rich(t[1])}</p></details>`}
 function mzVoice(){try{const vs=speechSynthesis.getVoices().filter(v=>/^en[-_](US|GB|AU)/i.test(v.lang));
   return vs.find(v=>/^en[-_]US/i.test(v.lang)&&/Samantha|Ava|Allison|Susan|Nicky/.test(v.name))||vs.find(v=>/^en[-_]US/i.test(v.lang))||vs[0]||null}catch(e){return null}}
-function mzSay(text,rate){return new Promise(res=>{let done=false,tm=null;const fin=()=>{if(done)return;done=true;clearTimeout(tm);res()};
-  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const v=mzVoice();if(v)u.voice=v;u.rate=rate||0.9;u.onend=fin;u.onerror=fin;
-    tm=setTimeout(fin,2500+text.length*90);speechSynthesis.speak(u)}catch(e){fin()}})}
+/* iPhone・iPad では、(1) 最初の読み上げはタップの中で始めないと音が出ない、(2) マイクを使っている間は読み上げの音が消える。
+   そこで、タップしたときに無音の読み上げで「音を出してよい」状態にし（mzUnlock）、読み上げの前には必ずマイクを止める（mzMicOff）。
+   読み上げが始まらなかったときは MZ.ttsFail を立てて、画面に文字と案内を出す */
+function mzUnlock(){try{const u=new SpeechSynthesisUtterance(' ');u.volume=0;u.lang='en-US';speechSynthesis.speak(u);speechSynthesis.resume()}catch(e){}
+  try{MZ.ac=MZ.ac||new (window.AudioContext||window.webkitAudioContext)();MZ.ac.resume()}catch(e){}}
+function mzSay(text,rate){return new Promise(res=>{let done=false,started=false,tm=null;const fin=()=>{if(done)return;done=true;clearTimeout(tm);res(started)};
+  try{if(speechSynthesis.speaking||speechSynthesis.pending)speechSynthesis.cancel();speechSynthesis.resume();
+    const u=new SpeechSynthesisUtterance(text);u.lang='en-US';const v=mzVoice();if(v)u.voice=v;u.rate=rate||0.9;u.volume=1;
+    u.onstart=()=>{started=true;if(MZ.ttsFail){MZ.ttsFail=false;const b=document.getElementById('mztts');if(b)b.hidden=true}clearTimeout(tm);tm=setTimeout(fin,8000+text.length*120)};
+    u.onend=()=>{started=true;fin()};u.onerror=fin;
+    tm=setTimeout(()=>{if(!started){MZ.ttsFail=true;const b=document.getElementById('mztts');if(b)b.hidden=false;try{speechSynthesis.cancel()}catch(e){}}fin()},3500);
+    setTimeout(()=>{if(!done)speechSynthesis.speak(u)},MZ.stream?0:60)}catch(e){MZ.ttsFail=true;fin()}})}
 async function mzMic(){if(MZ.stream&&MZ.stream.getTracks().some(t=>t.readyState==='live'))return MZ.stream;
   MZ.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});return MZ.stream}
-function mzMicOff(){try{MZ.stream&&MZ.stream.getTracks().forEach(t=>t.stop())}catch(e){}MZ.stream=null;try{MZ.wake&&MZ.wake.release()}catch(e){}MZ.wake=null}
+function mzMicOff(keepWake){try{MZ.stream&&MZ.stream.getTracks().forEach(t=>t.stop())}catch(e){}MZ.stream=null;try{MZ.ac&&MZ.ac.state==='running'&&MZ.ac.suspend()}catch(e){}
+  if(!keepWake){try{MZ.wake&&MZ.wake.release()}catch(e){}MZ.wake=null}}
 /* 答えを1つ聞く。音声認識（文字）＋録音（聞き直し用）。録音と聞き取りが同時にできない端末では、録音をやめて聞き取りだけにする */
 function mzListen(maxSec,ui){return new Promise(async resolve=>{
   const SRc=window.SpeechRecognition||window.webkitSpeechRecognition;const t0=Date.now();let fin=[],interim='',first=0,stopped=false,sr=null,mr=null,chunks=[],err='',meter=null;
   if(MZ.rec&&window.MediaRecorder){try{const st=await mzMic();mr=new MediaRecorder(st);mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mr.start(250);
-      try{MZ.ac=MZ.ac||new (window.AudioContext||window.webkitAudioContext)();MZ.ac.resume();const an=MZ.ac.createAnalyser();an.fftSize=256;MZ.ac.createMediaStreamSource(st).connect(an);const buf=new Uint8Array(an.fftSize);
+      try{MZ.ac=MZ.ac||new (window.AudioContext||window.webkitAudioContext)();await MZ.ac.resume();const an=MZ.ac.createAnalyser();an.fftSize=256;MZ.ac.createMediaStreamSource(st).connect(an);const buf=new Uint8Array(an.fftSize);
         meter=setInterval(()=>{an.getByteTimeDomainData(buf);let m=0;for(const b of buf)m=Math.max(m,Math.abs(b-128));ui.level(m/128)},90)}catch(e){}}catch(e){mr=null}}
   const startSR=()=>{if(!SRc||stopped)return;try{sr=new SRc();sr.lang='en-US';sr.continuous=true;sr.interimResults=true;sr.maxAlternatives=1;
     sr.onresult=e=>{if(!first)first=Date.now();let im='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)fin.push(r[0].transcript.trim());else im+=r[0].transcript}interim=im.trim();
@@ -893,6 +903,7 @@ function mzListen(maxSec,ui){return new Promise(async resolve=>{
     if(sr){await new Promise(r=>{const x=sr;const t=setTimeout(r,1500);x.onend=()=>{clearTimeout(t);r()};try{x.stop()}catch(e){clearTimeout(t);r()}})}
     if(interim)fin.push(interim);let blob=null;
     if(mr&&mr.state!=='inactive'){await new Promise(r=>{mr.onstop=r;try{mr.stop()}catch(e){r()}});if(chunks.length)blob=new Blob(chunks,{type:mr.mimeType||'audio/mp4'})}
+    mzMicOff(true);await sleep(350);
     const text=fin.join(' ').replace(/\s+/g,' ').trim();
     resolve({text,dur:Math.round((Date.now()-t0)/100)/10,lat:first?Math.round((first-t0)/100)/10:null,blob,err,usedRec:!!mr})};
   const tm=setTimeout(stop,maxSec*1000);ui.stop=stop})}
@@ -939,23 +950,25 @@ function renderMZ(){if(MZ.run)return mzPaint();
   app.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{MZ.honban=b.dataset.mode==='1';LS.set('gk1.mzhonban',MZ.honban);renderMZ();furi(app)});
   app.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>mzStart(MZ_SETS.find(s=>s.id===b.dataset.set)));
   app.querySelectorAll('[data-log]').forEach(r=>r.onclick=()=>{const [sid,at]=r.dataset.log.split(':');const a=mzAtt(sid).find(x=>String(x.at)===at);if(a){MZ.view={s:MZ_SETS.find(s=>s.id===sid),a,blobs:{}};mzResult()}});
-  app.querySelector('#mztest').onclick=async()=>{const out=app.querySelector('#mztestout'),btn=app.querySelector('#mztest');btn.disabled=true;out.textContent='「Hello, my name is ◯◯.」と言ってみよう（5びょう）';
-    try{await mzMic()}catch(e){out.textContent='マイクが使えません。iPadの設定でSafari（またはこのアプリ）のマイクを「許可」にしてください。';btn.disabled=false;return}
-    await mzSay('Hello. Please say your name.');const ui={level(){},text(t){out.textContent='聞こえたことば：'+t}};const r=await mzListen(5,ui);
+  app.querySelector('#mztest').onclick=async()=>{const out=app.querySelector('#mztestout'),btn=app.querySelector('#mztest');btn.disabled=true;mzUnlock();out.textContent='音が聞こえたら「Hello, my name is ◯◯.」と言ってみよう（5びょう）';
+    try{await mzMic();mzMicOff(true)}catch(e){out.textContent='マイクが使えません。iPadの設定でSafari（またはこのアプリ）のマイクを「許可」にしてください。';btn.disabled=false;return}
+    const heard=await mzSay('Hello. Please say your name.');const ui={level(){},text(t){out.textContent='聞こえたことば：'+t}};const r=await mzListen(5,ui);
+    const snd=heard?'':'【音が出ていません】音量ボタンで音を大きくし、消音（マナーモード）を切ってください。 ';
     if(!r.text&&r.usedRec&&MZ.srOK){MZ.rec=false;out.textContent='録音と聞き取りが同時にできないので、聞き取りだけにしました。もう一度テストしてください。'}
-    else out.textContent=r.text?'聞こえたことば：'+r.text+'（OK！）':MZ.srOK?'聞こえませんでした。もう少し大きな声で、iPadに近づいて話してみよう。':'録音はできました（文字にする機能は使えません）。';
+    else out.textContent=snd+(r.text?'聞こえたことば：'+r.text+'（OK！）':MZ.srOK?'聞こえませんでした。もう少し大きな声で、iPadに近づいて話してみよう。':'録音はできました（文字にする機能は使えません）。');
     btn.disabled=false};}
 
-async function mzStart(s){
-  try{await mzMic()}catch(e){if(!MZ.srOK){await ask('<b>マイクが使えません</b><p class="sub">iPadの設定で、マイクを「許可」にしてください。</p>','OK');return}MZ.rec=false}
+async function mzStart(s){mzUnlock();
+  try{await mzMic();mzMicOff(true)}catch(e){if(!MZ.srOK){await ask('<b>マイクが使えません</b><p class="sub">iPadの設定で、マイクを「許可」にしてください。</p>','OK');return}MZ.rec=false}
   try{MZ.wake=await navigator.wakeLock.request('screen')}catch(e){}
   MZ.run={s,steps:mzSteps(s),i:0,ans:{},blobs:{},honban:MZ.honban,at:Date.now(),phase:'say',text:'',left:0,repeat:0};
   window.scrollTo(0,0);mzPaint();mzNext()}
 function mzPaint(){const R=MZ.run;if(!R)return;const st=R.steps[R.i]||{},s=R.s,nPart=['read','no1','no2','no3','no4'].indexOf(st.part);
   app.innerHTML=`<div class="bar"><div class="bar-in"><button class="btn ghost sm" id="mzquit">やめる</button><span class="bar-t en">${esc(s.title)}</span><span class="mzprog">${R.steps.map((x,i)=>`<i class="${i<R.i?'d':i===R.i?'c':''}"></i>`).join('')}</span></div></div>
   <div class="wrap mzrun">
-   <div class="mzex"><span class="mzexa" aria-hidden="true">🧑‍🏫</span><div class="mzexb en">${R.phase==='say'?'<i class="sub">（面接官が話しています…）</i>':''}${R.honban?'':`<b>${esc(R.follow||st.say)}</b>`}${!R.honban&&st.hint&&R.phase==='listen'?`<span class="sub">れい：${esc(st.hint)}</span>`:''}</div></div>
-   ${st.card&&!(R.honban&&false)?mzCardHTML(s,st.card):''}
+   <div class="mzex"><span class="mzexa" aria-hidden="true">🧑‍🏫</span><div class="mzexb en">${R.phase==='say'?'<i class="sub">（面接官が話しています…）</i>':''}${R.honban&&!MZ.ttsFail?'':`<b>${esc(R.follow||st.say)}</b>`}${!R.honban&&st.hint&&R.phase==='listen'?`<span class="sub">れい：${esc(st.hint)}</span>`:''}</div></div>
+   <p class="banner red" id="mztts"${MZ.ttsFail?'':' hidden'}>音が出ていません。音量ボタンで音を大きくし、消音（マナーモード）を切ってから「もう一度 聞く」をおしてください。それまでは、上の文を読んで答えましょう。</p>
+   ${st.card?mzCardHTML(s,st.card):''}
    ${R.phase==='wait'?`<div class="mzwait"><b class="mzbig">${R.left}</b><span >びょう ${st.part==='silent'?'だまって読もう':'じゅんびしよう（1コマ2文）'}</span></div>`:''}
    ${R.phase==='listen'?`<div class="mzlisten"><div class="mzmic" id="mzmic"><span></span></div><p ><b>あなたの番です。</b>話しおわったら、下のボタンをおそう。</p>${R.honban?'':`<p class="mzlive en" id="mzlive">${esc(R.text)}</p>`}
      <div class="row center"><button class="btn mzdone" id="mzdone">話しおわった</button><button class="btn ghost sm" id="mzagain">もう一度 聞く</button></div></div>`:''}
@@ -964,7 +977,7 @@ function mzPaint(){const R=MZ.run;if(!R)return;const st=R.steps[R.i]||{},s=R.s,n
   </div>`;
   app.querySelector('#mzquit').onclick=async()=>{if(await ask('<b>れんしゅうを やめますか？</b><p class="sub">このセットの答えは保存されません。</p>','やめる','つづける')){mzStop();go('mz')}};
   const dn=app.querySelector('#mzdone');if(dn)dn.onclick=()=>{dn.disabled=true;R.ui&&R.ui.stop&&R.ui.stop()};
-  const ag=app.querySelector('#mzagain');if(ag)ag.onclick=async()=>{R.repeat++;R.ans._rep=(R.ans._rep||0)+1;ag.disabled=true;    if(R.ui&&R.ui.stop){R.again=true;R.ui.stop()}};
+  const ag=app.querySelector('#mzagain');if(ag)ag.onclick=async()=>{mzUnlock();R.repeat++;R.ans._rep=(R.ans._rep||0)+1;ag.disabled=true;    if(R.ui&&R.ui.stop){R.again=true;R.ui.stop()}};
   furi(app)}
 function mzStop(){const R=MZ.run;MZ.run=null;try{speechSynthesis.cancel()}catch(e){}if(R&&R.ui&&R.ui.stop)R.ui.stop();mzMicOff()}
 function mzLevel(v){const m=document.getElementById('mzmic');if(m)m.style.setProperty('--lv',Math.min(1,v*2.2).toFixed(2))}
@@ -1040,7 +1053,7 @@ function mzResult(){const V0=MZ.view;if(!V0)return go('mz');S.screen='mz';const 
   </div>`;
   app.querySelector('#back').onclick=app.querySelector('#mzlist').onclick=()=>{MZ.view=null;go('mz')};
   app.querySelector('#mzre').onclick=()=>{MZ.view=null;mzStart(s)};
-  app.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>mzSay(b.dataset.say,0.85));
+  app.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>{mzUnlock();mzSay(b.dataset.say,0.85)});
   furi(app);status();window.scrollTo(0,0)}
 function mzHomeHTML(){const d=mzDays();if(d<0)return '';const today=mzAllAtt().filter(a=>ymd(a.at)===ymd(Date.now())).length;
   return `<button class="mzhome" id="toMZ"><span class="mzhi" aria-hidden="true">🎤</span><span class="cb"><b>英検2級 面接れんしゅう</b><small >${d>0?'本番（11月8日）まで あと'+d+'日':'きょうが 本番！'}・きょう ${today}回</small></span><span class="st ${today?'done':'go'}">${today?'できた！':'1セットやろう'}</span></button>`}
@@ -1302,7 +1315,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261026154553';
+const BUILD='20261026234659';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
