@@ -598,10 +598,11 @@ const TIPLAB={s:{a:'サッカーのコツ',w:'ワールドカップの豆知識'
 const tipsHTML=n=>['s','v'].map(k=>{const x=TIPS[k][n%TIPS[k].length];return `<div class="tip t${k}"><b>${TIPLAB[k][x[0]]}</b><span>${rich(x[1])}</span></div>`}).join('');
 const STAGES=['リーグ突破','ベスト16','ベスト8','ベスト4','決勝へ'],LSTAGES=['開幕戦に勝利','5位へ','3位へ','2位へ','首位に立つ'];
 // One competition per week (by week number). Cups are knockouts, leagues are a climb up the table.
-const COMPS=[['ワールドカップ','cup','世界一をきめる大会'],['J3リーグ','lg','日本のプロリーグ。ここからスタート'],['J2リーグ','lg','J3から昇格。つぎはJ1をめざす'],['J1リーグ','lg','日本でいちばん上のリーグ'],['天皇杯','cup','日本一をきめるカップ戦'],
- ['エールディビジ','lg','オランダのリーグ。海外にちょうせん'],['リーグ・アン','lg','フランスのリーグ'],['セリエA','lg','イタリアのリーグ'],['ブンデスリーガ','lg','ドイツのリーグ'],['ラ・リーガ','lg','スペインのリーグ'],['プレミアリーグ','lg','イングランドのリーグ'],['チャンピオンズリーグ','cup','ヨーロッパ一をきめる大会']];
+const COMPS=[['JFL','lg','Jリーグのすぐ下のリーグ。ここからスタート'],['J3リーグ','lg','JFLから昇格。日本のプロリーグ'],['J2リーグ','lg','J3から昇格。つぎはJ1をめざす'],['J1リーグ','lg','日本でいちばん上のリーグ'],['天皇杯','cup','日本一をきめるカップ戦'],
+ ['エールディビジ','lg','オランダのリーグ。海外にちょうせん'],['リーグ・アン','lg','フランスのリーグ'],['セリエA','lg','イタリアのリーグ'],['ブンデスリーガ','lg','ドイツのリーグ'],['ラ・リーガ','lg','スペインのリーグ'],['プレミアリーグ','lg','イングランドのリーグ'],['チャンピオンズリーグ','cup','ヨーロッパ一をきめる大会'],['ワールドカップ','cup','さいごの大会。世界一をきめる']];
 // What each competition is: its place in the football world, its level, and famous names. Shown under the road on the home screen.
 const COMPINFO={
+ 'JFL':['JFL（日本フットボールリーグ）は、J3のすぐ下にあるリーグ。会社のチームや、Jリーグをめざすクラブなど16チームがたたかう。','上位になり、スタジアムなどJリーグに入る条件をみたすとJ3に昇格できる。今のJリーグのクラブにも、JFLから上がってきたチームが多い。','Honda FCは会社のチームで、JFLで何度も優勝している強いチーム。ここから世界一をめざすスタート地点。'],
  'ワールドカップ':['国の代表チームが出る、サッカーでいちばん大きな大会。4年に1回で、2026年はアメリカ・カナダ・メキシコで48か国が出た。','優勝した国はアルゼンチン（2022年）、フランス（2018年）、ドイツ（2014年）など。いちばん多いのはブラジルの5回。','有名な選手：メッシ（アルゼンチン）、エムバペ（フランス）。日本代表では三笘薫、久保建英、遠藤航など。日本の最高はベスト16。'],
  'J3リーグ':['日本のプロリーグ「Jリーグ」の3部。J1・J2・J3の3つに分かれていて、ここがいちばん下のプロの舞台。20チーム。','上位になるとJ2に昇格できる。FC町田ゼルビアはJ3から数年でJ1の優勝あらそいまで上がった。','若い選手が多く、ここで活やくして上のリーグへ行く。地元のファンに応えんされるチームが多い。'],
  'J2リーグ':['Jリーグの2部。20チームが1年で38試合をたたかい、上位がJ1に昇格、下位がJ3に降格する。','J1から落ちてきた強いチームと、J3から上がってきた勢いのあるチームがまざって、とても競争がはげしい。','昇格をかけた最後の数試合は、J1よりもりあがると言われることもある。'],
@@ -1264,7 +1265,7 @@ function renderParent(){
      ${PW.days.map((d,i)=>`<tr><td>${i+1}日目の宿題</td><td class="num">${PP.rows[i]}</td></tr>`).join('')}
      <tr><td>5日そろったボーナス</td><td class="num">${PP.bonus}</td></tr><tr><td>テスト${PP.prov?'（採点がすむと確定）':''}</td><td class="num">${PP.test}</td></tr><tr><td>ていねいボーナス</td><td class="num">${PP.neat}</td></tr></tbody></table></div>
      <p class="sub">宿題は出すと3、答え合わせと間違いのやり直しまで終えるとさらに2で、1日5です。5日とも満点ならボーナス5。テストは8割以上15、6〜8割10、6割未満5。ていねいボーナスは5。1週間の満点は50ポイントです。</p>
-     <p class="sub">優勝への道：毎週ちがう大会に挑戦します（ワールドカップ → J3 → J2 → J1 → 天皇杯 → オランダ → フランス → イタリア → ドイツ → スペイン → プレミアリーグ → チャンピオンズリーグ、12週で一巡）。宿題を1日終えるごとに1つ進みます。テストが8割以上で宿題も5日そろっていれば優勝、6割以上で準優勝（リーグは2位）、それ未満はベスト4（リーグは4位）です。結果は採点がすむと出ます。</p>
+     <p class="sub">優勝への道：毎週ちがう大会に挑戦します（JFL → J3 → J2 → J1 → 天皇杯 → オランダ → フランス → イタリア → ドイツ → スペイン → プレミアリーグ → チャンピオンズリーグ → ワールドカップ、13週で一巡）。宿題を1日終えるごとに1つ進みます。テストが8割以上で宿題も5日そろっていれば優勝、6割以上で準優勝（リーグは2位）、それ未満はベスト4（リーグは4位）です。結果は採点がすむと出ます。</p>
      ${t.test?`<label class="chk"><input type="checkbox" id="neat" ${g.neat===true?'checked':''}>ていねいボーナスをつける（空らんがなく、字が読みやすい）</label>`:''}</section>`:''}
    <section class="sec">
     <div class="row"><div>${t.pts?`<div class="big">${T.got}<span style="font-size:1rem"> / ${T.max}点</span></div>`:'<b>点数はつけません</b>'}
@@ -1319,7 +1320,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261027051850';
+const BUILD='20261027052224';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
