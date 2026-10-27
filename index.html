@@ -480,9 +480,9 @@ const items=t=>t.sections.flatMap(s=>s.items.filter(i=>i.k));
 
 /* ---------- state ---------- */
 const S={vals:{},grades:{},ink:{},screen:'home',task:null,ptab:TASKS[0].id,running:false,parentOK:false};
-const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){const j=JSON.stringify(v);try{localStorage.setItem(k,j)}catch(e){if(lsFree(k))try{localStorage.setItem(k,j)}catch(e2){}}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){const j=JSON.stringify(v);try{localStorage.setItem(k,j)}catch(e){if(lsFree(k))try{localStorage.setItem(k,j)}catch(e2){}}},del(k){try{localStorage.removeItem(k)}catch(e){}},try(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
 /* iPad の保存場所（約5MB）がいっぱいになると、答えが保存されないまま残り、開き直したときに消えて見える（10/16 に起きた）。
-   いっぱいのときは、終わって送信ずみの日の手書きから端末の控えを消す（サーバーには残っていて、見るときに読みなおす） */
+   いっぱいのときは、終わって送信ずみの日の手書きから端末の控えを消す（サーバーには残っていて、見るときに読みなおす＝ensureInk） */
 function lsFree(keep){try{const dn=(typeof S!=='undefined'&&S.vals)||{},dt=JSON.parse(localStorage.getItem('gk1.dirty')||'{}'),c=[];
   for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!k.startsWith('gk1.ink.')||k===keep)continue;const tid=k.slice(8).split('__')[0];
     if(dn[tid]&&dn[tid].done&&!dt['data/'+tid+'.json'])c.push([tid,k])}
@@ -520,7 +520,7 @@ function mergeRemote(path,x){const p=path.split('/'),tid=p[1].replace(/\.json$/,
   const lv=S.vals[tid];
   if(x.vals&&newerVals(lv,x.vals)){x.vals.v=x.vals.v||{};S.vals[tid]=x.vals;ch=true;if(lv&&!lv.done&&!x.vals.done&&unionVals(x.vals,lv)){mark(path)}}
   else if(x.vals&&lv&&!lv.done&&!x.vals.done&&unionVals(lv,x.vals)){ch=true;mark(path)}
-  Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]=i.g?{s:i.s,t:i.t,g:i.g}:{s:i.s,t:i.t};LS.set('gk1.ink.'+k,S.ink[k]);ch=true}});
+  Object.keys(x.ink||{}).forEach(k=>{const i=x.ink[k];if(i&&Array.isArray(i.s)&&(i.t||0)>((S.ink[k]||{}).t||0)){S.ink[k]=i.g?{s:i.s,t:i.t,g:i.g}:{s:i.s,t:i.t};if((S.vals[tid]||{}).done)LS.try('gk1.ink.'+k,S.ink[k]);else LS.set('gk1.ink.'+k,S.ink[k]);ch=true}});
   if(ch){saveLocal();try{inks.forEach(i=>i.draw())}catch(e){}}return ch}
 async function getRemote(path){const g=await fetch(GH+path+'?t='+Date.now(),{headers:hdr(),cache:'no-store'});if(g.status===404)return null;if(!g.ok)throw new Error('get '+g.status);const j=await g.json();shas[path]=j.sha;
   let txt=j.content?new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\s/g,'')),c=>c.charCodeAt(0))):null;
@@ -549,11 +549,15 @@ async function loadWeeks(){try{const r=await fetch('weeks/index.json',{cache:'no
   return false}
 async function pull(){let ch=await loadWeeks();if(!token)return ch;
   try{for(const dir of ['data','grades']){const r=await fetch(GH+dir,{headers:hdr(),cache:'no-store'});if(r.status===404)continue;if(!r.ok){saveErr=true;continue}
-      for(const f of await r.json()){const path=dir+'/'+f.name,tid=f.name.replace(/\.json$/,'');if(shas[path]===f.sha)continue;
+      for(const f of await r.json()){const path=dir+'/'+f.name,tid=f.name.replace(/\.json$/,'');if(shas[path]===f.sha&&(dir==='data'?S.vals[tid]:S.grades[tid]))continue;
         const g=await fetch(GH+path,{headers:hdr({Accept:'application/vnd.github.raw+json'}),cache:'no-store'});if(!g.ok)continue;const x=await g.json();shas[path]=f.sha;
         if(mergeRemote(path,x))ch=true}}
     LS.set('gk1.shas',shas);if(ch)saveLocal()}catch(e){}
   return ch}
+/* 端末の控えから消した（lsFree）終わった日の手書きを、見るときにサーバーから読みなおす（10/27「過去の宿題が消えた」）。1回の起動で1日1回まで */
+const inkAsked={};
+function ensureInk(tid){if(!token||!tid||inkAsked[tid])return;const v=S.vals[tid];if(!v||!v.done)return;inkAsked[tid]=1;
+  const path='data/'+tid+'.json';getRemote(path).then(x=>{if(x&&mergeRemote(path,x)&&!S.running&&((S.screen==='task'&&S.task===tid)||(S.screen==='parent'&&S.ptab===tid)))render()}).catch(()=>{delete inkAsked[tid]})}
 function openToday(){if(hashDone||S.screen!=='home'||location.hash!=='#today')return;const today=ymd(Date.now()),t=TASKS.slice(BASE).find(x=>!(S.vals[x.id]||{}).done&&!lockInfo(x,today));if(t){hashDone=true;go('task',t.id)}}
 (async function connect(){const ch=await pull();if(ch&&!S.running)render();status();openToday();sync()})();
 async function setToken(v){token=v;LS.set('gk1.token',v);if(!v)return '未設定';
@@ -1063,7 +1067,7 @@ function go(screen,task,pv){if(S.running)stopClock();if(MZ.run&&screen!=='mz')mz
   if(screen!=='task')pull().then(ch=>{if(ch&&S.screen===screen)render()})}
 function dayTheme(){const v=[2,4,0].includes(new Date(Date.now()).getDay());document.body.classList.toggle('bg-v',v);document.body.classList.toggle('bg-s',!v);
   const m=document.querySelector('meta[name=theme-color]');if(m)m.content=v?'#ffdcae':'#c9edc4';return v}
-function render(){dayTheme();inks.length=0;if(S.screen==='task')renderTask();else if(S.screen==='parent')renderParent();else if(S.screen==='mz'){if(MZ.view&&!MZ.run)mzResult();else renderMZ()}else renderHome();if(S.screen!=='parent')furi(app);status()}
+function render(){dayTheme();inks.length=0;if(S.screen==='task'){renderTask();ensureInk(S.task)}else if(S.screen==='parent'){renderParent();ensureInk(S.ptab)}else if(S.screen==='mz'){if(MZ.view&&!MZ.run)mzResult();else renderMZ()}else renderHome();if(S.screen!=='parent')furi(app);status()}
 
 function renderHome(){
   const groups=[...new Set(TASKS.slice(BASE).map(t=>t.group))],today=ymd(Date.now());
@@ -1282,7 +1286,7 @@ function renderParent(){
     try{navigator.clipboard.writeText(rp.value).then(()=>done('コピーしました'),()=>done('上の文を長押ししてコピーしてください'))}catch(e){done('上の文を長押ししてコピーしてください')}};
   const keep=fn=>{const y=window.scrollY;fn();renderParent();status();window.scrollTo(0,y)};
   app.querySelector('#back').onclick=()=>go('home');
-  app.querySelectorAll('[data-grp]').forEach(b=>b.onclick=()=>{S.ptab=TASKS.find(x=>x.group===b.dataset.grp).id;inks.length=0;renderParent();status();window.scrollTo(0,0)});
+  app.querySelectorAll('[data-grp]').forEach(b=>b.onclick=()=>{S.ptab=TASKS.find(x=>x.group===b.dataset.grp).id;inks.length=0;renderParent();ensureInk(S.ptab);status();window.scrollTo(0,0)});
   app.querySelector('#pview').onclick=()=>go('task',t.id,true);
   const pa=app.querySelector('#paiAll');if(pa)pa.onclick=async()=>{pa.disabled=true;pa.textContent='AIが読んでいます…';const vv=V(t.id);vv.aic={};delete vv.aicErr;if(t.test){const g=G(t.id);aiKeys(t).forEach(x=>{if(x.o)delete g.o[x.key];if(x.m)delete g.m[x.key]})}await aiCheckTask(t,true);await aiGradeTask(t,true);render()};
   app.querySelector('#akeySave').onclick=async()=>{const k=app.querySelector('#akey').value.trim(),m=app.querySelector('#akeyMsg');if(!k){akey='';LS.set('gk1.akey','');m.textContent='未設定（消しました）';return}
@@ -1291,7 +1295,7 @@ function renderParent(){
   app.querySelector('#rateSave').onclick=()=>{const r=+app.querySelector('#rate').value;if(r>=0){wallet().rate=r;touchVals(WALLET);render()}};
   app.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(await ask('<b>この記録を取り消しますか？</b>','取り消す','やめる')){const w=wallet();w.log=w.log.filter(e=>e.id!==b.dataset.del);touchVals(WALLET);render()}});
   const nb=app.querySelector('#neat');if(nb)nb.onchange=()=>keep(()=>{if(nb.checked)g.neat=true;else delete g.neat;touchGrades(t.id)});
-  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{S.ptab=b.dataset.tab;inks.length=0;renderParent();status();window.scrollTo(0,0)});
+  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{S.ptab=b.dataset.tab;inks.length=0;renderParent();ensureInk(S.ptab);status();window.scrollTo(0,0)});
   app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.o,val=b.dataset.val==='1';if(g.o[k]===val)delete g.o[k];else g.o[k]=val;touchGrades(t.id)}));
   app.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>keep(()=>{const k=b.dataset.g,p=+b.dataset.p;if(g.m[k]===p)delete g.m[k];else g.m[k]=p;touchGrades(t.id)}));
   app.querySelectorAll('[data-read]').forEach(c=>c.onchange=()=>{if(c.checked)g.read[c.dataset.read]=true;else delete g.read[c.dataset.read];touchGrades(t.id)});
@@ -1315,7 +1319,7 @@ function pts(g,key,max,label){let h=label?`<span class="sub">${esc(label)}</span
 
 window.addEventListener('pagehide',()=>{if(S.running)stopClock();saveLocal();flushAll()});
 render();openToday();
-const BUILD='20261026234659';
+const BUILD='20261027051850';
 async function checkUpdate(){if(S.running)return;try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;
     let tried='';try{tried=sessionStorage.getItem('gk1.upd')||''}catch(e){}
     if(v&&v!==BUILD&&tried!==v){try{sessionStorage.setItem('gk1.upd',v)}catch(e){}try{await fetch(location.href.split('#')[0],{cache:'reload'})}catch(e){}location.reload()}}catch(e){}}
