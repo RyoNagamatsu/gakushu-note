@@ -2365,6 +2365,28 @@
        }
       },
       {
+       "k": "fill",
+       "id": "m4",
+       "q": "1こ 85円のパンを6こ買って、1000円さつで はらいました。おつりは何円ですか。",
+       "tpl": "答え {} 円",
+       "b": [
+        {
+         "a": [
+          "490"
+         ],
+         "w": 6,
+         "t": "num"
+        }
+       ],
+       "pts": 0,
+       "why": "① パンの｜代金《だいきん》は 85 × 6 ＝ 510円。② おつりは 1000 － 510 ＝ 490円。先に「｜代金《だいきん》」をもとめてから「おつり」をもとめます。",
+       "work": {
+        "label": "｜式《しき》",
+        "model": "1000 － 85 × 6 ＝ 490",
+        "pts": 0
+       }
+      },
+      {
        "k": "ink",
        "id": "msc",
        "q": "計算スペース（とちゅうの｜式《しき》を書いてよい）",
@@ -2376,7 +2398,7 @@
     },
     {
      "h": "English　Words",
-     "note": "flourish = grow well and be healthy or successful ／ scatter = throw or spread things in many directions ／ obscure = not well known, or not clear",
+     "note": "flourish = grow well and be healthy or successful ／ scatter = throw or spread things in many directions",
      "en": true,
      "items": [
       {
@@ -2408,42 +2430,12 @@
        "pts": 0,
        "why": "\"scatter\" = throw or spread things in many directions.",
        "en": true
-      },
-      {
-       "k": "choice",
-       "id": "v3",
-       "q": "The meaning of this old word is ______, so few people understand it.",
-       "opts": [
-        "vigorous",
-        "obscure",
-        "durable",
-        "diverse"
-       ],
-       "a": "B",
-       "pts": 0,
-       "why": "\"obscure\" = not well known, or not clear.",
-       "en": true
-      },
-      {
-       "k": "choice",
-       "id": "rv1",
-       "q": "(Review) The trip had a ______ effect on her; it changed how she thinks.",
-       "opts": [
-        "profound",
-        "frugal",
-        "tedious",
-        "hostile"
-       ],
-       "a": "A",
-       "pts": 0,
-       "why": "\"profound\" = very deep or strong (a feeling or an idea) (from last week).",
-       "en": true
       }
      ]
     },
     {
      "h": "English　Reading",
-     "note": "Answer in a full sentence. Start with the subject (WHO or WHAT). Use the same tense as the question.",
+     "note": "Read the passage. Then choose the main idea.",
      "passage": [
       "In many countries, there is not enough land to build large solar power plants. Some places have found a new idea: floating solar panels. These panels are put on lakes and ponds instead of on land. The water keeps the panels cool, so they can make more electricity on hot days. The panels also cover the water, so less water goes up into the air. However, building them costs more money than building panels on land."
      ],
@@ -2463,33 +2455,23 @@
        "pts": 0,
        "why": "The passage is about floating solar panels: what they are and why they are good (cool panels, less water lost). B says this.",
        "en": true
-      },
-      {
-       "k": "long",
-       "id": "r2",
-       "q": "Why can floating solar panels make more electricity on hot days? Answer in a full sentence.",
-       "rows": 2,
-       "pts": 0,
-       "en": true,
-       "model": "They can make more electricity because the water keeps them cool.",
-       "why": "Look at the fourth sentence: \"The water keeps the panels cool, so ….\" Start with the subject: \"They …\" or \"Floating solar panels ….\""
       }
      ]
     },
     {
      "h": "English　Writing",
-     "note": "Count your sentences before you stop: 1, 2, 3, 4, 5. Each sentence starts with a capital letter and ends with a period (.). Fill all the lines.",
+     "note": "Write 3 sentences. Each sentence starts with a capital letter and ends with a period (.).",
      "en": true,
      "items": [
       {
        "k": "long",
        "id": "w1",
-       "q": "Should cities make more roads only for bicycles? Write 5 sentences: (1) your opinion, (2) \"First, …\" (reason 1), (3) one more sentence about reason 1 (an example), (4) \"Second, …\" (reason 2), (5) \"That is why …\" (say your opinion again).",
-       "rows": 8,
+       "q": "Should cities make more roads only for bicycles? Write 3 sentences: (1) your opinion (I think …), (2) \"First, …\" (reason 1), (3) \"Also, …\" (reason 2).",
+       "rows": 5,
        "pts": 0,
        "en": true,
-       "sample": "I think cities should make more roads only for bicycles. First, riding a bicycle does not make the air dirty. For example, if more people ride bicycles to work, there will be fewer cars on the road. Second, bike roads are safer because cars cannot hit the riders. That is why I think more bike roads are a good idea.",
-       "why": "Check: Did you write 5 sentences? Did you give an example for reason 1? Did you use First and Second?"
+       "sample": "I think cities should make more roads only for bicycles. First, riding a bicycle does not make the air dirty, so the city will be cleaner. Also, bike roads are safer because cars cannot hit the riders.",
+       "why": "Check: Did you write 3 sentences? Did you give your opinion first, then two reasons with First and Also?"
       }
      ]
     }
@@ -2941,6 +2923,28 @@
        }
       },
       {
+       "k": "fill",
+       "id": "m4",
+       "q": "長さ 96 m の道のかたがわに、はしからはしまで 8 m おきに｜旗《はた》を立てます。｜旗《はた》は何本いりますか。",
+       "tpl": "答え {} 本",
+       "b": [
+        {
+         "a": [
+          "13"
+         ],
+         "w": 6,
+         "t": "num"
+        }
+       ],
+       "pts": 0,
+       "why": "｜両《りょう》はしにも立てるので、｜旗《はた》の数 ＝ 間の数 ＋ 1。間の数は 96 ÷ 8 ＝ 12、｜旗《はた》は 12 ＋ 1 ＝ 13本。",
+       "work": {
+        "label": "｜式《しき》",
+        "model": "96 ÷ 8 ＋ 1 ＝ 13",
+        "pts": 0
+       }
+      },
+      {
        "k": "ink",
        "id": "msc",
        "q": "計算スペース（とちゅうの｜式《しき》を書いてよい）",
@@ -2952,7 +2956,7 @@
     },
     {
      "h": "English　Words",
-     "note": "comprehend = understand something fully ／ retain = keep something; continue to have it ／ hazardous = dangerous; able to hurt people or nature",
+     "note": "comprehend = understand something fully ／ retain = keep something; continue to have it",
      "en": true,
      "items": [
       {
@@ -2984,21 +2988,6 @@
        "pts": 0,
        "why": "\"retain\" = keep something; continue to have it.",
        "en": true
-      },
-      {
-       "k": "choice",
-       "id": "v3",
-       "q": "Do not touch that bottle; it has ______ chemicals inside.",
-       "opts": [
-        "hazardous",
-        "tranquil",
-        "modest",
-        "durable"
-       ],
-       "a": "A",
-       "pts": 0,
-       "why": "\"hazardous\" = dangerous; able to hurt people or nature.",
-       "en": true
       }
      ]
     },
@@ -3021,38 +3010,23 @@
        ],
        "pts": 0,
        "why": "hurt = h-u-r-t. Not \"hert\", not \"heart\"."
-      },
-      {
-       "k": "fill",
-       "id": "s2",
-       "tpl": "Please rite your answer here.  →  {}",
-       "b": [
-        {
-         "a": [
-          "write"
-         ],
-         "w": 10
-        }
-       ],
-       "pts": 0,
-       "why": "write = w-r-i-t-e. The \"w\" is silent."
       }
      ]
     },
     {
      "h": "English　Writing",
-     "note": "Count your sentences before you stop: 1, 2, 3, 4, 5. Each sentence starts with a capital letter and ends with a period (.). Fill all the lines.",
+     "note": "Write 3 sentences. Each sentence starts with a capital letter and ends with a period (.).",
      "en": true,
      "items": [
       {
        "k": "long",
        "id": "w1",
-       "q": "Should schools give students more time for sports? Write 5 sentences: (1) your opinion, (2) \"First, …\" (reason 1), (3) one more sentence about reason 1 (an example), (4) \"Second, …\" (reason 2), (5) \"That is why …\" (say your opinion again).",
-       "rows": 8,
+       "q": "Should schools give students more time for sports? Write 3 sentences: (1) your opinion (I think …), (2) \"First, …\" (reason 1), (3) \"Also, …\" (reason 2).",
+       "rows": 5,
        "pts": 0,
        "en": true,
-       "sample": "I think schools should give students more time for sports. First, playing sports makes our bodies strong and healthy. For example, after I play soccer, I sleep well and feel good the next day. Second, students can learn teamwork when they play together. That is why I think more sports time is a good idea.",
-       "why": "Check: Did you write 5 sentences? Did you give an example for reason 1? Did you use First and Second?"
+       "sample": "I think schools should give students more time for sports. First, playing sports makes our bodies strong and healthy. Also, students can learn teamwork when they play together.",
+       "why": "Check: Did you write 3 sentences? Did you give your opinion first, then two reasons with First and Also?"
       }
      ]
     }
